@@ -1,0 +1,18 @@
+{
+    "name": "ubuntu-1904-disco",
+    "codename": "disco dingo",
+    "pname": "Ubuntu 19.04 (disco dingo - development branch)",
+    "distro": "ubuntu",
+    "edition": "server",
+    "arch": "x64",
+    "version": "19.04",
+    "download_url": "http://cloud-images.ubuntu.com/disco/current/disco-server-cloudimg-amd64.img",
+    "disk_size": "2",
+    "qcow_part": "/dev/sda1",
+    "cloud_init_ds_src": "./resources/cloud-init/ds_v2/DataSourceRbxCloud.py",
+    "cloud_init_ds_dir": "/usr/lib/python3/dist-packages/cloudinit/sources/",
+    "custom_scripts": [
+        "./scripts/ubuntu/ubuntu-1710.sh"
+    ],
+    "uefi_support": "1"
+}

@@ -1,0 +1,27 @@
+{
+  "builders": [
+    {
+      "type": "hyperone",
+      "source_image": "fedora:28",
+      "vm_type": "a1.nano",
+      "vm_name": "image-builder",
+      "image_name": "image-builder-fedora",
+      "disk_size": 10,
+      "ssh_keys": [
+        "my-ssh"
+      ]
+    }
+  ],
+  "provisioners": [
+    {
+      "type": "shell",
+      "inline": [
+        "sudo yum install -y mtools libguestfs-tools wget",
+        "echo 'kvm' | sudo tee /etc/modules",
+        "sudo dracut -fv",
+        "echo \"net.ipv4.conf.all.arp_notify = 1\" | sudo tee /etc/sysctl.d/gratuitous-arp.conf",
+        "echo \"net.ipv4.conf.default.arp_notify = 1\" | sudo tee /etc/sysctl.d/gratuitous-arp.conf"
+      ]
+    }
+  ]
+}

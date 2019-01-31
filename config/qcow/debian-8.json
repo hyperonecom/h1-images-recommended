@@ -1,0 +1,17 @@
+{
+    "name": "debian-8-jessie",
+    "codename": "jessie",
+    "pname": "Debian GNU/Linux 8 (jessie)",
+    "distro": "debian",
+    "edition": "server",
+    "arch": "x64",
+    "version": "8",
+    "download_url": "https://cdimage.debian.org/cdimage/openstack/current-8/debian-8-openstack-amd64.qcow2",
+    "disk_size": "2",
+    "qcow_part": "/dev/sda1",
+    "cloud_init_ds_dir": "/usr/lib/python2.7/dist-packages/cloudinit/sources/",
+    "custom_scripts": [
+        "./scripts/debian/debian-8-jessie.sh"
+    ],
+    "uefi_support": "0"
+}

@@ -1,0 +1,79 @@
+{
+    "variables": {
+        "source_image": "image-builder-fedora",
+        "download_path": "/home/guru/image-{{timestamp}}.qcow",
+        "mount_qcow_path": "/home/guru/qcow-{{timestamp}}",
+        "cloud_init_tmp_path": "/tmp/cloud_init.py",
+        "download_url": "https://download.fedoraproject.org/pub/fedora/linux/releases/27/CloudImages/x86_64/images/Fedora-Cloud-Base-27-1.6.x86_64.qcow2",
+        "qcow_part": "/dev/sda1",
+        "img_fs": "ext4",
+        "scripts": "./scripts/fedora/fedora-27.sh",
+        "cloud_init_ds_dir": "/usr/lib/python3.6/site-packages/cloudinit/sources/",
+        "cloud_init_ds_src": "./resources/cloud-init/ds/DataSourceRbxCloud.py",
+        "disk_size": "2",
+        "image_name": "Fedora 27",
+        "image_description": "{\"arch\":\"x64\",\"distro\":\"fedora\",\"release\":\"27\",\"edition\":\"server\",\"codename\":\"core\",\"recommended\":{\"disk\":{\"size\":20}}}"
+    },
+    "builders": [
+        {
+            "type": "hyperone",
+            "vm_name": "packer-5c530ff0-bd94-1870-8fcb-d695f1fe66b7",
+            "source_image": "{{user `source_image`}}",
+            "vm_type": "a1.medium",
+            "disk_size": 10,
+            "ssh_keys": [
+                "my-ssh"
+            ],
+            "chroot_disk": true,
+            "chroot_command_wrapper": "sudo {{.Command}}",
+            "chroot_disk_size": "{{user `disk_size`}}",
+            "image_name": "{{user `image_name`}}",
+            "image_description": "{{user `image_description`}}",
+            "pre_mount_commands": [
+                "sfdisk -uS --force \"{{.Device}}\" <<END\n2048,102400,ef\n104448,102400,b\n206848,,L,*\nEND",
+                "partprobe",
+                "sleep 1",
+                "partprobe",
+                "mkfs.fat {{.Device}}1",
+                "mkfs.fat {{.Device}}2",
+                "mkfs.{{user `img_fs`}} {{.Device}}3",
+                "dosfslabel {{.Device}}1 EFI",
+                "dosfslabel {{.Device}}2 CLOUDMD"
+            ],
+            "chroot_mount_path": "/tmp/mount",
+            "mount_partition": 3,
+            "post_mount_commands": [
+                "mkdir -p {{.MountPath}}/boot/efi",
+                "mount -t vfat {{.Device}}1 {{.MountPath}}/boot/efi",
+                "wget {{user `download_url`}} -O {{user `download_path`}}",
+                "mkdir {{user `mount_qcow_path`}}",
+                "LIBGUESTFS_BACKEND=direct guestmount -a {{user `download_path`}} -m {{user `qcow_part`}} {{user `mount_qcow_path`}}",
+                "rsync -aH --inplace -W --numeric-ids --info=progress2 -A {{user `mount_qcow_path`}}/ {{.MountPath}}/"
+            ]
+        }
+    ],
+    "provisioners": [
+        {
+            "type": "shell",
+            "inline": [
+                "DISK_UUID=$(blkid -s UUID -o value /dev/sdb3)",
+                "echo \"UUID=$DISK_UUID    /    ext4    defaults    1    1\" > /etc/fstab"
+            ]
+        },
+        {
+            "type": "file",
+            "source": "{{user `cloud_init_ds_src`}}",
+            "destination": "{{user `cloud_init_tmp_path`}}"
+        },
+        {
+            "type": "shell",
+            "inline": [
+                "mv {{user `cloud_init_tmp_path`}} {{user `cloud_init_ds_dir`}}/DataSourceRbxCloud.py"
+            ]
+        },
+        {
+            "type": "shell",
+            "scripts": "{{user `scripts`}}"
+        }
+    ]
+}

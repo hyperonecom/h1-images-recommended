@@ -1,0 +1,12 @@
+{
+  "name": "packer",
+  "version": "1.0.0",
+  "description": "A set of Packer templates for building recommended images for the HyperOne platform and compatible with it.",
+  "main": "buildTestPublish.js",
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "hyper_one_api": "https://github.com/hyperonecom/h1-client-js/archive/master.tar.gz",
+    "js-yaml": "^3.12.1"
+  }
+}

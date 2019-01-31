@@ -1,0 +1,18 @@
+{
+    "name": "centos-6",
+    "distro": "centos",
+    "edition": "server",
+    "codename": "core",
+    "pname": "CentOS 6",
+    "arch": "x64",
+    "version": "6",
+    "download_url": "http://cloud.centos.org/centos/6/images/CentOS-6-x86_64-GenericCloud.qcow2",
+    "disk_size": "2",
+    "img_fs": "ext3",
+    "qcow_part": "/dev/sda1",
+    "cloud_init_ds_dir": "/usr/lib/python2.6/site-packages/cloudinit/sources/",
+    "custom_scripts": [
+        "./scripts/centos/centos-6.sh"
+    ],
+    "uefi_support": "0"
+}

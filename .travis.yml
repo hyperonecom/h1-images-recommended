@@ -1,0 +1,26 @@
+language: nodejs
+env:
+  - TEMPLATE="templates/qcow/centos-6.json"
+  - TEMPLATE="templates/qcow/centos-7.json"
+  - TEMPLATE="templates/qcow/debian-8.json"
+  - TEMPLATE="templates/qcow/debian-9.json"
+  - TEMPLATE="templates/qcow/fedora-27.json"
+  - TEMPLATE="templates/qcow/fedora-28.json"
+  - TEMPLATE="templates/qcow/fedora-29.json"
+  - TEMPLATE="templates/qcow/ubuntu-1604-desktop.json"
+  - TEMPLATE="templates/qcow/ubuntu-1604.json"
+  - TEMPLATE="templates/qcow/ubuntu-1704.json"
+  - TEMPLATE="templates/qcow/ubuntu-1710.json"
+  - TEMPLATE="templates/qcow/ubuntu-1804-desktop.json"
+  - TEMPLATE="templates/qcow/ubuntu-1804.json"
+  - TEMPLATE="templates/qcow/ubuntu-1810-desktop.json"
+  - TEMPLATE="templates/qcow/ubuntu-1810.json"
+  - TEMPLATE="templates/qcow/ubuntu-1904.json"
+script:
+  - docker build . -t recommended-images
+  - >-
+    docker run --rm -it -e H1_TOKEN="$H1_TOKEN" recommended-images nodejs
+    buildTestPublish.js "$TEMPLATE"
+  - >-
+    docker run --rm -it -e H1_TOKEN="$H1_TOKEN" recommended-images nodejs
+    cleanupImage.js
