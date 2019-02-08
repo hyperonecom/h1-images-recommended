@@ -1,5 +1,3 @@
 /resources/ssh/*
-/resources/secrets/
-!/resources/secrets/*.enc
-!/resources/secrets/*.pub
+/resources/secrets/id_rsa
 node_modules
