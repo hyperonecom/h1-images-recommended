@@ -22,6 +22,12 @@ before_install:
   - >-
     openssl aes-256-cbc -k "$ENCRYPT_KEY" -in ./resources/secrets/id_rsa.enc
     -out ./resources/secrets/id_rsa -d;
+  - 'curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -'
+  - >-
+    sudo add-apt-repository "deb [arch=amd64]
+    https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+  - sudo apt-get update
+  - sudo apt-get -y install docker-ce
 addons:
   apt:
     packages:

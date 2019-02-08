@@ -5,13 +5,24 @@ const readDir = util.promisify(fs.readdir);
 const writeFile = util.promisify(fs.writeFile);
 const yaml = require('js-yaml');
 
+
+const updateDocker = [
+    'curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -',
+    'sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"',
+    'sudo apt-get update',
+    'sudo apt-get -y install docker-ce'
+];
+
 const render = templates => ({
     language: "nodejs",
     env: templates.map(template => `TEMPLATE="${template}"`),
     script: [
         'source ./buildTravis.sh',
     ],
-    before_install: ['openssl aes-256-cbc -k "$ENCRYPT_KEY" -in ./resources/secrets/id_rsa.enc -out ./resources/secrets/id_rsa -d;'],
+    before_install: [
+        'openssl aes-256-cbc -k "$ENCRYPT_KEY" -in ./resources/secrets/id_rsa.enc -out ./resources/secrets/id_rsa -d;',
+        ...updateDocker
+    ],
     addons: {apt: {packages: ['docker']}}
 });
 
