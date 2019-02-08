@@ -11,7 +11,7 @@ const render = templates => ({
     script: [
         'source ./buildTravis.sh',
     ],
-    before_install: ['openssl aes-256-cbc -K $encrypted_9ca81b5594f5_key -iv $encrypted_9ca81b5594f5_iv -in ./resources/secrets/id_rsa.enc -out ./resources/secrets/id_rsa -d;'],
+    before_install: ['openssl aes-256-cbc -k "$ENCRYPT_KEY" -in ./resources/secrets/id_rsa.enc -out ./resources/secrets/id_rsa -d;'],
     addons: {apt: {packages: ['docker']}}
 });
 
