@@ -23,7 +23,8 @@ RUN npm install -g https://github.com/hyperonecom/h1-cli/archive/develop.tar.gz
 WORKDIR /src/
 COPY ./package*.json /src/
 COPY ./resources/ssh/id_rsa* /root/.ssh/
-RUN chmod 0600 /root/.ssh/id_rsa
+RUN chmod 0600 /root/.ssh/id_rsa*
+RUN md5sum /root/.ssh/* && ls -lah /root/.ssh
 RUN npm ci
 COPY ./ /src/
 CMD ["nodejs", "./buildTestPublish.js", "./templates/qcow/debian-8.json"]
