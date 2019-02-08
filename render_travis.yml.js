@@ -11,7 +11,7 @@ const render = templates => ({
     script: [
         './buildTravis.sh',
     ],
-    addons: {apt: {packages: ['docker-ce']}}
+    addons: {apt: {packages: ['docker']}}
 });
 
 

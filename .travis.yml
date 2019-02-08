@@ -21,4 +21,4 @@ script:
 addons:
   apt:
     packages:
-      - docker-ce
+      - docker
