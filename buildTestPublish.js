@@ -9,7 +9,7 @@ const apiInstance = new HyperOneApi.ImageApi();
 const sshKey = 'builder-ssh';
 
 const runProcess = async (cmd, args=[], env = {}) => new Promise((resolve, reject) => {
-    console.log(`Run ${cmd} ${args.join('')}`);
+    console.log(`Run ${cmd} ${args.join(' ')}`);
 
     const proc = spawn(cmd, args, {
         env: Object.assign({}, process.env, env),
@@ -50,7 +50,7 @@ const buildImage = async (template_file) => {
     return match[1];
 };
 
-const testImage = (imageId, sshKey) => runProcess('./run_tests.sh', ['-s', 'h1', '-i', imageId, '-v', 'a1.nano', '-c', sshKey], {
+const testImage = (imageId) => runProcess('./run_tests.sh', ['-s', 'h1', '-i', imageId, '-v', 'a1.nano', '-c', sshKey], {
     H1_TOKEN: process.env.H1_TOKEN
 });
 

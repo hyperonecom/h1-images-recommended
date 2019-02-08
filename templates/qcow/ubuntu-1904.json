@@ -12,6 +12,7 @@
         "cloud_init_ds_src": "./resources/cloud-init/ds_v2/DataSourceRbxCloud.py",
         "disk_size": "2",
         "image_name": "Ubuntu 19.04 (disco dingo - development branch)",
+        "ssh_name": "my_ssh",
         "image_description": "{\"arch\":\"x64\",\"distro\":\"ubuntu\",\"release\":\"19.04\",\"edition\":\"server\",\"codename\":\"disco dingo\",\"recommended\":{\"disk\":{\"size\":20}}}"
     },
     "builders": [
@@ -21,9 +22,7 @@
             "source_image": "{{user `source_image`}}",
             "vm_type": "a1.medium",
             "disk_size": 10,
-            "ssh_keys": [
-                "my-ssh"
-            ],
+            "ssh_keys": "{{user `ssh_name`}}",
             "chroot_disk": true,
             "chroot_command_wrapper": "sudo {{.Command}}",
             "chroot_disk_size": "{{user `disk_size`}}",
@@ -45,10 +44,10 @@
             "post_mount_commands": [
                 "mkdir -p {{.MountPath}}/boot/efi",
                 "mount -t vfat {{.Device}}1 {{.MountPath}}/boot/efi",
-                "wget {{user `download_url`}} -O {{user `download_path`}}",
+                "wget -nv {{user `download_url`}} -O {{user `download_path`}}",
                 "mkdir {{user `mount_qcow_path`}}",
                 "LIBGUESTFS_BACKEND=direct guestmount -a {{user `download_path`}} -m {{user `qcow_part`}} {{user `mount_qcow_path`}}",
-                "rsync -aH --inplace -W --numeric-ids --info=progress2 -A {{user `mount_qcow_path`}}/ {{.MountPath}}/"
+                "rsync -aH --inplace -W --numeric-ids -A {{user `mount_qcow_path`}}/ {{.MountPath}}/"
             ]
         }
     ],
