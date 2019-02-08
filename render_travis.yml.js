@@ -23,7 +23,7 @@ const render = templates => ({
         'openssl aes-256-cbc -k "$ENCRYPT_KEY" -in ./resources/secrets/id_rsa.enc -out ./resources/secrets/id_rsa -d;',
         ...updateDocker
     ],
-    addons: {apt: {packages: ['docker']}}
+    // addons: {apt: {packages: ['docker']}}
 });
 
 
