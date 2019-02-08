@@ -9,10 +9,9 @@ const render = templates => ({
     language: "nodejs",
     env: templates.map(template => `TEMPLATE="${template}"`),
     script: [
-        'docker build . -t recommended-images',
-        'docker run --rm -it -e H1_TOKEN="$H1_TOKEN" recommended-images nodejs buildTestPublish.js "$TEMPLATE"',
-        'docker run --rm -it -e H1_TOKEN="$H1_TOKEN" recommended-images nodejs cleanupImage.js',
-    ]
+        './buildTravis.sh',
+    ],
+    addons: {apt: {packages: ['docker-ce']}}
 });
 
 

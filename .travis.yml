@@ -17,10 +17,8 @@ env:
   - TEMPLATE="templates/qcow/ubuntu-1810.json"
   - TEMPLATE="templates/qcow/ubuntu-1904.json"
 script:
-  - docker build . -t recommended-images
-  - >-
-    docker run --rm -it -e H1_TOKEN="$H1_TOKEN" recommended-images nodejs
-    buildTestPublish.js "$TEMPLATE"
-  - >-
-    docker run --rm -it -e H1_TOKEN="$H1_TOKEN" recommended-images nodejs
-    cleanupImage.js
+  - ./buildTravis.sh
+addons:
+  apt:
+    packages:
+      - docker-ce

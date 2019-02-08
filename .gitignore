@@ -1,2 +1,5 @@
-./resources/ssh/*
+/resources/ssh/*
+/resources/secrets/
+!/resources/secrets/*.enc
+!/resources/secrets/*.pub
 node_modules
