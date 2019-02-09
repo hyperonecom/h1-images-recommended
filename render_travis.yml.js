@@ -17,7 +17,7 @@ const render = templates => ({
     language: "nodejs",
     env: templates.map(template => `TEMPLATE="${template}"`),
     script: [
-        'source ./buildTravis.sh',
+        'sh ./buildTravis.sh',
     ],
     before_install: [
         'openssl aes-256-cbc -k "$ENCRYPT_KEY" -in ./resources/secrets/id_rsa.enc -out ./resources/secrets/id_rsa -d;',

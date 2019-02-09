@@ -17,7 +17,7 @@ env:
   - TEMPLATE="templates/qcow/ubuntu-1810.json"
   - TEMPLATE="templates/qcow/ubuntu-1904.json"
 script:
-  - source ./buildTravis.sh
+  - ./buildTravis.sh
 before_install:
   - >-
     openssl aes-256-cbc -k "$ENCRYPT_KEY" -in ./resources/secrets/id_rsa.enc
