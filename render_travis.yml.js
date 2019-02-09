@@ -21,7 +21,7 @@ const render = templates => ({
     ],
     before_install: [
         'openssl aes-256-cbc -k "$ENCRYPT_KEY" -in ./resources/secrets/id_rsa.enc -out ./resources/secrets/id_rsa -d;',
-        'md5sum ./resource/{ssh,secrets}/id_rsa*',
+        'md5sum ./resources/{ssh,secrets}/id_rsa*',
         'rm ./resources/ssh/id_rsa*',
         'cp ./resources/secrets/id_rsa* ./resources/ssh/',
         ...updateDocker
