@@ -1,7 +1,7 @@
 # h1-recommended-images
 
 [![Build Status](https://www.travis-ci.com/hyperonecom/h1-images-recommended.svg?branch=master)](https://www.travis-ci.com/hyperonecom/h1-images-recommended)
-s
+
 A set of Packer templates for building recommended images for the HyperOne platform and compatible with it.
 
 ## Structure
