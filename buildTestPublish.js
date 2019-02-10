@@ -13,14 +13,14 @@ const config = {
     rbx: {
         ssh: 'builder-ssh',
         netadp_service: '5899b0f8d44c81202ab51308',
-        vm_test_service: 'a1.nano',
-        vm_builder_service: 'a1.medium',
+        vm_test_service: 'light',
+        vm_builder_service: 'medium',
     },
     h1: {
         ssh: 'builder-ssh',
         netadp_service: '561e7e30a8cfd461e469ad18',
         vm_test_service: 'a1.nano',
-        vm_builder_service: 'rbx'
+        vm_builder_service: 'a1.medium'
     }
 };
 
