@@ -11,7 +11,7 @@ cp ./resources/secrets/id_rsa* ./resources/ssh/;
 # Install Docker
 # Pre-installed Docker doesn't support multi-stage builds
 # See https://github.com/travis-ci/travis-ci/issues/8181
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -;
-sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable";
-sudo apt-get update;
-sudo apt-get -y  -o Dpkg::Options::="--force-confnew" install docker-ce;
+#curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -;
+#sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable";
+#sudo apt-get update;
+#sudo apt-get -y  -o Dpkg::Options::="--force-confnew" install docker-ce;
