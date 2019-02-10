@@ -5,6 +5,7 @@ const readFile = util.promisify(fs.readFile);
 const readDir = util.promisify(fs.readdir);
 const writeFile = util.promisify(fs.writeFile);
 const {join} = require('path');
+const yaml = require('js-yaml');
 
 const render_templates = config => ({
     variables: {
@@ -97,12 +98,12 @@ const render_templates = config => ({
 const main = async () => {
     const path = './config/qcow';
     const files = await readDir(path);
-    for (const file of files.filter(x => x.endsWith('.json'))) {
+    for (const file of files.filter(x => x.endsWith('.yaml'))) {
         const input_content = await readFile(join(path, file));
-        const config = JSON.parse(input_content);
+        const config = yaml.safeLoad(input_content);
         const template = render_templates(config);
         const output_content = JSON.stringify(template, null, 4);
-        await writeFile(join('./templates/qcow', file), output_content);
+        await writeFile(join('./templates/qcow', file.replace('.yaml', '.json')), output_content);
     }
 };
 main().then(console.log).catch(console.error);

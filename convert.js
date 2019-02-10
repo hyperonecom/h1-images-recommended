@@ -5,11 +5,12 @@ const readFile = util.promisify(fs.readFile);
 const readDir = util.promisify(fs.readdir);
 const writeFile = util.promisify(fs.writeFile);
 const {join} = require('path');
+const yaml = require('js-yaml');
 const unquote = text => text.trim().replace(/"(.+?)"/, '$1');
 
 const load_config = async (file) => {
     const content = await readFile(file, {encoding: 'utf-8'});
-    const lines = content.split("\n")
+    const lines = content.split("\n");
     const config = {};
     for (let i = 0; i < lines.length; i++) {
         if (lines[i].trim().length === 0) {
@@ -40,8 +41,8 @@ const main = async() => {
     const files = await readDir(path);
     for(const file of files.filter(x => x.endsWith('.cfg'))){
         const config = await load_config(join(path, file));
-        const content = JSON.stringify(config, null, 4);
-        await writeFile(join('./config', `${file.split('.')[0]}.json`), content);
+        const content = yaml.safeDump(config);
+        await writeFile(join('./config/qcow', `${file.split('.')[0]}.yaml`), content);
     }
 };
 main().then(console.log).catch(console.error);

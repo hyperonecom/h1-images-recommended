@@ -27,7 +27,7 @@ const render = templates => ({
 const main = async () => {
     const path = './templates/qcow';
     const files = await readDir(path);
-    const templates = files.filter(x => x.endsWith('.json')).map(file => join(path, file));
+    const templates = files.filter(x => x.endsWith('.yaml')).map(file => join(path, file));
     const template = render(templates);
     const output_content = yaml.safeDump(template, null, 4);
     await writeFile('./.travis.yml', output_content);

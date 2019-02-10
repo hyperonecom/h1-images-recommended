@@ -1,0 +1,15 @@
+name: ubuntu-1704-zesty
+codename: zesty zapus
+pname: Ubuntu 17.04 (zesty zapus)
+distro: ubuntu
+edition: server
+arch: x64
+version: '17.04'
+download_url: >-
+  http://cloud-images.ubuntu.com/releases/zesty/release-20171208/ubuntu-17.04-server-cloudimg-amd64.img
+disk_size: '2'
+qcow_part: /dev/sda1
+cloud_init_ds_dir: /usr/lib/python3/dist-packages/cloudinit/sources/
+custom_scripts:
+  - ./scripts/ubuntu/ubuntu-1704.sh
+uefi_support: '1'
