@@ -1,4 +1,4 @@
-const scope = require('./lib/scope');
+const scope = require('./lib/setScope');
 const HyperOneApi = require('hyper_one_api');
 scope(HyperOneApi.ApiClient.instance, process.env);
 const apiInstance = new HyperOneApi.ImageApi();
