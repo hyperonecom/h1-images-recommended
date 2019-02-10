@@ -63,4 +63,7 @@ const main = async (template_file) => {
     await publishImage(imageId);
 };
 
-main(process.argv[2]).then(console.log).catch(console.error);
+main(process.argv[2]).then(console.log).catch(err => {
+    console.error(err);
+    process.exit(1);
+});
