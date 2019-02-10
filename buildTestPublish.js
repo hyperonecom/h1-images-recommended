@@ -18,7 +18,7 @@ const config = {
     },
     h1: {
         ssh: 'builder-ssh',
-        netadp_service: 'public',
+        netadp_service: '561e7e30a8cfd461e469ad18',
         vm_test_service: 'a1.nano',
         vm_builder_service: 'rbx'
     }
