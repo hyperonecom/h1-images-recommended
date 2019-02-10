@@ -1,7 +1,6 @@
+const scope = require('./lib/scope');
 const HyperOneApi = require('hyper_one_api');
-const defaultClient = HyperOneApi.ApiClient.instance;
-const ServiceAccount = defaultClient.authentications['ServiceAccount'];
-ServiceAccount.apiKey = process.env.H1_TOKEN;
+scope(HyperOneApi.ApiClient.instance, process.env);
 const apiInstance = new HyperOneApi.ImageApi();
 
 const published = image => image.accessRights.includes("*");

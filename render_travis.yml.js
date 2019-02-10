@@ -5,28 +5,22 @@ const readDir = util.promisify(fs.readdir);
 const writeFile = util.promisify(fs.writeFile);
 const yaml = require('js-yaml');
 
+const scope_list = ['H1', 'RBX'];
 
-const updateDocker = [
-    'curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -',
-    'sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"',
-    'sudo apt-get update',
-    'sudo apt-get -y  -o Dpkg::Options::="--force-confnew" install docker-ce'
-];
-
+const buildEnv = templates => [].concat(
+    ...scope_list.map(scope =>
+        templates.map(template => `TEMPLATE="${template}" SCOPE=${scope}`)
+    )
+);
 const render = templates => ({
     language: "nodejs",
-    env: templates.map(template => `TEMPLATE="${template}"`),
+    env: buildEnv(templates),
     script: [
-        'sh ./buildTravis.sh',
+        './buildTravis.sh',
     ],
     before_install: [
-        'openssl aes-256-cbc -k "$ENCRYPT_KEY" -in ./resources/secrets/id_rsa.enc -out ./resources/secrets/id_rsa -d;',
-        'md5sum ./resources/{ssh,secrets}/id_rsa*',
-        'rm ./resources/ssh/id_rsa*',
-        'cp ./resources/secrets/id_rsa* ./resources/ssh/',
-        ...updateDocker
-    ],
-    // addons: {apt: {packages: ['docker']}}
+        './installTravis.sh "$ENCRYPT_KEY"'
+    ]
 });
 
 

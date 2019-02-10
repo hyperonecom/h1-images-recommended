@@ -10,24 +10,28 @@
         "scripts": "./scripts/ubuntu/ubuntu-1710.sh,./scripts/ubuntu/ubuntu-1804-desktop.sh",
         "cloud_init_ds_dir": "/usr/lib/python3/dist-packages/cloudinit/sources/",
         "cloud_init_ds_src": "./resources/cloud-init/ds_v2/DataSourceRbxCloud.py",
-        "disk_size": "5",
+        "disk_size": "10",
         "image_name": "Ubuntu 18.10 Desktop (cosmic cuttlefish)",
         "ssh_name": "my_ssh",
-        "image_description": "{\"arch\":\"x64\",\"distro\":\"ubuntu\",\"release\":\"18.10\",\"edition\":\"desktop\",\"codename\":\"cosmic cuttlefish\",\"recommended\":{\"disk\":{\"size\":20}}}"
+        "image_description": "{\"arch\":\"x64\",\"distro\":\"ubuntu\",\"release\":\"18.10\",\"edition\":\"desktop\",\"codename\":\"cosmic cuttlefish\",\"recommended\":{\"disk\":{\"size\":20}}}",
+        "public_netadp_service": "public",
+        "vm_type": "a1.medium"
     },
     "builders": [
         {
             "type": "hyperone",
-            "vm_name": "packer-5c530ff0-bd94-1870-8fcb-d695f1fe66b7",
-            "source_image": "{{user `source_image`}}",
-            "vm_type": "a1.medium",
             "disk_size": 10,
-            "ssh_keys": "{{user `ssh_name`}}",
             "chroot_disk": true,
+            "mount_partition": 3,
+            "vm_name": "packer-ubuntu-1810-cosmic",
+            "source_image": "{{user `source_image`}}",
+            "vm_type": "{{user `vm_type`}}",
+            "ssh_keys": "{{user `ssh_name`}}",
             "chroot_command_wrapper": "sudo {{.Command}}",
             "chroot_disk_size": "{{user `disk_size`}}",
             "image_name": "{{user `image_name`}}",
             "image_description": "{{user `image_description`}}",
+            "public_netadp_service": "{{user `public_netadp_service`}}",
             "pre_mount_commands": [
                 "sfdisk -uS --force \"{{.Device}}\" <<END\n2048,102400,ef\n104448,102400,b\n206848,,L,*\nEND",
                 "partprobe",
@@ -39,8 +43,6 @@
                 "dosfslabel {{.Device}}1 EFI",
                 "dosfslabel {{.Device}}2 CLOUDMD"
             ],
-            "chroot_mount_path": "/tmp/mount",
-            "mount_partition": 3,
             "post_mount_commands": [
                 "mkdir -p {{.MountPath}}/boot/efi",
                 "mount -t vfat {{.Device}}1 {{.MountPath}}/boot/efi",

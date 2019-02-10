@@ -1,33 +1,38 @@
 language: nodejs
 env:
-  - TEMPLATE="templates/qcow/centos-6.json"
-  - TEMPLATE="templates/qcow/centos-7.json"
-  - TEMPLATE="templates/qcow/debian-8.json"
-  - TEMPLATE="templates/qcow/debian-9.json"
-  - TEMPLATE="templates/qcow/fedora-27.json"
-  - TEMPLATE="templates/qcow/fedora-28.json"
-  - TEMPLATE="templates/qcow/fedora-29.json"
-  - TEMPLATE="templates/qcow/ubuntu-1604-desktop.json"
-  - TEMPLATE="templates/qcow/ubuntu-1604.json"
-  - TEMPLATE="templates/qcow/ubuntu-1704.json"
-  - TEMPLATE="templates/qcow/ubuntu-1710.json"
-  - TEMPLATE="templates/qcow/ubuntu-1804-desktop.json"
-  - TEMPLATE="templates/qcow/ubuntu-1804.json"
-  - TEMPLATE="templates/qcow/ubuntu-1810-desktop.json"
-  - TEMPLATE="templates/qcow/ubuntu-1810.json"
-  - TEMPLATE="templates/qcow/ubuntu-1904.json"
+  - TEMPLATE="templates/qcow/centos-6.json" SCOPE=H1
+  - TEMPLATE="templates/qcow/centos-7.json" SCOPE=H1
+  - TEMPLATE="templates/qcow/debian-8.json" SCOPE=H1
+  - TEMPLATE="templates/qcow/debian-9.json" SCOPE=H1
+  - TEMPLATE="templates/qcow/fedora-27.json" SCOPE=H1
+  - TEMPLATE="templates/qcow/fedora-28.json" SCOPE=H1
+  - TEMPLATE="templates/qcow/fedora-29.json" SCOPE=H1
+  - TEMPLATE="templates/qcow/ubuntu-1604-desktop.json" SCOPE=H1
+  - TEMPLATE="templates/qcow/ubuntu-1604.json" SCOPE=H1
+  - TEMPLATE="templates/qcow/ubuntu-1704.json" SCOPE=H1
+  - TEMPLATE="templates/qcow/ubuntu-1710.json" SCOPE=H1
+  - TEMPLATE="templates/qcow/ubuntu-1804-desktop.json" SCOPE=H1
+  - TEMPLATE="templates/qcow/ubuntu-1804.json" SCOPE=H1
+  - TEMPLATE="templates/qcow/ubuntu-1810-desktop.json" SCOPE=H1
+  - TEMPLATE="templates/qcow/ubuntu-1810.json" SCOPE=H1
+  - TEMPLATE="templates/qcow/ubuntu-1904.json" SCOPE=H1
+  - TEMPLATE="templates/qcow/centos-6.json" SCOPE=RBX
+  - TEMPLATE="templates/qcow/centos-7.json" SCOPE=RBX
+  - TEMPLATE="templates/qcow/debian-8.json" SCOPE=RBX
+  - TEMPLATE="templates/qcow/debian-9.json" SCOPE=RBX
+  - TEMPLATE="templates/qcow/fedora-27.json" SCOPE=RBX
+  - TEMPLATE="templates/qcow/fedora-28.json" SCOPE=RBX
+  - TEMPLATE="templates/qcow/fedora-29.json" SCOPE=RBX
+  - TEMPLATE="templates/qcow/ubuntu-1604-desktop.json" SCOPE=RBX
+  - TEMPLATE="templates/qcow/ubuntu-1604.json" SCOPE=RBX
+  - TEMPLATE="templates/qcow/ubuntu-1704.json" SCOPE=RBX
+  - TEMPLATE="templates/qcow/ubuntu-1710.json" SCOPE=RBX
+  - TEMPLATE="templates/qcow/ubuntu-1804-desktop.json" SCOPE=RBX
+  - TEMPLATE="templates/qcow/ubuntu-1804.json" SCOPE=RBX
+  - TEMPLATE="templates/qcow/ubuntu-1810-desktop.json" SCOPE=RBX
+  - TEMPLATE="templates/qcow/ubuntu-1810.json" SCOPE=RBX
+  - TEMPLATE="templates/qcow/ubuntu-1904.json" SCOPE=RBX
 script:
   - ./buildTravis.sh
 before_install:
-  - >-
-    openssl aes-256-cbc -k "$ENCRYPT_KEY" -in ./resources/secrets/id_rsa.enc
-    -out ./resources/secrets/id_rsa -d;
-  - 'md5sum ./resources/{ssh,secrets}/id_rsa*'
-  - rm ./resources/ssh/id_rsa*
-  - cp ./resources/secrets/id_rsa* ./resources/ssh/
-  - 'curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -'
-  - >-
-    sudo add-apt-repository "deb [arch=amd64]
-    https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
-  - sudo apt-get update
-  - 'sudo apt-get -y  -o Dpkg::Options::="--force-confnew" install docker-ce'
+  - ./installTravis.sh "$ENCRYPT_KEY"

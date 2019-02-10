@@ -18,7 +18,8 @@ const render_templates = config => ({
         scripts: config.custom_scripts.join(","),
         cloud_init_ds_dir: config.cloud_init_ds_dir,
         cloud_init_ds_src: config.cloud_init_ds_src || './resources/cloud-init/ds/DataSourceRbxCloud.py',
-        disk_size: config.disk_size || 10,
+        // disk_size: config.disk_size || 10,
+        disk_size: "10",
         image_name: config.pname,
         ssh_name: 'my_ssh',
         image_description: JSON.stringify({
@@ -29,20 +30,24 @@ const render_templates = config => ({
             codename: config.codename,
             recommended: {disk: {size: 20}}
         }),
+        public_netadp_service: "public",
+        vm_type: 'a1.medium'
     },
     builders: [
         {
             type: "hyperone",
-            vm_name: "packer-5c530ff0-bd94-1870-8fcb-d695f1fe66b7",
-            source_image: "{{user `source_image`}}",
-            vm_type: "a1.medium",
             disk_size: 10,
-            ssh_keys: '{{user `ssh_name`}}',
             chroot_disk: true,
+            mount_partition: 3,
+            vm_name: `packer-${config.name}`,
+            source_image: "{{user `source_image`}}",
+            vm_type: "{{user `vm_type`}}",
+            ssh_keys: '{{user `ssh_name`}}',
             chroot_command_wrapper: "sudo {{.Command}}",
             chroot_disk_size: "{{user `disk_size`}}",
             image_name: "{{user `image_name`}}",
             image_description: "{{user `image_description`}}",
+            public_netadp_service: "{{user `public_netadp_service`}}",
             pre_mount_commands: [
                 "sfdisk -uS --force \"{{.Device}}\" <<END\n2048,102400,ef\n104448,102400,b\n206848,,L,*\nEND",
                 "partprobe", "sleep 1", "partprobe",
@@ -52,8 +57,6 @@ const render_templates = config => ({
                 "dosfslabel {{.Device}}1 EFI",
                 "dosfslabel {{.Device}}2 CLOUDMD",
             ],
-            chroot_mount_path: "/tmp/mount",
-            mount_partition: 3,
             post_mount_commands: [
                 "mkdir -p {{.MountPath}}/boot/efi",
                 "mount -t vfat {{.Device}}1 {{.MountPath}}/boot/efi",

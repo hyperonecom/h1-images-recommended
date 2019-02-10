@@ -54,10 +54,10 @@ VM_ID=$(${RBX_CLI} vm create --image $IMAGE \
 VM_IP=$(${RBX_CLI} vm nic list --vm $VM_ID --query "[].ip[*].address" -o tsv|head -1)
 VM_DISK_ID=$(${RBX_CLI} vm disk list --vm $VM_ID --output tsv --query "[].{disk:disk._id}")
 
-VM_ID="$VM_ID" IMAGE_ID="$IMAGE" USER="$USER" IP="$VM_IP" HOSTNAME="$VM_NAME" bats "./tests/common.bats"
+RBX_CLI="$RBX_CLI" VM_ID="$VM_ID" IMAGE_ID="$IMAGE" USER="$USER" IP="$VM_IP" HOSTNAME="$VM_NAME" bats "./tests/common.bats"
 for i in {1..240}; do echo -n '.'; sleep 1; done; echo "";
 ${RBX_CLI} vm serialport log --vm "$VM_ID";
 ping -c 3 "$VM_IP";
-USER="$USER" IP="$VM_IP" HOSTNAME="$VM_NAME" bats "./tests/linux.bats"
+RBX_CLI="$RBX_CLI" USER="$USER" IP="$VM_IP" HOSTNAME="$VM_NAME" bats "./tests/linux.bats"
 ${RBX_CLI} vm delete --yes --vm "$VM_ID"
 ${RBX_CLI} disk delete --yes  --disk "$VM_DISK_ID"

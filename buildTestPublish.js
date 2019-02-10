@@ -1,47 +1,42 @@
 'use strict';
-const { spawn } = require('child_process');
+const runProcess = require('./lib/runProcess');
+
+const setScope = require('./lib/setScope');
 const HyperOneApi = require('hyper_one_api');
 const defaultClient = HyperOneApi.ApiClient.instance;
-const ServiceAccount = defaultClient.authentications['ServiceAccount'];
-ServiceAccount.apiKey = process.env.H1_TOKEN;
+setScope(defaultClient, process.env);
 const apiInstance = new HyperOneApi.ImageApi();
 
-const sshKey = 'builder-ssh';
+const scopeActive = (process.env.SCOPE || 'h1').toLowerCase();
 
-const runProcess = async (cmd, args=[], env = {}) => new Promise((resolve, reject) => {
-    console.log(`Run ${cmd} ${args.join(' ')}`);
+const config = {
+    rbx: {
+        ssh: 'builder-ssh',
+        netadp_service: '5899b0f8d44c81202ab51308',
+        vm_test_service: 'a1.nano',
+        vm_builder_service: 'a1.medium',
+    },
+    h1: {
+        ssh: 'builder-ssh',
+        netadp_service: 'public',
+        vm_test_service: 'a1.nano',
+        vm_builder_service: 'rbx'
+    }
+};
 
-    const proc = spawn(cmd, args, {
-        env: Object.assign({}, process.env, env),
-        stdio: [null, 'pipe', 'pipe'],
-    });
-    let output = '';
-
-    proc.on('close', (code) => {
-        if (code !== 0) {
-            const error = new Error(`Process exited with code ${code}`);
-            error.code = code;
-            error.output = output;
-            return reject(error);
-        }
-        return resolve(output);
-    });
-
-    proc.stdout.on('data', (data) => {
-        process.stdout.write(`${cmd}:${data}`);
-        output += data;
-    });
-
-    proc.stderr.on('data', (data) => {
-        process.stdout.write(`${cmd}:${data}`);
-        output += data;
-    });
-});
-
+const configActive = config[scopeActive];
 
 const buildImage = async (template_file) => {
-    const output = await runProcess('packer', ['build', '-machine-readable', '-var',`ssh_name=${sshKey}`, template_file], {
-        HYPERONE_TOKEN: process.env.H1_TOKEN
+    const output = await runProcess('packer', [
+        'build',
+        '-machine-readable',
+        '-var', `ssh_name=${configActive.ssh}`,
+        `-var`, `public_netadp_service=${configActive.netadp_service}`,
+        '-var', `vm_type=${configActive.vm_builder_service}`,
+        template_file
+    ], {
+        HYPERONE_TOKEN: defaultClient.authentications.ServiceAccount.apiKey,
+        HYPERONE_API_URL: defaultClient.basePath
     });
     const match = output.match(/hyperone,artifact,0,id,(.+?)$/m);
     if (!match) {
@@ -50,11 +45,16 @@ const buildImage = async (template_file) => {
     return match[1];
 };
 
-const testImage = (imageId) => runProcess('./run_tests.sh', ['-s', 'h1', '-i', imageId, '-v', 'a1.nano', '-c', sshKey], {
-    H1_TOKEN: process.env.H1_TOKEN
+const testImage = (imageId) => runProcess('./run_tests.sh', [
+    '-i', imageId,
+    '-s', scopeActive,
+    '-v', configActive.vm_test_service,
+    '-c', configActive.ssh
+], {
+    H1_TOKEN: defaultClient.authentications.ServiceAccount.apiKey,
 });
 
-const publishImage = async (imageId) => apiInstance.imagePostAccessrights(imageId, HyperOneApi.ImagePostAccessrights.constructFromObject({identity: '*'}));
+const publishImage = (imageId) => apiInstance.imagePostAccessrights(imageId, HyperOneApi.ImagePostAccessrights.constructFromObject({identity: '*'}));
 
 const main = async (template_file) => {
     console.log({template_file});
