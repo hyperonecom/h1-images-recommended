@@ -6,3 +6,4 @@ COMMON="-e H1_TOKEN=$H1_TOKEN -e RBX_TOKEN=$RBX_TOKEN -e SCOPE=$SCOPE";
 docker run --rm -it $COMMON recommended-images nodejs buildTestPublish.js "$TEMPLATE"
 docker run --rm -it $COMMON recommended-images nodejs buildTestPublish.js "$TEMPLATE"
 docker run --rm -it $COMMON recommended-images nodejs cleanupImage.js;
+docker run --rm -it $COMMON recommended-images nodejs cleanupVm.js;

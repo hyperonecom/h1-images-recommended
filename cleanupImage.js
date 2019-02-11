@@ -13,5 +13,7 @@ const main = async () => {
     }
 };
 
-main().then(console.log).catch(console.error);
-
+main().then(console.log).catch(err => {
+    console.error(err);
+    process.exit(1);
+});
