@@ -11,7 +11,7 @@ const old = image => new Date(image.createdOn) < (new Date() - 90 * 60 * 1000);
 const main = async () => {
     const vms = await apiInstance.vmList();
     for (const vm of vms.filter(image => old(image))) {
-        await apiInstance.vmDelete(vm._id);
+        await apiInstance.vmDelete(vm._id, new HyperOneApi.VmDelete());
     }
 };
 
