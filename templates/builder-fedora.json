@@ -12,7 +12,7 @@
     "cloud_init_ds_src": "./resources/cloud-init/ds_v2/DataSourceRbxCloud.py",
     "disk_size": "2",
     "image_name": "Ubuntu 19.04 (disco dingo - development branch)",
-    "ssh_name": "my_ssh",
+    "ssh_name": "my-ssh",
     "image_description": "{\"arch\":\"x64\",\"distro\":\"ubuntu\",\"release\":\"19.04\",\"edition\":\"server\",\"codename\":\"disco dingo\",\"recommended\":{\"disk\":{\"size\":20}}}",
     "public_netadp_service": "public",
     "vm_type": "a1.medium"
@@ -21,7 +21,7 @@
     {
       "type": "hyperone",
       "vm_name": "image-builder",
-      "source_image": "fedora:28",
+      "source_image": "fedora:27",
       "image_name": "image-builder-fedora",
       "disk_size": 10,
       "vm_type": "{{user `vm_type`}}",
