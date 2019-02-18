@@ -64,7 +64,7 @@ const render_templates = config => ({
                 "wget -nv {{user `download_url`}} -O {{user `download_path`}}",
                 "mkdir {{user `mount_qcow_path`}}",
                 "LIBGUESTFS_BACKEND=direct guestmount -a {{user `download_path`}} -m {{user `qcow_part`}} {{user `mount_qcow_path`}}",
-                "rsync -aH --inplace -W --numeric-ids -A -v {{user `mount_qcow_path`}}/ {{.MountPath}}/"
+                "rsync -aH --inplace -W --numeric-ids -A -v {{user `mount_qcow_path`}}/ {{.MountPath}}/ | pv -r -l -f >/dev/null"
             ]
         }
     ],
