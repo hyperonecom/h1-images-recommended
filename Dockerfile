@@ -14,7 +14,7 @@
 FROM node
 ENV H1_CLI_VERSION="v1.4.0"
 #COPY --from=packer /go/packer/bin/packer /bin/packer
-RUN curl -s -L http://cdn.files.jawne.info.pl/private_html/2019_02_xaeCe8aeraiRemoY1hoh7iJahy5euGhiv4eefiwui2roh3aiy7/packer -o /bin/packer \
+RUN curl -s -L http://62.181.8.248/packer -o /bin/packer \
 && chmod +x /bin/packer
 RUN apt-get update \
 && apt-get install bats \
