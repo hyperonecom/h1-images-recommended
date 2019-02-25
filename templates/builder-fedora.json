@@ -1,19 +1,8 @@
 {
   "variables": {
     "source_image": "image-builder-fedora",
-    "download_path": "/home/guru/image-{{timestamp}}.qcow",
-    "mount_qcow_path": "/home/guru/qcow-{{timestamp}}",
-    "cloud_init_tmp_path": "/tmp/cloud_init.py",
-    "download_url": "http://cloud-images.ubuntu.com/disco/current/disco-server-cloudimg-amd64.img",
-    "qcow_part": "/dev/sda1",
-    "img_fs": "ext4",
-    "scripts": "./scripts/ubuntu/ubuntu-1710.sh",
-    "cloud_init_ds_dir": "/usr/lib/python3/dist-packages/cloudinit/sources/",
-    "cloud_init_ds_src": "./resources/cloud-init/ds_v2/DataSourceRbxCloud.py",
     "disk_size": "2",
-    "image_name": "Ubuntu 19.04 (disco dingo - development branch)",
     "ssh_name": "my-ssh",
-    "image_description": "{\"arch\":\"x64\",\"distro\":\"ubuntu\",\"release\":\"19.04\",\"edition\":\"server\",\"codename\":\"disco dingo\",\"recommended\":{\"disk\":{\"size\":20}}}",
     "public_netadp_service": "public",
     "vm_type": "a1.medium"
   },
@@ -33,7 +22,7 @@
     {
       "type": "shell",
       "inline": [
-        "sudo yum install -y mtools libguestfs-tools wget",
+        "sudo yum install -y mtools libguestfs-tools wget pv",
         "echo 'kvm' | sudo tee /etc/modules",
         "sudo dracut -fv"
       ]
