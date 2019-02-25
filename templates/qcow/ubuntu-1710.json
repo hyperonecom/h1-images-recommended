@@ -15,7 +15,7 @@
         "ssh_name": "my_ssh",
         "image_description": "{\"arch\":\"x64\",\"distro\":\"ubuntu\",\"release\":\"17.10\",\"edition\":\"server\",\"codename\":\"artful aardvark\",\"recommended\":{\"disk\":{\"size\":20}}}",
         "public_netadp_service": "public",
-        "vm_type": "a1.medium"
+        "vm_type": "a1.small"
     },
     "builders": [
         {

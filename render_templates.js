@@ -32,7 +32,7 @@ const render_templates = config => ({
             recommended: {disk: {size: 20}}
         }),
         public_netadp_service: "public",
-        vm_type: 'a1.medium'
+        vm_type: 'a1.small'
     },
     builders: [
         {
