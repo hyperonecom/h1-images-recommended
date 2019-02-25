@@ -74,20 +74,22 @@ const cleanupImage = async () => {
     console.log("Fetching available images");
     const images = await imageApi.imageList();
     console.log(`Found ${images.length} images`);
-    for (const image of images.filter(image => olderThan(image, 3 * 24 * 60) && image.name.includes('image-builder') && ensureState(image, ['Online']))) {
-        console.log(`Deleting image ${image._id}`);
+    const image = images.find(image => olderThan(image, 3 * 24 * 60) && !image.name.includes('image-builder') && ensureState(image, ['Online']));
+    if(image){
         await imageApi.imageDelete(image._id);
+        await cleanupImage();
     }
 };
 
 const cleanupVm = async () => {
     console.log("Fetching available VMs");
     const vms = await vmApi.vmList();
-    console.log(`Found ${vms.length} VMs`);
-    for (const vm of vms.filter(vm => olderThan(vm, 90) && ensureState(vm, ['Running']))) {
+    const vm = vms.find(vm => olderThan(vm, 90) && ensureState(vm, ['Running']));
+    if(vm){
         console.log(`Deleting VM ${vm._id}`);
         await vmApi.vmActionTurnoff(vm._id);
         await vmApi.vmDelete(vm._id, new HyperOneApi.VmDelete());
+        await cleanupVm();
     }
 };
 
@@ -95,9 +97,11 @@ const cleanupDisk = async () => {
     console.log("Fetching available disks.");
     const disks = await diskApi.diskList();
     console.log(`Found ${disks.length} disks`);
-    for (const disk of disks.filter(disk => ensureState(disk, ['Detached']))) {
+    const disk = disks.filter(disk => ensureState(disk, ['Detached']));
+    if(disk){
         console.log(`Deleting disk ${disk._id}`);
         await diskApi.diskDelete(disk._id);
+        await cleanupDisk();
     }
 };
 
