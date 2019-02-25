@@ -64,25 +64,37 @@ const testImage = (imageId) => runProcess('./run_tests.sh', [
     H1_TOKEN: defaultClient.authentications.ServiceAccount.apiKey,
 });
 
-const publishImage = (imageId) => imageApi.imagePostAccessrights(imageId, HyperOneApi.ImagePostAccessrights.constructFromObject({identity: '*'}));
+const publishImage = (imageId) => {
+    console.log(`Publishing image ${imageId}.`);
+    return imageApi.imagePostAccessrights(imageId, HyperOneApi.ImagePostAccessrights.constructFromObject({identity: '*'}));
+};
 
 const cleanupImage = async () => {
+    console.log("Fetching available images");
     const images = await imageApi.imageList();
-    for (const image of images.filter(image => olderThan(image, 3 * 24 * 60) && image.name.includes('image-builder'))) {
+    console.log(`Found ${images.length} images`);
+    for (const image of images.filter(image => olderThan(image, 3 * 24 * 60) && image.name.includes('image-builder')) && state(['Online'])) {
+        console.log(`Deleting image ${image._id}`);
         await imageApi.imageDelete(image._id);
     }
 };
 
 const cleanupVm = async () => {
+    console.log("Fetching available VMs");
     const vms = await vmApi.vmList();
-    for (const vm of vms.filter(vm => olderThan(vm, 90))) {
+    console.log(`Found ${vms.length} VMs`);
+    for (const vm of vms.filter(vm => olderThan(vm, 90) && state(['Running']))) {
+        console.log(`Deleting VM ${image._id}`);
         await vmApi.vmDelete(vm._id, new HyperOneApi.VmDelete());
     }
 };
 
 const cleanupDisk = async () => {
+    console.log("Fetching available disks.");
     const disks = await diskApi.diskList();
+    console.log(`Found ${disks.length} disks`);
     for (const vm of disks.filter(state(['Detached']))) {
+        console.log(`Deleting disk ${image._id}`);
         await diskApi.diskDelete(vm._id);
     }
 };
