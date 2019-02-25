@@ -17,7 +17,7 @@ const diskApi = new HyperOneApi.DiskApi();
 const scopeActive = (process.env.SCOPE || 'h1').toLowerCase();
 
 const olderThan = (resource, ageInMinutes) => new Date(resource.createdOn) < (new Date() - ageInMinutes * 60 * 1000);
-const state = states => resource => states.includes(resource.state);
+const ensureState = (resource, states) => states.includes(resource.state);
 
 const config = {
     rbx: {
@@ -73,7 +73,7 @@ const cleanupImage = async () => {
     console.log("Fetching available images");
     const images = await imageApi.imageList();
     console.log(`Found ${images.length} images`);
-    for (const image of images.filter(image => olderThan(image, 3 * 24 * 60) && image.name.includes('image-builder')) && state(['Online'])) {
+    for (const image of images.filter(image => olderThan(image, 3 * 24 * 60) && image.name.includes('image-builder') && ensureState(image, ['Online']))) {
         console.log(`Deleting image ${image._id}`);
         await imageApi.imageDelete(image._id);
     }
@@ -83,8 +83,8 @@ const cleanupVm = async () => {
     console.log("Fetching available VMs");
     const vms = await vmApi.vmList();
     console.log(`Found ${vms.length} VMs`);
-    for (const vm of vms.filter(vm => olderThan(vm, 90) && state(['Running']))) {
-        console.log(`Deleting VM ${image._id}`);
+    for (const vm of vms.filter(vm => olderThan(vm, 90) && ensureState(vm, ['Running']))) {
+        console.log(`Deleting VM ${vm._id}`);
         await vmApi.vmDelete(vm._id, new HyperOneApi.VmDelete());
     }
 };
@@ -93,9 +93,9 @@ const cleanupDisk = async () => {
     console.log("Fetching available disks.");
     const disks = await diskApi.diskList();
     console.log(`Found ${disks.length} disks`);
-    for (const vm of disks.filter(state(['Detached']))) {
-        console.log(`Deleting disk ${image._id}`);
-        await diskApi.diskDelete(vm._id);
+    for (const disk of disks.filter(disk => ensureState(disk, ['Detached']))) {
+        console.log(`Deleting disk ${disk._id}`);
+        await diskApi.diskDelete(disk._id);
     }
 };
 
