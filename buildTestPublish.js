@@ -16,7 +16,7 @@ const diskApi = new HyperOneApi.DiskApi();
 
 const scopeActive = (process.env.SCOPE || 'h1').toLowerCase();
 
-const olderThan = (resource, ageInMinutes) => new Date(image.createdOn) < (new Date() - ageInMinutes * 60 * 1000);
+const olderThan = (resource, ageInMinutes) => new Date(resource.createdOn) < (new Date() - ageInMinutes * 60 * 1000);
 const state = states => resource => states.includes(resource.state);
 
 const config = {
