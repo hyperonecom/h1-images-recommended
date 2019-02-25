@@ -68,7 +68,7 @@ const publishImage = (imageId) => imageApi.imagePostAccessrights(imageId, HyperO
 
 const cleanupImage = async () => {
     const images = await imageApi.imageList();
-    for (const image of images.filter(image => olderThan(image, 3 * 24 * 60)) && image.name.includes('image-builder')) {
+    for (const image of images.filter(image => olderThan(image, 3 * 24 * 60) && image.name.includes('image-builder'))) {
         await imageApi.imageDelete(image._id);
     }
 };
