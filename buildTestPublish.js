@@ -75,7 +75,7 @@ const cleanupImage = async () => {
 
 const cleanupVm = async () => {
     const vms = await vmApi.vmList();
-    for (const vm of vms.filter(image => olderThan(image, 90))) {
+    for (const vm of vms.filter(vm => olderThan(vm, 90))) {
         await vmApi.vmDelete(vm._id, new HyperOneApi.VmDelete());
     }
 };
