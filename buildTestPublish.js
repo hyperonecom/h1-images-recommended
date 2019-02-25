@@ -9,6 +9,7 @@ setScope(defaultClient, process.env);
 defaultClient.defaultHeaders = {
     'Prefer':`respond-async,wait=${60 * 60 * 24}`
 };
+defaultClient.timeout = 4 * 60 * 1000;
 
 const imageApi = new HyperOneApi.ImageApi();
 const vmApi = new HyperOneApi.VmApi();
@@ -85,6 +86,7 @@ const cleanupVm = async () => {
     console.log(`Found ${vms.length} VMs`);
     for (const vm of vms.filter(vm => olderThan(vm, 90) && ensureState(vm, ['Running']))) {
         console.log(`Deleting VM ${vm._id}`);
+        await vmApi.vmActionTurnoff(vm._id);
         await vmApi.vmDelete(vm._id, new HyperOneApi.VmDelete());
     }
 };
