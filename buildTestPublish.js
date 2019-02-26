@@ -84,6 +84,7 @@ const cleanupImage = async () => {
 const cleanupVm = async () => {
     console.log("Fetching available VMs");
     const vms = await vmApi.vmList();
+    console.log(`Found ${vms.length} VMs`);
     const vm = vms.find(vm => olderThan(vm, 90) && ensureState(vm, ['Running']));
     if(vm){
         console.log(`Deleting VM ${vm._id}`);
@@ -97,7 +98,7 @@ const cleanupDisk = async () => {
     console.log("Fetching available disks.");
     const disks = await diskApi.diskList();
     console.log(`Found ${disks.length} disks`);
-    const disk = disks.filter(disk => ensureState(disk, ['Detached']));
+    const disk = disks.find(disk => ensureState(disk, ['Detached']));
     if(disk){
         console.log(`Deleting disk ${disk._id}`);
         await diskApi.diskDelete(disk._id);
