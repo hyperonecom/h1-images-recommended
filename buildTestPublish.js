@@ -25,7 +25,7 @@ const config = {
         ssh: 'builder-ssh',
         netadp_service: '5899b0f8d44c81202ab51308',
         vm_test_service: 'light',
-        vm_builder_service: 'small',
+        vm_builder_service: 'medium',
     },
     h1: {
         ssh: 'builder-ssh',
