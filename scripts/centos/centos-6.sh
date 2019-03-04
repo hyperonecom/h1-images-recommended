@@ -18,5 +18,5 @@ rm -f /etc/sysconfig/network-scripts/ifcfg-eth0
 echo 'datasource_list: [ RbxCloud ]' > /etc/cloud/cloud.cfg.d/90_dpkg.cfg
 echo 'network: {config: disabled}' > /etc/cloud/cloud.cfg.d/99-disable-network-config.cfg
 rm -f /etc/hosts
-touch .autorelabel
-fixfiles -F relabel || true
+fixfiles onboot
+fixfiles -F -f relabel

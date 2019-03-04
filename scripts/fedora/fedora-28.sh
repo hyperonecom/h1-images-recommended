@@ -24,9 +24,7 @@ rm -f /etc/sysconfig/network-scripts/ifcfg-eth0
 sed -i 's/^ForwardToConsole=.*$/ForwardToConsole=no/' /etc/systemd/journald.conf
 echo 'datasource_list: [ RbxCloud ]' > /etc/cloud/cloud.cfg.d/90_dpkg.cfg
 rm -f /etc/hosts
-touch .autorelabel
-# We quietly ignore errors, because we have to fix the main problems, which is difficult in chroot. 
-# The rest of the changes will be made during the virtual machine start.
-fixfiles -F relabel || true 
 echo "net.ipv4.conf.all.arp_notify = 1" >> /etc/sysctl.d/gratuitous-arp.conf
 echo "net.ipv4.conf.default.arp_notify = 1" >> /etc/sysctl.d/gratuitous-arp.conf
+fixfiles onboot
+fixfiles -F -f relabel

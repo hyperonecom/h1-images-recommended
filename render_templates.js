@@ -22,7 +22,7 @@ const render_templates = config => ({
         // disk_size: config.disk_size || 10,
         disk_size: "10",
         image_name: config.pname,
-        ssh_name: 'my_ssh',
+        ssh_name: 'my-ssh',
         image_description: JSON.stringify({
             arch: config.arch,
             distro: config.distro,
@@ -58,13 +58,23 @@ const render_templates = config => ({
                 "dosfslabel {{.Device}}1 EFI",
                 "dosfslabel {{.Device}}2 CLOUDMD",
             ],
+            chroot_mounts: [
+                // Standard chroot_mounts
+                ["proc", "proc", "/proc"],
+                ["sysfs", "sysfs", "/sys"],
+                ["bind", "/dev", "/dev"],
+                ["devpts", "devpts", "/dev/pts"],
+                ["binfmt_misc", "binfmt_misc", "/proc/sys/fs/binfmt_misc"],
+                // Extra selinuxfs for SELinux & 'fixfiles' command
+                ["selinuxfs", "none","/sys/fs/selinux"]
+            ],
             post_mount_commands: [
                 "mkdir -p {{.MountPath}}/boot/efi",
                 "mount -t vfat {{.Device}}1 {{.MountPath}}/boot/efi",
                 "wget -nv {{user `download_url`}} -O {{user `download_path`}}",
                 "mkdir {{user `mount_qcow_path`}}",
                 "LIBGUESTFS_BACKEND=direct guestmount -a {{user `download_path`}} -m {{user `qcow_part`}} {{user `mount_qcow_path`}}",
-                "rsync -aH --inplace -W --numeric-ids -A -v {{user `mount_qcow_path`}}/ {{.MountPath}}/ | pv -r -l -f >/dev/null"
+                "rsync -X -aH --inplace -W --numeric-ids -A -v {{user `mount_qcow_path`}}/ {{.MountPath}}/ | pv -l -c -n >/dev/null"
             ]
         }
     ],

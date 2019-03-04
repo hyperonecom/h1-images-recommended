@@ -12,7 +12,7 @@
         "cloud_init_ds_src": "./resources/cloud-init/ds/DataSourceRbxCloud.py",
         "disk_size": "10",
         "image_name": "Debian GNU/Linux 8 (jessie)",
-        "ssh_name": "my_ssh",
+        "ssh_name": "my-ssh",
         "image_description": "{\"arch\":\"x64\",\"distro\":\"debian\",\"release\":\"8\",\"edition\":\"server\",\"codename\":\"jessie\",\"recommended\":{\"disk\":{\"size\":20}}}",
         "public_netadp_service": "public",
         "vm_type": "a1.small"
@@ -43,13 +43,45 @@
                 "dosfslabel {{.Device}}1 EFI",
                 "dosfslabel {{.Device}}2 CLOUDMD"
             ],
+            "chroot_mounts": [
+                [
+                    "proc",
+                    "proc",
+                    "/proc"
+                ],
+                [
+                    "sysfs",
+                    "sysfs",
+                    "/sys"
+                ],
+                [
+                    "bind",
+                    "/dev",
+                    "/dev"
+                ],
+                [
+                    "devpts",
+                    "devpts",
+                    "/dev/pts"
+                ],
+                [
+                    "binfmt_misc",
+                    "binfmt_misc",
+                    "/proc/sys/fs/binfmt_misc"
+                ],
+                [
+                    "selinuxfs",
+                    "none",
+                    "/sys/fs/selinux"
+                ]
+            ],
             "post_mount_commands": [
                 "mkdir -p {{.MountPath}}/boot/efi",
                 "mount -t vfat {{.Device}}1 {{.MountPath}}/boot/efi",
                 "wget -nv {{user `download_url`}} -O {{user `download_path`}}",
                 "mkdir {{user `mount_qcow_path`}}",
                 "LIBGUESTFS_BACKEND=direct guestmount -a {{user `download_path`}} -m {{user `qcow_part`}} {{user `mount_qcow_path`}}",
-                "rsync -aH --inplace -W --numeric-ids -A -v {{user `mount_qcow_path`}}/ {{.MountPath}}/ | pv -l -c -n >/dev/null"
+                "rsync -X -aH --inplace -W --numeric-ids -A -v {{user `mount_qcow_path`}}/ {{.MountPath}}/ | pv -l -c -n >/dev/null"
             ]
         }
     ],
