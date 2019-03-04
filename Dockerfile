@@ -12,14 +12,16 @@
 #ENV PATH=/go/packer/bin/:$PATH
 
 FROM node
-ENV H1_CLI_VERSION="v1.4.0"
-#COPY --from=packer /go/packer/bin/packer /bin/packer
-RUN curl -s -L http://62.181.8.248/packer -o /bin/packer \
-&& chmod +x /bin/packer
+ENV H1_CLI_VERSION="1.4.0"
+ENV PACKER_VERSION="1.3.5"
 RUN apt-get update \
-&& apt-get install bats \
+&& apt-get install -y bats unzip \
 && rm -rf /var/lib/apt/lists/*
-#RUN curl -s -L "https://github.com/hyperonecom/h1-cli/releases/download/${H1_CLI_VERSION}/h1-linux" -o /bin/h1 \
+RUN curl -s -L "https://releases.hashicorp.com/packer/${PACKER_VERSION}/packer_${PACKER_VERSION}_linux_amd64.zip" -o /tmp/packer.zip \
+&& unzip -d /bin /tmp/packer.zip packer \
+&& chmod +x /bin/packer \
+&& rm /tmp/packer.zip
+#RUN curl -s -L "https://github.com/hyperonecom/h1-cli/releases/download/v${H1_CLI_VERSION}/h1-linux" -o /bin/h1 \
 #&& chmod +x /bin/h1
 RUN npm install -g https://github.com/hyperonecom/h1-cli/archive/develop.tar.gz
 WORKDIR /src/
