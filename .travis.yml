@@ -33,6 +33,6 @@ env:
   - TEMPLATE="templates/qcow/ubuntu-1810.json" SCOPE=RBX
   - TEMPLATE="templates/qcow/ubuntu-1904.json" SCOPE=RBX
 script:
-  - ./buildTravis.sh
+  - travis_retry ./buildTravis.sh
 before_install:
   - ./installTravis.sh "$ENCRYPT_KEY"
