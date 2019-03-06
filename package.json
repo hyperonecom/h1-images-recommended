@@ -6,7 +6,7 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "hyper_one_api": "https://github.com/hyperonecom/h1-client-js/archive/master.tar.gz",
+    "hyper_one_api": "https://github.com/hyperonecom/h1-client-js/archive/v0.0.2.tar.gz",
     "js-yaml": "^3.12.1"
   }
 }
