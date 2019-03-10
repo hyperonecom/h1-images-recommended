@@ -68,11 +68,6 @@
                     "binfmt_misc",
                     "binfmt_misc",
                     "/proc/sys/fs/binfmt_misc"
-                ],
-                [
-                    "selinuxfs",
-                    "none",
-                    "/sys/fs/selinux"
                 ]
             ],
             "post_mount_commands": [

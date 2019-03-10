@@ -13,3 +13,4 @@ cloud_init_ds_dir: /usr/lib/python3.6/site-packages/cloudinit/sources/
 custom_scripts:
   - ./scripts/fedora/fedora-27.sh
 uefi_support: '0'
+selinux: '1'
