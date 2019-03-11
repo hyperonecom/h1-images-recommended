@@ -6,6 +6,7 @@ const writeFile = util.promisify(fs.writeFile);
 const yaml = require('js-yaml');
 
 const scope_list = ['H1', 'RBX'];
+const priority = ['fedora'];
 
 const buildEnv = templates => [].concat(
     ...scope_list.map(scope =>
@@ -16,7 +17,7 @@ const render = templates => ({
     language: "nodejs",
     env: buildEnv(templates),
     script: [
-        './buildTravis.sh',
+        'travis_retry ./buildTravis.sh',
     ],
     before_install: [
         './installTravis.sh "$ENCRYPT_KEY"'
@@ -24,11 +25,16 @@ const render = templates => ({
 });
 
 
+const prioritized = (file) => priority.some(key => file.includes(key));
+
 const main = async () => {
-    const path = './templates/qcow';
+    const path = join('./templates/qcow');
     const files = await readDir(path);
-    const templates = files.filter(x => x.endsWith('.yaml')).map(file => join(path, file));
-    const template = render(templates);
+    const templates = files.filter(x => x.endsWith('.json')).map(file => join(path, file));
+    const template = render([
+        ...templates.filter(prioritized),
+        ...templates.filter(file => !prioritized(file)),
+    ]);
     const output_content = yaml.safeDump(template, null, 4);
     await writeFile('./.travis.yml', output_content);
 };
