@@ -55,7 +55,7 @@ VM_IP=$(${RBX_CLI} vm nic list --vm $VM_ID --query "[].ip[*].address" -o tsv|hea
 VM_DISK_ID=$(${RBX_CLI} vm disk list --vm $VM_ID --output tsv --query "[].{disk:disk._id}")
 
 RBX_CLI="$RBX_CLI" VM_ID="$VM_ID" IMAGE_ID="$IMAGE" USER="$USER" IP="$VM_IP" HOSTNAME="$VM_NAME" bats "./tests/common.bats"
-for i in {1..240}; do echo -n '.'; sleep 1; done; echo "";
+for i in {1..300}; do echo -n '.'; sleep 1; done; echo "";
 ${RBX_CLI} vm serialport log --vm "$VM_ID";
 ping -c 3 "$VM_IP";
 RBX_CLI="$RBX_CLI" USER="$USER" IP="$VM_IP" HOSTNAME="$VM_NAME" bats "./tests/linux.bats"
