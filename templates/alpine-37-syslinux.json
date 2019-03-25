@@ -1,0 +1,191 @@
+{
+  "variables": {
+    "source_image": "image-builder-fedora",
+    "cloud_init_tmp_path": "/tmp/cloud_init.py",
+    "efi_fs": "vfat",
+    "cloud_fs": "vfat",
+    "root_fs": "ext4",
+    "features": "ata base ide scsi usb virtio ext4",
+    "modules": "sd-mod,usb-storage,ext4",
+    "rel": "3.9",
+    "mirror": "http://dl-cdn.alpinelinux.org/alpine",
+    "apkv": "2.10.3-r1",
+    "cloud_init_ds_dir": "/usr/lib/python3.6/site-packages/cloudinit/sources/",
+    "cloud_init_ds_src": "./resources/cloud-init/ds_v2/DataSourceRbxCloud.py",
+    "disk_size": "5",
+    "image_name": "Alpine Linux 3.9",
+    "image_description": "",
+    "linux_package": "linux-vanilla"
+  },
+  "builders": [
+    {
+      "type": "hyperone",
+      "vm_name": "packer-5c530ff0-bd94-1870-8fcb-d695f1fe66b7",
+      "source_image": "{{user `source_image`}}",
+      "vm_type": "a1.medium",
+      "disk_size": 10,
+      "ssh_keys": [
+        "my-ssh"
+      ],
+      "chroot_disk": true,
+      "chroot_command_wrapper": "sudo {{.Command}}",
+      "chroot_disk_size": "{{user `disk_size`}}",
+      "image_name": "{{user `image_name`}}",
+      "image_description": "{{user `image_description`}}",
+      "pre_mount_commands": [
+        "lsblk",
+        "sgdisk -Z {{.Device}}",
+        "sgdisk -n 1:0:+52MB {{.Device}}",
+        "sgdisk -t 1:8300 {{.Device}}",
+        "sgdisk -c 1:EFI {{.Device}}",
+        "sgdisk -n 2:0:+52MB {{.Device}}",
+        "sgdisk -t 2:8300 {{.Device}}",
+        "sgdisk -c 2:CLOUDMD {{.Device}}",
+        "sgdisk -n 3:0:+1GB {{.Device}}",
+        "sgdisk -t 3:8300 {{.Device}}",
+        "sgdisk -c 3:ROOT {{.Device}}",
+        "sgdisk -A 3:set:2 {{.Device}}",
+        "partprobe",
+        "sleep 1",
+        "mkfs.fat {{.Device}}1",
+        "mkfs.fat {{.Device}}2",
+        "dosfslabel {{.Device}}1 EFI",
+        "dosfslabel {{.Device}}2 CLOUDMD",
+        "mkfs.{{user `root_fs`}} {{.Device}}3",
+        "parted {{.Device}} print"
+      ],
+      "chroot_mount_path": "/tmp/mount",
+      "mount_partition": 3,
+      "post_mount_commands": [
+        "curl -s {{user `mirror`}}/v{{user `rel`}}/main/$(uname -m)/apk-tools-static-{{user `apkv`}}.apk | tar xz",
+        "mkdir -p {{.MountPath}}/boot/efi",
+        "mount -t vfat {{.Device}}1 {{.MountPath}}/boot/efi",
+        "./sbin/apk.static --repository {{user `mirror`}}/v{{user `rel`}}/main --update-cache --allow-untrusted --root {{.MountPath}} --initdb add alpine-base syslinux dhcpcd"
+      ]
+    }
+  ],
+  "provisioners": [
+    {
+      "type": "shell",
+      "inline": [
+        "echo \"/dev/sda1    /    ext4    defaults    1    1\" > /etc/fstab"
+      ]
+    },
+    {
+      "type": "shell",
+      "inline": [
+        "echo {{user `mirror`}}/v{{user `rel`}}/main > /etc/apk/repositories"
+      ]
+    },
+    {
+      "type": "shell",
+      "inline": [
+        "echo overwrite=1  > /etc/update-extlinux.conf",
+        "echo vesa_menu=0 >> /etc/update-extlinux.conf",
+        "echo ndefault_kernel_opts=\\\"elevator=noop consoleblank=0 console=tty0 console=ttyS0,115200n8 quiet\\\" >> /etc/update-extlinux.conf",
+        "echo modules={{user `modules`}}  >> /etc/update-extlinux.conf",
+        "echo root=/dev/sda3 >> /etc/update-extlinux.conf",
+        "echo verbose=0 >> /etc/update-extlinux.conf",
+        "echo hidden=1 >> /etc/update-extlinux.conf",
+        "echo timeout=1 >> /etc/update-extlinux.conf",
+        "echo default=grsec >> /etc/update-extlinux.conf",
+        "echo serial_port= >> /etc/update-extlinux.conf",
+        "echo serial_baud=115200 >> /etc/update-extlinux.conf",
+        "echo xen_opts=dom0_mem=256M >> /etc/update-extlinux.conf",
+        "echo \"password=''\" >> /etc/update-extlinux.conf",
+        "cat /etc/update-extlinux.conf"
+      ]
+    },
+    {
+      "type": "shell",
+      "inline": [
+        "cat /etc/update-extlinux.conf"
+      ]
+    },
+    {
+      "type": "shell",
+      "inline": [
+        "echo features=\\\"\"{{user `features`}}\"\\\" > /etc/mkinitfs/mkinitfs.conf"
+      ]
+    },
+    {
+      "type": "shell",
+      "inline": [
+        "cat /etc/mkinitfs/mkinitfs.conf"
+      ]
+    },
+    {
+      "type": "shell",
+      "inline": [
+        "apk add {{user `linux_package`}}",
+        "extlinux -i /boot",
+        "dd bs=440 conv=notrunc count=1 if=/usr/share/syslinux/gptmbr.bin of=/dev/sdb"
+      ]
+    },
+    {
+      "type": "shell",
+      "inline": [
+        "echo 'nameserver 9.9.9.9' > /etc/resolv.conf",
+        "echo 'nameserver 8.8.8.8' > /etc/resolv.conf"
+      ]
+    },
+    {
+      "type": "shell",
+      "inline": [
+        "apk --no-cache add openssl #  (installed size: 664 kB)",
+        "apk --no-cache add wget #  (installed size: 464 kB)",
+        "apk --no-cache add ca-certificates # (installed size: 720 kB)",
+        "update-ca-certificates",
+        "mkdir /tmp/apk-packages"
+      ]
+    },
+    {
+      "type": "shell",
+      "inline": [
+        "wget -q http://dl-cdn.alpinelinux.org/alpine/edge/testing/x86/py3-serial-3.4-r0.apk -O /tmp/apk-packages/py3-serial.apk",
+        "wget -q http://dl-cdn.alpinelinux.org/alpine/edge/testing/x86/py3-jsonpointer-2.0-r0.apk -O /tmp/apk-packages/py3-jsonpointer.apk ",
+        "wget -q http://dl-cdn.alpinelinux.org/alpine/edge/testing/x86/py3-jsonpatch-1.23-r0.apk -O /tmp/apk-packages/py3-jsonpatch.apk ",
+        "wget -q http://dl-cdn.alpinelinux.org/alpine/edge/community/x86/py3-configobj-5.0.6-r3.apk -O /tmp/apk-packages/py3-configobj.apk ",
+        "wget -q http://dl-cdn.alpinelinux.org/alpine/edge/community/x86/py3-jsonschema-2.6.0-r0.apk -O /tmp/apk-packages/py3-jsonschema.apk ",
+        "wget -q http://dl-cdn.alpinelinux.org/alpine/edge/testing/x86/cloud-init-18.5-r0.apk -O /tmp/apk-packages/cloud-init.apk",
+        "wget -q http://dl-cdn.alpinelinux.org/alpine/edge/testing/x86/cloud-init-openrc-18.5-r0.apk -O /tmp/apk-packages/cloud-init-openrc.apk  # (installed size: 2.46 MB)",
+        "apk add /tmp/apk-packages/*",
+        "wget https://raw.githubusercontent.com/hyperonecom/h1-images-recommended/master/resources/cloud-init/ds_v2/DataSourceRbxCloud.py -O /usr/lib/python3.6/site-packages/cloudinit/sources/DataSourceRbxCloud.py",
+        "ls -lah /usr/lib/python3.6/site-packages/cloudinit/sources/",
+        "echo 'datasource_list: [ RbxCloud ]' > /etc/cloud/cloud.cfg.d/90_dpkg.cfg"
+      ]
+    },
+    {
+      "type": "shell",
+      "inline": [
+        "apk --no-cache add eudev # to provide mdadm required by cloud-init (installed size: 1.17 MB)",
+        "apk --no-cache add iproute2 # to provide \"ip addr show permanent\" required by cloud-init (installed size: 1.66MB)",
+        "# apk --no-cache add dosfstools # to provide \"mkfs.vfat\" for \"devfs\" (installed size: 144 kB)",
+        "apk --no-cache add openssh-server # to provide ssh connectivity (managed by cloud-init)",
+        "rc-update -q add devfs sysinit",
+        "rc-update -q add dmesg sysinit",
+        "rc-update -q add mdev sysinit",
+        "rc-update -q add hwdrivers sysinit",
+        "rc-update -q add hwclock boot",
+        "rc-update -q add modules boot",
+        "rc-update -q add sysctl boot",
+        "rc-update -q add hostname boot",
+        "rc-update -q add bootmisc boot",
+        "rc-update -q add syslog boot",
+        "rc-update -q add networking boot",
+        "rc-update -q add urandom boot",
+        "rc-update -q add dhcpcd boot",
+        "rc-update -q add mount-ro shutdown",
+        "rc-update -q add killprocs shutdown",
+        "rc-update -q add savecache shutdown",
+        "rc-update -q add acpid default",
+        "rc-update -q add crond default",
+        "rc-update -q add sshd default",
+        "rc-update -q add cloud-config default",
+        "rc-update -q add cloud-final default",
+        "rc-update -q add cloud-init-local boot",
+        "rc-update -q add cloud-init default"
+      ]
+    }
+  ]
+}
