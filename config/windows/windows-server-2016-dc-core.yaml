@@ -1,7 +1,7 @@
 name: windows-server-2016-datacenter-core
 codename: ""
 pname: MS Windows Server 2016 DataCenter Core
-distro windows
+distro: windows
 release: "2016"
 editionn: datacenter-core
 arch: x64
