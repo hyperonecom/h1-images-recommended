@@ -105,7 +105,7 @@ const buildWindowsImage = async (config) => {
     const vm = await vmApi.vmCreate({
         name: `build-iso-${config.name}`,
         iso: config.iso,
-        image: config.base_image,
+        // image: config.base_image,
         netadp: [{
             network: configActive.network,
             service: configActive.netadp_service
