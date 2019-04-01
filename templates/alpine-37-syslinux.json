@@ -39,7 +39,7 @@
         "sgdisk -t 1:8300 {{.Device}}",
         "sgdisk -c 1:EFI {{.Device}}",
         "sgdisk -n 2:0:+52MB {{.Device}}",
-        "sgdisk -t 2:8300 {{.Device}}",
+        "sgdisk -t 2:EBD0A0A2-B9E5-4433-87C0-68B6B72699C7 {{.Device}}",
         "sgdisk -c 2:CLOUDMD {{.Device}}",
         "sgdisk -n 3:0:+1GB {{.Device}}",
         "sgdisk -t 3:8300 {{.Device}}",
