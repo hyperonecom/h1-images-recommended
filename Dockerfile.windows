@@ -6,7 +6,6 @@ ENV POWERSHELL_SHORTCUT_VERSION=6
 RUN wget "https://github.com/PowerShell/PowerShell/releases/download/v${POWERSHELL_VERSION}/powershell_${POWERSHELL_VERSION}-1.debian.9_amd64.deb" \
 && dpkg -i "powershell_${POWERSHELL_VERSION}-1.debian.9_amd64.deb" \
 && rm "powershell_${POWERSHELL_VERSION}-1.debian.9_amd64.deb"
-RUN ls -lah /opt/microsoft/powershell/${POWERSHELL_SHORTCUT_VERSION}
 RUN ln -s /usr/lib/x86_64-linux-gnu/libssl.so.1.0.2 /opt/microsoft/powershell/${POWERSHELL_SHORTCUT_VERSION}/libssl.so.1.0.0
 RUN ln -s /usr/lib/x86_64-linux-gnu/libcrypto.so.1.0.2 /opt/microsoft/powershell/${POWERSHELL_SHORTCUT_VERSION}/libcrypto.so.1.0.0
 RUN npm install -g https://github.com/hyperonecom/h1-cli/archive/develop.tar.gz
