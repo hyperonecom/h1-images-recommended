@@ -169,13 +169,15 @@ class DataSourceRbxCloud(sources.DataSource):
         for device in dev_list:
             try:
                 rbx_data = util.mount_cb(device, read_user_data_callback,
-                                         self.distro.name)
+                                         self.distro.name,
+                                         mtype=['vfat','fat'])
                 if rbx_data:
                     break
             except OSError as err:
                 if err.errno != errno.ENOENT:
                     raise
-            except util.MountFailedError:
+            except util.MountFailedError as err:
+                print(err)
                 util.logexc(LOG, "Failed to mount %s when looking for user "
                                  "data", device)
         if not rbx_data:

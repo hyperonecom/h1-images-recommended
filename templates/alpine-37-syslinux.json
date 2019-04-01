@@ -1,7 +1,6 @@
 {
   "variables": {
     "source_image": "image-builder-fedora",
-    "cloud_init_tmp_path": "/tmp/cloud_init.py",
     "efi_fs": "vfat",
     "cloud_fs": "vfat",
     "root_fs": "ext4",
@@ -12,10 +11,11 @@
     "apkv": "2.10.3-r1",
     "cloud_init_ds_dir": "/usr/lib/python3.6/site-packages/cloudinit/sources/",
     "cloud_init_ds_src": "./resources/cloud-init/ds_v2/DataSourceRbxCloud.py",
+    "cloud_init_tmp_path": "/tmp/cloud_init.py",
     "disk_size": "5",
     "image_name": "Alpine Linux 3.9",
     "image_description": "",
-    "linux_package": "linux-virt "
+    "linux_package": "linux-virt"
   },
   "builders": [
     {
@@ -68,13 +68,15 @@
     {
       "type": "shell",
       "inline": [
-        "echo \"/dev/sda1    /    ext4    defaults    1    1\" > /etc/fstab"
+        "echo \"/dev/sda3    /    ext4    defaults    1    1\" > /etc/fstab"
       ]
     },
     {
       "type": "shell",
       "inline": [
-        "echo {{user `mirror`}}/v{{user `rel`}}/main > /etc/apk/repositories"
+        "echo {{user `mirror`}}/v{{user `rel`}}/main > /etc/apk/repositories",
+        "echo '@testing {{user `mirror`}}/edge/testing' >> /etc/apk/repositories",
+        "echo '@community {{user `mirror`}}/edge/community' >> /etc/apk/repositories"
       ]
     },
     {
@@ -82,7 +84,7 @@
       "inline": [
         "echo overwrite=1  > /etc/update-extlinux.conf",
         "echo vesa_menu=0 >> /etc/update-extlinux.conf",
-        "echo default_kernel_opts=\\\"elevator=noop consoleblank=0 console=tty0 console=ttyS0,115200n8 quiet\\\" >> /etc/update-extlinux.conf",
+        "# echo default_kernel_opts=\\\"elevator=noop consoleblank=0 console=tty0 console=ttyS0,115200n8 quiet\\\" >> /etc/update-extlinux.conf",
         "echo modules={{user `modules`}}  >> /etc/update-extlinux.conf",
         "echo root=/dev/sda3 >> /etc/update-extlinux.conf",
         "echo verbose=0 >> /etc/update-extlinux.conf",
@@ -100,12 +102,6 @@
       "type": "shell",
       "inline": [
         "cat /etc/update-extlinux.conf"
-      ]
-    },
-    {
-      "type": "shell",
-      "inline": [
-        "echo features=\\\"\"{{user `features`}}\"\\\" > /etc/mkinitfs/mkinitfs.conf"
       ]
     },
     {
@@ -132,32 +128,25 @@
     {
       "type": "shell",
       "inline": [
-        "apk --no-cache add openssl #  (installed size: 664 kB)",
-        "apk --no-cache add wget #  (installed size: 464 kB)",
-        "apk --no-cache add ca-certificates # (installed size: 720 kB)",
-        "update-ca-certificates",
-        "mkdir /tmp/apk-packages"
-      ]
-    },
-    {
-      "type": "shell",
-      "inline": [
-        "wget -q http://dl-cdn.alpinelinux.org/alpine/edge/testing/x86/py3-serial-3.4-r0.apk -O /tmp/apk-packages/py3-serial.apk",
-        "wget -q http://dl-cdn.alpinelinux.org/alpine/edge/testing/x86/py3-jsonpointer-2.0-r0.apk -O /tmp/apk-packages/py3-jsonpointer.apk ",
-        "wget -q http://dl-cdn.alpinelinux.org/alpine/edge/testing/x86/py3-jsonpatch-1.23-r0.apk -O /tmp/apk-packages/py3-jsonpatch.apk ",
-        "wget -q http://dl-cdn.alpinelinux.org/alpine/edge/community/x86/py3-configobj-5.0.6-r3.apk -O /tmp/apk-packages/py3-configobj.apk ",
-        "wget -q http://dl-cdn.alpinelinux.org/alpine/edge/community/x86/py3-jsonschema-2.6.0-r0.apk -O /tmp/apk-packages/py3-jsonschema.apk ",
-        "wget -q http://dl-cdn.alpinelinux.org/alpine/edge/testing/x86/cloud-init-18.5-r0.apk -O /tmp/apk-packages/cloud-init.apk",
-        "wget -q http://dl-cdn.alpinelinux.org/alpine/edge/testing/x86/cloud-init-openrc-18.5-r0.apk -O /tmp/apk-packages/cloud-init-openrc.apk  # (installed size: 2.46 MB)",
-        "apk add /tmp/apk-packages/*",
-        "wget https://raw.githubusercontent.com/hyperonecom/h1-images-recommended/master/resources/cloud-init/ds_v2/DataSourceRbxCloud.py -O /usr/lib/python3.6/site-packages/cloudinit/sources/DataSourceRbxCloud.py",
-        "ls -lah /usr/lib/python3.6/site-packages/cloudinit/sources/",
+        "apk add py3-serial@testing py3-jsonpointer@testing py3-configobj@community py3-jsonschema@community cloud-init@testing cloud-init-openrc@testing",
         "echo 'datasource_list: [ RbxCloud ]' > /etc/cloud/cloud.cfg.d/90_dpkg.cfg"
       ]
     },
     {
+      "type": "file",
+      "source": "{{user `cloud_init_ds_src`}}",
+      "destination": "{{user `cloud_init_tmp_path`}}"
+    },
+    {
       "type": "shell",
       "inline": [
+        "mv {{user `cloud_init_tmp_path`}} {{user `cloud_init_ds_dir`}}/DataSourceRbxCloud.py"
+      ]
+    },
+    {
+      "type": "shell",
+      "inline": [
+        "ls -lah /usr/lib/python3.6/site-packages/cloudinit/sources/",
         "apk --no-cache add eudev # to provide mdadm required by cloud-init (installed size: 1.17 MB)",
         "apk --no-cache add ifupdown # to provide \"ip --all\" required by cloud-init (installed size: 84 kB)",
         "apk --no-cache add iproute2 # to provide \"ip addr show permanent\" required by cloud-init (installed size: 1.66MB)",
