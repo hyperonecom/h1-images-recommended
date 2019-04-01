@@ -308,7 +308,7 @@ const main = async (mode, input_file) => {
     try {
         const content = await readFile(input_file);
         const config = yaml.safeLoad(content);
-        config.template_file = config.template_file || input_file.replace('config', 'templates');
+        config.template_file = config.template_file || input_file.replace('config', 'templates').replace('.yaml','.json');
         const imageId = await buildImage(mode, config);
         await testImage(mode, config, imageId);
         await publishImage(imageId, config.image_tenant_access || '*');
