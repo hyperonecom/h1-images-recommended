@@ -15,7 +15,7 @@
     "disk_size": "5",
     "image_name": "Alpine Linux 3.9",
     "image_description": "",
-    "linux_package": "linux-vanilla"
+    "linux_package": "linux-virt "
   },
   "builders": [
     {
@@ -82,7 +82,7 @@
       "inline": [
         "echo overwrite=1  > /etc/update-extlinux.conf",
         "echo vesa_menu=0 >> /etc/update-extlinux.conf",
-        "echo ndefault_kernel_opts=\\\"elevator=noop consoleblank=0 console=tty0 console=ttyS0,115200n8 quiet\\\" >> /etc/update-extlinux.conf",
+        "echo default_kernel_opts=\\\"elevator=noop consoleblank=0 console=tty0 console=ttyS0,115200n8 quiet\\\" >> /etc/update-extlinux.conf",
         "echo modules={{user `modules`}}  >> /etc/update-extlinux.conf",
         "echo root=/dev/sda3 >> /etc/update-extlinux.conf",
         "echo verbose=0 >> /etc/update-extlinux.conf",
@@ -159,6 +159,7 @@
       "type": "shell",
       "inline": [
         "apk --no-cache add eudev # to provide mdadm required by cloud-init (installed size: 1.17 MB)",
+        "apk --no-cache add ifupdown # to provide \"ip --all\" required by cloud-init (installed size: 84 kB)",
         "apk --no-cache add iproute2 # to provide \"ip addr show permanent\" required by cloud-init (installed size: 1.66MB)",
         "# apk --no-cache add dosfstools # to provide \"mkfs.vfat\" for \"devfs\" (installed size: 144 kB)",
         "apk --no-cache add openssh-server # to provide ssh connectivity (managed by cloud-init)",
