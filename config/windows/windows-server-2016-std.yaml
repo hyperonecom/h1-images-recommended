@@ -1,0 +1,18 @@
+name: windows-server-2016-standard-gui
+codename: ""
+pname: MS Windows Server 2016 Standard Desktop Experience
+distro: windows
+release: "2016"
+edition: standard
+arch: "x64"
+version: "2016"
+iso: 598872a120793a9932894dfa
+disk_size: "25"
+disk_type: ssd
+image_tenant_access: 572351f2490755f7f0922666
+image_recommended_disk_size: "50"
+image_recommended_vm_type: m2.large
+#base_image: base-windows-server-2016-standard
+# not public available due licensing issue
+base_image: 5a3cdc85d919342e40231bf6
+test_set: 'windows'

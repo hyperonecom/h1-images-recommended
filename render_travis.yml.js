@@ -10,7 +10,7 @@ const priority = ['fedora'];
 
 const buildEnv = templates => [].concat(
     ...scope_list.map(scope =>
-        templates.map(template => `TEMPLATE="${template}" SCOPE=${scope}`)
+        templates.map(template => `CONFIG="${template}" MODE="packer" SCOPE=${scope}`)
     )
 );
 const render = templates => ({
@@ -28,9 +28,9 @@ const render = templates => ({
 const prioritized = (file) => priority.some(key => file.includes(key));
 
 const main = async () => {
-    const path = join('./templates/qcow');
+    const path = join('./config/qcow');
     const files = await readDir(path);
-    const templates = files.filter(x => x.endsWith('.json')).map(file => join(path, file));
+    const templates = files.filter(x => x.endsWith('.yaml')).map(file => join(path, file));
     const template = render([
         ...templates.filter(prioritized),
         ...templates.filter(file => !prioritized(file)),
