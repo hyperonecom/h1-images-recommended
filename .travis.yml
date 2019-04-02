@@ -1,6 +1,5 @@
 language: nodejs
 env:
-  - TEMPLATE="templates/qcow/fedora-27.json" SCOPE=H1
   - TEMPLATE="templates/qcow/fedora-28.json" SCOPE=H1
   - TEMPLATE="templates/qcow/fedora-29.json" SCOPE=H1
   - TEMPLATE="templates/qcow/centos-6.json" SCOPE=H1
@@ -16,7 +15,6 @@ env:
   - TEMPLATE="templates/qcow/ubuntu-1810-desktop.json" SCOPE=H1
   - TEMPLATE="templates/qcow/ubuntu-1810.json" SCOPE=H1
   - TEMPLATE="templates/qcow/ubuntu-1904.json" SCOPE=H1
-  - TEMPLATE="templates/qcow/fedora-27.json" SCOPE=RBX
   - TEMPLATE="templates/qcow/fedora-28.json" SCOPE=RBX
   - TEMPLATE="templates/qcow/fedora-29.json" SCOPE=RBX
   - TEMPLATE="templates/qcow/centos-6.json" SCOPE=RBX
