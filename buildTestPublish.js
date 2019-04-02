@@ -117,7 +117,7 @@ const buildWindowsImage = async (config) => {
                 service: config.disk_type || configActive.disk_type,
             }
         ],
-        service: configActive.vm_builder_service,
+        service: config.vm_type || configActive.vm_builder_service,
     });
     try {
         await waitState(vm, ['Off']);

@@ -10,7 +10,6 @@ iso: 598afd7fcd7f442cad2c89cc
 disk_size: "25"
 disk_type: ssd
 vm_type: m2.medium
-vm_network: 596cabd007da55c89627e3fc
 image_tenant_access: 572351f2490755f7f0922666
 image_recommended_disk_size: "50"
 image_recommended_vm_type: m2.large

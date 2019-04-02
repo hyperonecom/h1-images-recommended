@@ -9,6 +9,7 @@ version: "2016"
 iso: 59947cc5e7b83237017b7b2b
 disk_size: "25"
 disk_type: ssd
+vm_type: m2.medium
 image_tenant_access: 572351f2490755f7f0922666
 image_recommended_disk_size: "50"
 image_recommended_vm_type: m2.large
