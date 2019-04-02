@@ -85,7 +85,7 @@ const cleanupVm = async () => {
     console.log("Fetching available VMs");
     const vms = await vmApi.vmList();
     console.log(`Found ${vms.length} VMs`);
-    const vm = vms.find(vm => olderThan(vm, 90) && ensureState(vm, ['Running']));
+    const vm = vms.find(vm => olderThan(vm, 90) && ensureState(vm, ['Running']) && vm.name.includes('windows'));
     if(vm){
         console.log(`Deleting VM ${vm._id}`);
         await vmApi.vmActionTurnoff(vm._id);
