@@ -140,7 +140,7 @@ const buildWindowsImage = async (config) => {
         }
         const image = await imageApi.imageCreate({
             vm: vm._id,
-            name: config.name,
+            name: config.pname,
             description: JSON.stringify(metadata),
             tags: metadata
         });
@@ -324,5 +324,6 @@ const main = async (mode, input_file) => {
 
 main(process.argv[2], process.argv[3]).then(console.log).catch(err => {
     console.error(err);
+    console.error(err.stack);
     process.exit(1);
 });
