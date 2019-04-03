@@ -151,9 +151,9 @@ const buildWindowsImage = async (config) => {
 };
 
 const testPackerImage = (config, imageId) => runProcess('./run_tests.sh', [
+    '-o', 'packer',
     '-i', imageId,
     '-s', scopeActive,
-    '-o', config.mode,
     '-v', configActive.vm_test_service,
     '-c', configActive.ssh
 ], {
