@@ -50,16 +50,13 @@ OS_DISK="$DISK_SERVICE,$DISK_SIZE"
 VM_NAME="image-${IMAGE}-test"
 PASSWORD=$(openssl rand -hex 15)
 
+EXTERNAL_IP=$(${RBX_CLI} ip create --query "[].{ip:address}" -o tsv);
 if [ "$os" == "windows" ]; then
-	EXTERNAL_IP=$(${RBX_CLI} ip create --query "[].{ip:address}" -o tsv);
 	INTERNAL_IP=$(${RBX_CLI} network ip create --network $NETWORK -o id);
-	echo $INTERNAL_IP;
-	echo $EXTERNAL_IP;
 fi;
 
 if [ "$os" == "packer" ]; then
-	EXTERNAL_IP=$(${RBX_CLI} ip create -o id --query "[].ip[*].address" -o tsv|head -1);
-	INTERNAL_IP=EXTERNAL_IP
+	INTERNAL_IP=$EXTERNAL_IP
 fi
 
 VM_ID=$(${RBX_CLI} vm create --image $IMAGE \
