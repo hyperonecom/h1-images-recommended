@@ -10,7 +10,6 @@ iso: 598c1d9ad4a6fa1a508e34e9
 disk_size: "25"
 disk_type: ssd
 vm_type: m2.medium
-image_tenant_access: 572351f2490755f7f0922666
 image_recommended_disk_size: "50"
 image_recommended_vm_type: m2.large
 #base_image: base-windows-server-2016-datacenter
