@@ -201,7 +201,6 @@ const testWindowsImage = async (config, imageId) => {
                 '--vm', vm._id,
                 '--output', 'tsv'
             ], {
-                // quiet: true,
                 stderr: false,
                 env: {
                     H1_TOKEN: defaultClient.authentications.ServiceAccount.apiKey,
