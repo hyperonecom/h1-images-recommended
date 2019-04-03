@@ -3,7 +3,7 @@ codename: ""
 pname: MS Windows Server 2016 DataCenter Core
 distro: windows
 release: "2016"
-editionn: datacenter-core
+edition: datacenter-core
 arch: x64
 version: "2016"
 iso: 598c1d9ad4a6fa1a508e34e9

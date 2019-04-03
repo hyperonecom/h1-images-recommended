@@ -4,7 +4,7 @@ pname: MS Windows Server 2016 Standard Core
 distro: windows
 release: "2016"
 edition: standard-core
-arch: "x64"
+arch: x64
 version: "2016"
 iso: 598afd7fcd7f442cad2c89cc
 disk_size: "25"
