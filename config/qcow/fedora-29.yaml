@@ -4,7 +4,7 @@ pname: Fedora 29
 distro: fedora
 edition: server
 arch: x64
-version: '28'
+version: '29'
 download_url: >-
   https://download.fedoraproject.org/pub/fedora/linux/releases/29/Cloud/x86_64/images/Fedora-Cloud-Base-29-1.2.x86_64.qcow2
 disk_size: '2'
