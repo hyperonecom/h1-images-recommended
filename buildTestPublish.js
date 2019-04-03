@@ -94,7 +94,10 @@ const waitState = async (vm, states) => {
         return vm
     }
     console.log(`Waiting. The Virtual Machine status is ${vm.state}.`);
-    const fresh_vm = await vmApi.vmShow(vm._id);
+    const fresh_vm = await vmApi.vmShow(vm._id).catch(async () => {
+        await delay(120 * 1000);
+        await vmApi.vmShow(vm._id)
+    });
     await delay(60 * 1000);
     return waitState(fresh_vm, states)
 };
@@ -264,7 +267,8 @@ const cleanupVm = async () => {
     console.log("Fetching available VMs");
     const vms = await vmApi.vmList();
     console.log(`Found ${vms.length} VMs`);
-    const vm = vms.find(vm => olderThan(vm, 90) && ensureState(vm, ['Running']) && vm.name.includes('windows'));
+    const vm = vms.find(vm => olderThan(vm, 90) && ensureState(vm, ['Running']) && !vm.name.includes('windows'));
+    if (vm) {
         console.log(`Deleting VM ${vm._id}`);
         await vmApi.vmActionTurnoff(vm._id);
         await vmApi.vmDelete(vm._id, {});
@@ -308,7 +312,7 @@ const main = async (mode, input_file) => {
     try {
         const content = await readFile(input_file);
         const config = yaml.safeLoad(content);
-        config.template_file = config.template_file || input_file.replace('config', 'templates').replace('.yaml','.json');
+        config.template_file = config.template_file || input_file.replace('config', 'templates').replace('.yaml', '.json');
         const imageId = await buildImage(mode, config);
         await testImage(mode, config, imageId);
         await publishImage(imageId, config.image_tenant_access || '*');
