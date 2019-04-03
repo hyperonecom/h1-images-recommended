@@ -8,8 +8,6 @@ env:
   - CONFIG="config/qcow/debian-9.yaml" MODE="packer" SCOPE=H1
   - CONFIG="config/qcow/ubuntu-1604-desktop.yaml" MODE="packer" SCOPE=H1
   - CONFIG="config/qcow/ubuntu-1604.yaml" MODE="packer" SCOPE=H1
-  - CONFIG="config/qcow/ubuntu-1704.yaml" MODE="packer" SCOPE=H1
-  - CONFIG="config/qcow/ubuntu-1710.yaml" MODE="packer" SCOPE=H1
   - CONFIG="config/qcow/ubuntu-1804-desktop.yaml" MODE="packer" SCOPE=H1
   - CONFIG="config/qcow/ubuntu-1804.yaml" MODE="packer" SCOPE=H1
   - CONFIG="config/qcow/ubuntu-1810-desktop.yaml" MODE="packer" SCOPE=H1
@@ -23,8 +21,6 @@ env:
   - CONFIG="config/qcow/debian-9.yaml" MODE="packer" SCOPE=RBX
   - CONFIG="config/qcow/ubuntu-1604-desktop.yaml" MODE="packer" SCOPE=RBX
   - CONFIG="config/qcow/ubuntu-1604.yaml" MODE="packer" SCOPE=RBX
-  - CONFIG="config/qcow/ubuntu-1704.yaml" MODE="packer" SCOPE=RBX
-  - CONFIG="config/qcow/ubuntu-1710.yaml" MODE="packer" SCOPE=RBX
   - CONFIG="config/qcow/ubuntu-1804-desktop.yaml" MODE="packer" SCOPE=RBX
   - CONFIG="config/qcow/ubuntu-1804.yaml" MODE="packer" SCOPE=RBX
   - CONFIG="config/qcow/ubuntu-1810-desktop.yaml" MODE="packer" SCOPE=RBX
