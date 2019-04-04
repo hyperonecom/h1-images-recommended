@@ -60,7 +60,7 @@
         "curl -s {{user `mirror`}}/v{{user `rel`}}/main/$(uname -m)/apk-tools-static-{{user `apkv`}}.apk | tar xz",
         "mkdir -p {{.MountPath}}/boot/efi",
         "mount -t vfat {{.Device}}1 {{.MountPath}}/boot/efi",
-        "./sbin/apk.static --repository {{user `mirror`}}/v{{user `rel`}}/main --update-cache --allow-untrusted --root {{.MountPath}} --initdb add alpine-base syslinux dhcpcd"
+        "./sbin/apk.static --repository {{user `mirror`}}/v{{user `rel`}}/main --update-cache --allow-untrusted --root {{.MountPath}} --initdb add alpine-base syslinux"
       ]
     }
   ],
