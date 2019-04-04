@@ -287,6 +287,19 @@ const cleanupDisk = async () => {
     }
 };
 
+const cleanupIp = async () => {
+    console.log("Fetching available ip.");
+    const ips = await ipApi.ipList();
+    console.log(`Found ${ips.length} ips`);
+    const ip = ips.find(ip => ensureState(ip, ['Unallocated']));
+    if (ip) {
+        console.log(`Deleting ip ${ip._id}`);
+        await diskApi.diskDelete(ip._id);
+        await cleanupIp();
+    }
+};
+
+
 const buildImage = (mode, config) => {
     if (mode === 'windows') {
         return buildWindowsImage(config)
@@ -319,6 +332,7 @@ const main = async (mode, input_file) => {
         await cleanupImage();
         await cleanupVm();
         await cleanupDisk();
+        await cleanupIp();
     }
 };
 
