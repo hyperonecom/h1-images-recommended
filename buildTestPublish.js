@@ -294,7 +294,7 @@ const cleanupIp = async () => {
     const ip = ips.find(ip => ensureState(ip, ['Unallocated']));
     if (ip) {
         console.log(`Deleting ip ${ip._id}`);
-        await diskApi.diskDelete(ip._id);
+        await ipApi.ipDelete(ip._id);
         await cleanupIp();
     }
 };
