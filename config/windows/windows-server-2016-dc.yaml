@@ -1,5 +1,5 @@
 name: windows-server-2016-datacenter-gui
-codename:
+codename: ""
 pname: MS Windows Server 2016 DataCenter Desktop Experience
 distro: windows
 release: "2016"
