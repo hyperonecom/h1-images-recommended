@@ -35,7 +35,14 @@ const render_templates = config => {
             disk_size: "10",
             image_name: config.pname,
             ssh_name: 'my-ssh',
-            image_description: JSON.stringify(),
+            image_description: JSON.stringify({
+                "arch":config.arch,
+                "distro":config.distro,
+                "release":config.version,
+                "edition":config.edition,
+                "codename":config.codename,
+                "recommended":{"disk":{"size":20}}
+            }),
             public_netadp_service: "public",
             vm_type: 'a1.small'
         },

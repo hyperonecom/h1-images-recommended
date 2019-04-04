@@ -13,7 +13,7 @@
         "disk_size": "10",
         "image_name": "Fedora 29",
         "ssh_name": "my-ssh",
-        "image_description": "{\"arch\":\"x64\",\"distro\":\"fedora\",\"release\":\"28\",\"edition\":\"server\",\"codename\":\"core\",\"recommended\":{\"disk\":{\"size\":20}}}",
+        "image_description": "{\"arch\":\"x64\",\"distro\":\"fedora\",\"release\":\"29\",\"edition\":\"server\",\"codename\":\"core\",\"recommended\":{\"disk\":{\"size\":20}}}",
         "public_netadp_service": "public",
         "vm_type": "a1.small"
     },
