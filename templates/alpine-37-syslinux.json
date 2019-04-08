@@ -128,7 +128,10 @@
     {
       "type": "shell",
       "inline": [
-        "apk add py3-serial@testing py3-jsonpointer@testing py3-configobj@community py3-jsonschema@community cloud-init@testing cloud-init-openrc@testing",
+        "apk add py3-serial@testing py3-jsonpointer@testing py3-configobj@community py3-jsonschema@community cloud-init@testing py3-attrs cloud-init-openrc@testing",
+        "wget https://files.pythonhosted.org/packages/8c/46/4e93ab8a379d7efe93f20a0fb8a27bdfe88942cc954ab0210c3164e783e0/pyrsistent-0.14.11.tar.gz -O /tmp/pyrsistent.tar.gz",
+        "wget tar xvzf /tmp/pyrsistent.tar.gz -C /tmp",
+        "python3 /tmp/pyrsistent-0.14.11/setup.py install",
         "echo 'datasource_list: [ RbxCloud ]' > /etc/cloud/cloud.cfg.d/90_dpkg.cfg"
       ]
     },
@@ -164,7 +167,6 @@
         "rc-update -q add syslog boot",
         "rc-update -q add networking boot",
         "rc-update -q add urandom boot",
-        "rc-update -q add dhcpcd boot",
         "rc-update -q add mount-ro shutdown",
         "rc-update -q add killprocs shutdown",
         "rc-update -q add savecache shutdown",
