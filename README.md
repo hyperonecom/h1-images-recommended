@@ -13,6 +13,7 @@ It should highlight the following elements:
 - ```templates```- Packer template set
 - ```templates/builder-*.json``` - the image of the virtual machine used when building
 - ```templates/qcow``` - Packer templates generated via QCOW2 files defined in ```config/qcow```
+- ```buildTestPublish.js``` - script responsible for build & test & publish Packer & Windows images
 
 All templates create *Image* by running builder VM with additional *Disk* and using a chroot environment to provision that *Disk*. Then attach that *Disk* to new *Virtual Machine* to create clean image. This allows to 
 

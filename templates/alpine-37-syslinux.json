@@ -149,6 +149,13 @@
     {
       "type": "shell",
       "inline": [
+        "apk -U add haveged && rc-update add haveged",
+        "sed \"/after localmount/a  after haveged\" -i /etc/init.d/cloud-init-local"
+      ]
+    },
+    {
+      "type": "shell",
+      "inline": [
         "ls -lah /usr/lib/python3.6/site-packages/cloudinit/sources/",
         "apk --no-cache add eudev # to provide mdadm required by cloud-init (installed size: 1.17 MB)",
         "apk --no-cache add ifupdown # to provide \"ip --all\" required by cloud-init (installed size: 84 kB)",

@@ -135,7 +135,7 @@ def generate_eni(netadp, distro):
     ARPING_RHEL = "arping -c 2 -s "
 
     LOG.debug("Generating eni for distro: %s", distro)
-    if distro == 'rhel':
+    if distro == 'rhel' or distro == 'fedora':
         ARPING=ARPING_RHEL
 
     ENI.append('auto lo')

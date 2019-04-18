@@ -66,28 +66,53 @@ def _get_meta_data(filepath):
 
     return content
 
+def ip2int(addr):
+    parts = addr.split('.')
+    return  (int(parts[0]) << 24) + (int(parts[1]) << 16) +  (int(parts[2]) << 8) + int(parts[3])
 
-def generate_network_config(meta_data):
+def int2ip(addr):
+    return '.'.join([str(addr >> (i << 3) & 0xFF) for i in range(4)[::-1]])
+
+
+def generate_network_config(meta_data, distro):
+    ARPING = "arping -c 2 -S "
+    ARPING_RHEL = "arping -c 2 -s "
+
+    if distro == 'rhel' or distro == 'fedora':
+        ARPING=ARPING_RHEL
+
     return {
-        'version': 1,
-        'config': [
-            {
-                'type': 'physical',
-                'name': 'eth{}'.format(str(i)),
-                'mac_address': netadp['macaddress'].lower(),
-                'subnets': [
-                    {
-                        'type': 'static',
-                        'address': ip['address'],
-                        'netmask': netadp['network']['netmask'],
-                        'control': 'auto',
-                        'gateway': netadp['network']['gateway'],
-                        'dns_nameservers': netadp['network']['dns'][
-                            'nameservers']
-                    } for ip in netadp['ip']
-                ],
-            } for i, netadp in enumerate(meta_data['netadp'])
-        ]
+        'runcmd': [
+            ARPING + ip["address"] + target
+            for netadp in meta_data['netadp']
+            for ip in netadp['ip']
+            for target in [
+                netadp['network']["gateway"],
+                int2ip(ip2int(netadp['network']["gateway"]) + 2),
+                int2ip(ip2int(netadp['network']["gateway"]) + 3)
+            ]
+        ],
+        'config': {
+            'version': 1,
+            'config': [
+                {
+                    'type': 'physical',
+                    'name': 'eth{}'.format(str(i)),
+                    'mac_address': netadp['macaddress'].lower(),
+                    'subnets': [
+                        {
+                            'type': 'static',
+                            'address': ip['address'],
+                            'netmask': netadp['network']['netmask'],
+                            'control': 'auto',
+                            'gateway': netadp['network']['gateway'],
+                            'dns_nameservers': netadp['network']['dns'][
+                                'nameservers']
+                        } for ip in netadp['ip']
+                    ],
+                } for i, netadp in enumerate(meta_data['netadp'])
+            ]
+        }
     }
 
 
@@ -115,6 +140,8 @@ def read_user_data_callback(mount_dir, distro):
     if meta_data['additionalMetadata'].get('password'):
         hash = meta_data['additionalMetadata']['password'].get('sha512')
 
+    network = generate_network_config(meta_data, distro)
+
     data = {
         'userdata': user_data,
         'metadata': {
@@ -136,8 +163,9 @@ def read_user_data_callback(mount_dir, distro):
                     'shell': '/bin/bash'
                 }
             },
-            'network_config': generate_network_config(meta_data),
-            'manage_etc_hosts': get_manage_etc_hosts()
+            'network_config': network['config'],
+            'manage_etc_hosts': get_manage_etc_hosts(),
+            'runcmd': network['cmd']
         },
     }
 
