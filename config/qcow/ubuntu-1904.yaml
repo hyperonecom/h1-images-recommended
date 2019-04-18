@@ -1,6 +1,6 @@
 name: ubuntu-1904-disco
 codename: disco dingo
-pname: Ubuntu 19.04 (disco dingo - development branch)
+pname: Ubuntu 19.04 (disco dingo)
 distro: ubuntu
 edition: server
 arch: x64
