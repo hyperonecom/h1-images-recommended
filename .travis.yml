@@ -12,6 +12,7 @@ env:
   - CONFIG="config/qcow/ubuntu-1804.yaml" MODE="packer" SCOPE=H1
   - CONFIG="config/qcow/ubuntu-1810-desktop.yaml" MODE="packer" SCOPE=H1
   - CONFIG="config/qcow/ubuntu-1810.yaml" MODE="packer" SCOPE=H1
+  - CONFIG="config/qcow/ubuntu-1904-desktop.yaml" MODE="packer" SCOPE=H1
   - CONFIG="config/qcow/ubuntu-1904.yaml" MODE="packer" SCOPE=H1
   - CONFIG="config/qcow/fedora-28.yaml" MODE="packer" SCOPE=RBX
   - CONFIG="config/qcow/fedora-29.yaml" MODE="packer" SCOPE=RBX
@@ -25,6 +26,7 @@ env:
   - CONFIG="config/qcow/ubuntu-1804.yaml" MODE="packer" SCOPE=RBX
   - CONFIG="config/qcow/ubuntu-1810-desktop.yaml" MODE="packer" SCOPE=RBX
   - CONFIG="config/qcow/ubuntu-1810.yaml" MODE="packer" SCOPE=RBX
+  - CONFIG="config/qcow/ubuntu-1904-desktop.yaml" MODE="packer" SCOPE=RBX
   - CONFIG="config/qcow/ubuntu-1904.yaml" MODE="packer" SCOPE=RBX
 script:
   - travis_retry ./buildTravis.sh
