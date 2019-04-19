@@ -12,5 +12,5 @@ RUN curl -s -L "https://github.com/hyperonecom/h1-cli/releases/latest/download/h
 && chmod +x /bin/h1
 WORKDIR /src
 ADD package* ./
-RUN npm install
+RUN npm ci
 ADD . ./
