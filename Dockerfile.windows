@@ -8,7 +8,7 @@ RUN wget "https://github.com/PowerShell/PowerShell/releases/download/v${POWERSHE
 && rm "powershell_${POWERSHELL_VERSION}-1.debian.9_amd64.deb"
 RUN ln -s /usr/lib/x86_64-linux-gnu/libssl.so.1.0.2 /opt/microsoft/powershell/${POWERSHELL_SHORTCUT_VERSION}/libssl.so.1.0.0
 RUN ln -s /usr/lib/x86_64-linux-gnu/libcrypto.so.1.0.2 /opt/microsoft/powershell/${POWERSHELL_SHORTCUT_VERSION}/libcrypto.so.1.0.0
-RUN curl -s -L "https://github.com/hyperonecom/h1-cli/releases/latest/download/h1-alpine" -o /bin/h1 \
+RUN curl -s -L "https://github.com/hyperonecom/h1-cli/releases/latest/download/h1-linux" -o /bin/h1 \
 && chmod +x /bin/h1
 WORKDIR /src
 ADD package* ./
