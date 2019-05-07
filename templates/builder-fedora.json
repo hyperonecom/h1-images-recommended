@@ -10,7 +10,7 @@
     {
       "type": "hyperone",
       "vm_name": "image-builder",
-      "source_image": "fedora:27",
+      "source_image": "fedora:28",
       "image_name": "image-builder-fedora",
       "disk_size": 10,
       "vm_type": "{{user `vm_type`}}",
