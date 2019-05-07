@@ -329,7 +329,7 @@ const main = async () => {
         .option('--skip-test', 'Skip tests of image')
         .option('-p, --publish', 'Publish tested image')
         .option('--cleanup', 'Perform cleanup of old resources')
-        .option('--mode [mode]',/^(packer|windows)$/i)
+        .option('--mode [mode]', 'Mode of build images', /^(packer|windows)$/i)
         .parse(process.argv);
 
     try {
