@@ -66,9 +66,12 @@ def _get_meta_data(filepath):
 
     return content
 
+
 def ip2int(addr):
     parts = addr.split('.')
-    return  (int(parts[0]) << 24) + (int(parts[1]) << 16) +  (int(parts[2]) << 8) + int(parts[3])
+    return (int(parts[0]) << 24) + (int(parts[1]) << 16) + \
+           (int(parts[2]) << 8) + int(parts[3])
+
 
 def int2ip(addr):
     return '.'.join([str(addr >> (i << 3) & 0xFF) for i in range(4)[::-1]])
@@ -165,7 +168,7 @@ def read_user_data_callback(mount_dir, distro):
             },
             'network_config': network['config'],
             'manage_etc_hosts': get_manage_etc_hosts(),
-            'runcmd': network['cmd']
+            'runcmd': network['runcmd']
         },
     }
 
