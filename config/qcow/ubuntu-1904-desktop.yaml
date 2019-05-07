@@ -1,6 +1,6 @@
 name: ubuntu-1904-disco
 codename: disco dingo
-pname: Ubuntu 19.04 (disco dingo)
+pname: Ubuntu 19.04 Desktop (disco dingo)
 distro: ubuntu
 edition: desktop
 arch: x64
@@ -12,5 +12,5 @@ cloud_init_ds_src: ./resources/cloud-init/ds_v2/DataSourceRbxCloud.py
 cloud_init_ds_dir: /usr/lib/python3/dist-packages/cloudinit/sources/
 custom_scripts:
   - ./scripts/ubuntu/ubuntu-1710.sh
-  - ./scripts/ubuntu/ubuntu-1804-desktop.sh
+  - ./scripts/ubuntu/ubuntu-1904-desktop.sh
 uefi_support: '1'

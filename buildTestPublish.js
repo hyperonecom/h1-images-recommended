@@ -1,4 +1,5 @@
 'use strict';
+const process = require('process');
 const runProcess = require('./lib/runProcess');
 const superagent = require('superagent');
 const setScope = require('./lib/setScope');
@@ -10,6 +11,7 @@ const yaml = require('js-yaml');
 const fs = require('fs');
 const util = require('util');
 const readFile = util.promisify(fs.readFile);
+const program = require('commander');
 
 defaultClient.defaultHeaders = {
     'Prefer': `respond-async,wait=${60 * 60 * 24}`
@@ -20,7 +22,6 @@ defaultClient.timeout = 10 * 60 * 1000;
 const imageApi = new HyperOneApi.ImageApi();
 const vmApi = new HyperOneApi.VmApi();
 const diskApi = new HyperOneApi.DiskApi();
-const networkApi = new HyperOneApi.NetworkApi();
 const ipApi = new HyperOneApi.IpApi();
 
 const scopeActive = (process.env.SCOPE || 'h1').toLowerCase();
@@ -320,23 +321,46 @@ const testImage = (mode, config, imageId) => {
     }
 };
 
-const main = async (mode, input_file) => {
+const main = async () => {
+    program
+        .version('0.1.0')
+        .option('-c, --config <config>', 'Input config file')
+        .option('-i, --image', 'Image ID (build if not present)')
+        .option('--skip-test', 'Skip tests of image')
+        .option('-p, --publish', 'Publish tested image')
+        .option('--cleanup', 'Perform cleanup of old resources')
+        .option('--mode [mode]',/^(packer|windows)$/i)
+        .parse(process.argv);
+
     try {
+        const input_file = program.config;
+        const mode = program.mode;
         const content = await readFile(input_file);
         const config = yaml.safeLoad(content);
         config.template_file = config.template_file || input_file.replace('config', 'templates').replace('.yaml', '.json');
-        const imageId = await buildImage(mode, config);
-        await testImage(mode, config, imageId);
-        await publishImage(imageId, config.image_tenant_access || '*');
+        let imageId;
+        if(!program.image) {
+            imageId = await buildImage(mode, config);
+        }else{
+            imageId = program.image;
+        }
+        if(!program.skipTest){
+            await testImage(mode, config, imageId);
+        }
+        if(program.publish) {
+            await publishImage(imageId, config.image_tenant_access || '*');
+        }
     } finally {
-        await cleanupImage();
-        await cleanupVm();
-        await cleanupDisk();
-        await cleanupIp();
+        if(program.cleanup) {
+            await cleanupImage();
+            await cleanupVm();
+            await cleanupDisk();
+            await cleanupIp();
+        }
     }
 };
 
-main(process.argv[2], process.argv[3]).then(console.log).catch(err => {
+main().then(console.log).catch(err => {
     console.error(err);
     console.error(err.stack);
     process.exit(1);
