@@ -9,7 +9,6 @@
   "builders": [
     {
       "type": "hyperone",
-      "vm_name": "image-builder",
       "source_image": "fedora:28",
       "image_name": "image-builder-fedora",
       "disk_size": 10,
