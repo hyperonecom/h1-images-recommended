@@ -44,6 +44,15 @@ def get_manage_etc_hosts():
     return True
 
 
+def get_shell():
+    hosts = _read_file('/bin/bash')
+    if hosts:
+        LOG.debug('/bin/bash exists - use bash as default for user')
+        return '/bin/bash'
+    LOG.debug('/bin/bash does not exists - use sh as default for user')
+    return '/bin/sh'
+
+
 def _read_file(filepath):
     try:
         content = util.load_file(filepath).strip()
@@ -81,12 +90,12 @@ def generate_network_config(meta_data, distro):
     ARPING = "arping -c 2 -S "
     ARPING_RHEL = "arping -c 2 -s "
 
-    if distro == 'rhel' or distro == 'fedora':
+    if distro in ['rhel', 'fedora', 'alpine']:
         ARPING=ARPING_RHEL
 
     return {
         'runcmd': [
-            ARPING + ip["address"] + target
+            ARPING + ip["address"] + ' ' + target
             for netadp in meta_data['netadp']
             for ip in netadp['ip']
             for target in [
@@ -127,7 +136,7 @@ def read_user_data_callback(mount_dir, distro):
 
     Input:
         mount_dir - Mount directory
-
+        mount_dir - Distro name
     Returns:
         User Data
 
@@ -163,9 +172,14 @@ def read_user_data_callback(mount_dir, distro):
                     'passwd': hash,
                     'lock_passwd': False,
                     'ssh_authorized_keys': ssh_keys,
-                    'shell': '/bin/bash'
+                    'shell': get_shell()
                 }
             },
+            'chpasswd': {
+                # alpine does not support passwd on
+                # system_info.default_user.passwd
+                'list': username + ":" + hash
+            } if hash else {},
             'network_config': network['config'],
             'manage_etc_hosts': get_manage_etc_hosts(),
             'runcmd': network['runcmd']

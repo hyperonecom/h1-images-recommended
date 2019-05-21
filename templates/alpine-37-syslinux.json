@@ -6,21 +6,20 @@
     "root_fs": "ext4",
     "features": "ata base ide scsi usb virtio ext4",
     "modules": "sd-mod,usb-storage,ext4",
-    "rel": "3.9",
+    "rel": "edge",
     "mirror": "http://dl-cdn.alpinelinux.org/alpine",
     "apkv": "2.10.3-r1",
-    "cloud_init_ds_dir": "/usr/lib/python3.6/site-packages/cloudinit/sources/",
+    "cloud_init_ds_dir": "/usr/lib/python3.7/site-packages/cloudinit/sources/",
     "cloud_init_ds_src": "./resources/cloud-init/ds_v2/DataSourceRbxCloud.py",
     "cloud_init_tmp_path": "/tmp/cloud_init.py",
     "disk_size": "5",
-    "image_name": "Alpine Linux 3.9",
+    "image_name": "Alpine Linux Edge",
     "image_description": "",
     "linux_package": "linux-virt"
   },
   "builders": [
     {
       "type": "hyperone",
-      "vm_name": "packer-5c530ff0-bd94-1870-8fcb-d695f1fe66b7",
       "source_image": "{{user `source_image`}}",
       "vm_type": "a1.medium",
       "disk_size": 10,
@@ -57,10 +56,10 @@
       "chroot_mount_path": "/tmp/mount",
       "mount_partition": 3,
       "post_mount_commands": [
-        "curl -s {{user `mirror`}}/v{{user `rel`}}/main/$(uname -m)/apk-tools-static-{{user `apkv`}}.apk | tar xz",
+        "curl -s {{user `mirror`}}/{{user `rel`}}/main/$(uname -m)/apk-tools-static-{{user `apkv`}}.apk | tar xz",
         "mkdir -p {{.MountPath}}/boot/efi",
         "mount -t vfat {{.Device}}1 {{.MountPath}}/boot/efi",
-        "./sbin/apk.static --repository {{user `mirror`}}/v{{user `rel`}}/main --update-cache --allow-untrusted --root {{.MountPath}} --initdb add alpine-base syslinux"
+        "./sbin/apk.static --repository {{user `mirror`}}/{{user `rel`}}/main --update-cache --allow-untrusted --root {{.MountPath}} --initdb add alpine-base syslinux"
       ]
     }
   ],
@@ -68,32 +67,23 @@
     {
       "type": "shell",
       "inline": [
-        "echo \"/dev/sda3    /    ext4    defaults    1    1\" > /etc/fstab"
+        "echo '/dev/sda3    /    ext4    defaults    1    1' > /etc/fstab"
       ]
     },
     {
       "type": "shell",
       "inline": [
-        "echo {{user `mirror`}}/v{{user `rel`}}/main > /etc/apk/repositories",
-        "echo '@testing {{user `mirror`}}/edge/testing' >> /etc/apk/repositories",
-        "echo '@community {{user `mirror`}}/edge/community' >> /etc/apk/repositories"
+        "echo {{user `mirror`}}/{{user `rel`}}/main > /etc/apk/repositories",
+        "echo {{user `mirror`}}/{{user `rel`}}/community >> /etc/apk/repositories"
       ]
     },
     {
       "type": "shell",
       "inline": [
-        "echo overwrite=1  > /etc/update-extlinux.conf",
-        "echo vesa_menu=0 >> /etc/update-extlinux.conf",
-        "echo default_kernel_opts=\\\"elevator=noop consoleblank=0 console=tty0 console=ttyS0,115200\\\" >> /etc/update-extlinux.conf",
-        "echo modules={{user `modules`}}  >> /etc/update-extlinux.conf",
-        "echo root=/dev/sda3 >> /etc/update-extlinux.conf",
-        "echo verbose=0 >> /etc/update-extlinux.conf",
-        "echo hidden=1 >> /etc/update-extlinux.conf",
-        "echo timeout=1 >> /etc/update-extlinux.conf",
-        "echo default=grsec >> /etc/update-extlinux.conf",
-        "echo serial_port= >> /etc/update-extlinux.conf",
-        "echo serial_baud=115200 >> /etc/update-extlinux.conf",
-        "echo \"password=''\" >> /etc/update-extlinux.conf",
+        "sed 's/default_kernel_opts=.*/default_kernel_opts=\"elevator=noop consoleblank=0 console=tty0 console=ttyS0,115200\"/' -i /etc/update-extlinux.conf",
+        "sed 's/modules=.*/modules=\"{{user `modules`}}\"/' -i /etc/update-extlinux.conf",
+        "sed 's@root=.*@root=/dev/sda3@' -i /etc/update-extlinux.conf",
+        "sed 's/serial_baud=.*/serial_baud=115200/' -i /etc/update-extlinux.conf",
         "sed -e 's;^#ttyS0;ttyS0;g' -i /etc/inittab",
         "cat /etc/update-extlinux.conf"
       ]
@@ -101,13 +91,8 @@
     {
       "type": "shell",
       "inline": [
-        "cat /etc/update-extlinux.conf"
-      ]
-    },
-    {
-      "type": "shell",
-      "inline": [
-        "cat /etc/mkinitfs/mkinitfs.conf"
+        "echo 'nameserver 9.9.9.9' > /etc/resolv.conf",
+        "echo 'nameserver 8.8.8.8' > /etc/resolv.conf"
       ]
     },
     {
@@ -121,17 +106,12 @@
     {
       "type": "shell",
       "inline": [
-        "echo 'nameserver 9.9.9.9' > /etc/resolv.conf",
-        "echo 'nameserver 8.8.8.8' > /etc/resolv.conf"
-      ]
-    },
-    {
-      "type": "shell",
-      "inline": [
-        "apk add py3-serial@testing py3-jsonpointer@testing py3-configobj@community py3-jsonschema@community cloud-init@testing py3-attrs cloud-init-openrc@testing",
-        "wget https://files.pythonhosted.org/packages/8c/46/4e93ab8a379d7efe93f20a0fb8a27bdfe88942cc954ab0210c3164e783e0/pyrsistent-0.14.11.tar.gz -O /tmp/pyrsistent.tar.gz",
-        "tar xvzf /tmp/pyrsistent.tar.gz -C /tmp",
-        "cd /tmp/pyrsistent-0.14.11/ && python3 ./setup.py install",
+        "apk --no-cache add --repository {{user `mirror`}}/{{user `rel`}}/testing cloud-init cloud-init-openrc",
+        "apk --no-cache add eudev # to provide mdadm required by cloud-init (installed size: 1.17 MB)",
+        "apk --no-cache add ifupdown # to provide 'ip --all' required by cloud-init (installed size: 84 kB)",
+        "apk --no-cache add iproute2 # to provide 'ip addr show permanent' required by cloud-init (installed size: 1.66MB)",
+        "apk --no-cache add openssh-server # to provide ssh connectivity (managed by cloud-init)",
+        "apk --no-cache add sudo # to provide root access (users managed by cloud-init)",
         "echo 'datasource_list: [ RbxCloud ]' > /etc/cloud/cloud.cfg.d/90_dpkg.cfg"
       ]
     },
@@ -150,18 +130,13 @@
       "type": "shell",
       "inline": [
         "apk -U add haveged && rc-update add haveged",
-        "sed \"/after localmount/a  after haveged\" -i /etc/init.d/cloud-init-local"
+        "sed '/after localmount/a    after haveged' -i /etc/init.d/cloud-init-local",
+        "cat /etc/init.d/cloud-init-local"
       ]
     },
     {
       "type": "shell",
       "inline": [
-        "ls -lah /usr/lib/python3.6/site-packages/cloudinit/sources/",
-        "apk --no-cache add eudev # to provide mdadm required by cloud-init (installed size: 1.17 MB)",
-        "apk --no-cache add ifupdown # to provide \"ip --all\" required by cloud-init (installed size: 84 kB)",
-        "apk --no-cache add iproute2 # to provide \"ip addr show permanent\" required by cloud-init (installed size: 1.66MB)",
-        "# apk --no-cache add dosfstools # to provide \"mkfs.vfat\" for \"devfs\" (installed size: 144 kB)",
-        "apk --no-cache add openssh-server # to provide ssh connectivity (managed by cloud-init)",
         "rc-update -q add devfs sysinit",
         "rc-update -q add dmesg sysinit",
         "rc-update -q add mdev sysinit",
