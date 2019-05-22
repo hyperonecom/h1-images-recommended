@@ -1,52 +1,70 @@
 language: nodejs
 jobs:
   include:
-    - stage: basic
-      env:
-        - CONFIG="templates/builder-fedora.json" MODE="packer" SCOPE=H1
-        - CONFIG="templates/builder-fedora.json" MODE="packer" SCOPE=RBX
     - stage: primary
-      env:
-        - CONFIG="config/packer/alpine-linux-edge.yaml" MODE="packer" SCOPE=H1
-        - CONFIG="config/packer/centos-6.yaml" MODE="packer" SCOPE=H1
-        - CONFIG="config/packer/centos-7.yaml" MODE="packer" SCOPE=H1
-        - CONFIG="config/packer/debian-8.yaml" MODE="packer" SCOPE=H1
-        - CONFIG="config/packer/debian-9.yaml" MODE="packer" SCOPE=H1
-        - CONFIG="config/packer/fedora-28.yaml" MODE="packer" SCOPE=H1
-        - CONFIG="config/packer/fedora-29.yaml" MODE="packer" SCOPE=H1
-        - CONFIG="config/packer/ubuntu-1604-desktop.yaml" MODE="packer" SCOPE=H1
-        - CONFIG="config/packer/ubuntu-1604.yaml" MODE="packer" SCOPE=H1
-        - CONFIG="config/packer/ubuntu-1804-desktop.yaml" MODE="packer" SCOPE=H1
-        - CONFIG="config/packer/ubuntu-1804.yaml" MODE="packer" SCOPE=H1
-        - CONFIG="config/packer/ubuntu-1810-desktop.yaml" MODE="packer" SCOPE=H1
-        - CONFIG="config/packer/ubuntu-1810.yaml" MODE="packer" SCOPE=H1
-        - CONFIG="config/packer/ubuntu-1904-desktop.yaml" MODE="packer" SCOPE=H1
-        - CONFIG="config/packer/ubuntu-1904.yaml" MODE="packer" SCOPE=H1
-        - CONFIG="config/packer/alpine-linux-edge.yaml" MODE="packer" SCOPE=RBX
-        - CONFIG="config/packer/centos-6.yaml" MODE="packer" SCOPE=RBX
-        - CONFIG="config/packer/centos-7.yaml" MODE="packer" SCOPE=RBX
-        - CONFIG="config/packer/debian-8.yaml" MODE="packer" SCOPE=RBX
-        - CONFIG="config/packer/debian-9.yaml" MODE="packer" SCOPE=RBX
-        - CONFIG="config/packer/fedora-28.yaml" MODE="packer" SCOPE=RBX
-        - CONFIG="config/packer/fedora-29.yaml" MODE="packer" SCOPE=RBX
-        - >-
-          CONFIG="config/packer/ubuntu-1604-desktop.yaml" MODE="packer"
-          SCOPE=RBX
-        - CONFIG="config/packer/ubuntu-1604.yaml" MODE="packer" SCOPE=RBX
-        - >-
-          CONFIG="config/packer/ubuntu-1804-desktop.yaml" MODE="packer"
-          SCOPE=RBX
-        - CONFIG="config/packer/ubuntu-1804.yaml" MODE="packer" SCOPE=RBX
-        - >-
-          CONFIG="config/packer/ubuntu-1810-desktop.yaml" MODE="packer"
-          SCOPE=RBX
-        - CONFIG="config/packer/ubuntu-1810.yaml" MODE="packer" SCOPE=RBX
-        - >-
-          CONFIG="config/packer/ubuntu-1904-desktop.yaml" MODE="packer"
-          SCOPE=RBX
-        - CONFIG="config/packer/ubuntu-1904.yaml" MODE="packer" SCOPE=RBX
-    - stage: apps
-      env: []
+      env: CONFIG="config/packer/centos-6.yaml" MODE="packer" SCOPE=H1
+    - stage: primary
+      env: CONFIG="config/packer/centos-6.yaml" MODE="packer" SCOPE=RBX
+    - stage: primary
+      env: CONFIG="config/packer/centos-7.yaml" MODE="packer" SCOPE=H1
+    - stage: primary
+      env: CONFIG="config/packer/centos-7.yaml" MODE="packer" SCOPE=RBX
+    - stage: primary
+      env: CONFIG="config/packer/debian-8.yaml" MODE="packer" SCOPE=H1
+    - stage: primary
+      env: CONFIG="config/packer/debian-8.yaml" MODE="packer" SCOPE=RBX
+    - stage: primary
+      env: CONFIG="config/packer/debian-9.yaml" MODE="packer" SCOPE=H1
+    - stage: primary
+      env: CONFIG="config/packer/debian-9.yaml" MODE="packer" SCOPE=RBX
+    - stage: primary
+      env: CONFIG="config/packer/fedora-28.yaml" MODE="packer" SCOPE=H1
+    - stage: primary
+      env: CONFIG="config/packer/fedora-28.yaml" MODE="packer" SCOPE=RBX
+    - stage: primary
+      env: CONFIG="config/packer/fedora-29.yaml" MODE="packer" SCOPE=H1
+    - stage: primary
+      env: CONFIG="config/packer/fedora-29.yaml" MODE="packer" SCOPE=RBX
+    - stage: primary
+      env: CONFIG="config/packer/ubuntu-1604-desktop.yaml" MODE="packer" SCOPE=H1
+    - stage: primary
+      env: CONFIG="config/packer/ubuntu-1604-desktop.yaml" MODE="packer" SCOPE=RBX
+    - stage: primary
+      env: CONFIG="config/packer/ubuntu-1604.yaml" MODE="packer" SCOPE=H1
+    - stage: primary
+      env: CONFIG="config/packer/ubuntu-1604.yaml" MODE="packer" SCOPE=RBX
+    - stage: primary
+      env: CONFIG="config/packer/ubuntu-1804-desktop.yaml" MODE="packer" SCOPE=H1
+    - stage: primary
+      env: CONFIG="config/packer/ubuntu-1804-desktop.yaml" MODE="packer" SCOPE=RBX
+    - stage: primary
+      env: CONFIG="config/packer/ubuntu-1804.yaml" MODE="packer" SCOPE=H1
+    - stage: primary
+      env: CONFIG="config/packer/ubuntu-1804.yaml" MODE="packer" SCOPE=RBX
+    - stage: primary
+      env: CONFIG="config/packer/ubuntu-1810-desktop.yaml" MODE="packer" SCOPE=H1
+    - stage: primary
+      env: CONFIG="config/packer/ubuntu-1810-desktop.yaml" MODE="packer" SCOPE=RBX
+    - stage: primary
+      env: CONFIG="config/packer/ubuntu-1810.yaml" MODE="packer" SCOPE=H1
+    - stage: primary
+      env: CONFIG="config/packer/ubuntu-1810.yaml" MODE="packer" SCOPE=RBX
+    - stage: primary
+      env: CONFIG="config/packer/ubuntu-1904-desktop.yaml" MODE="packer" SCOPE=H1
+    - stage: primary
+      env: CONFIG="config/packer/ubuntu-1904-desktop.yaml" MODE="packer" SCOPE=RBX
+    - stage: primary
+      env: CONFIG="config/packer/ubuntu-1904.yaml" MODE="packer" SCOPE=H1
+    - stage: primary
+      env: CONFIG="config/packer/ubuntu-1904.yaml" MODE="packer" SCOPE=RBX
+    - stage: secondary
+      env: CONFIG="config/packer/alpine-docker.yaml" MODE="packer" SCOPE=H1
+    - stage: secondary
+      env: CONFIG="config/packer/alpine-docker.yaml" MODE="packer" SCOPE=RBX
+    - stage: secondary
+      env: CONFIG="config/packer/alpine-linux-edge.yaml" MODE="packer" SCOPE=H1
+    - stage: secondary
+      env: CONFIG="config/packer/alpine-linux-edge.yaml" MODE="packer" SCOPE=RBX
 script:
   - travis_retry ./buildTravis.sh
 before_install:

@@ -9,37 +9,30 @@ const readFile = util.promisify(fs.readFile);
 
 const scope_list = ['H1', 'RBX'];
 
-const buildEnv = templates => [].concat(
-    ...scope_list.map(scope =>
-        templates.map(template => `CONFIG="${template}" MODE="packer" SCOPE=${scope}`)
-    )
-);
+const templateByStage = (templates, test) => {
+    const stages = [];
 
-const templateByStage = (templates, test) => Object.entries(templates)
-    .filter(([, config]) => test(config))
-    .map(([template]) => {
-        console.log({template});
-        return template
-    });
+    for (const [template, config] of Object.entries(templates)) {
+        if (!test(config)) {
+            continue;
+        }
+        for (const scope of scope_list) {
+            stages.push({
+                stage: config.stage || 'primary',
+                env:`CONFIG="${template}" MODE="packer" SCOPE=${scope}`
+            })
+        }
+    }
+    return stages;
+};
 
 const render = templates => ({
     language: "nodejs",
     jobs: {
         include: [
-            {
-                stage: "basic",
-                env: buildEnv([
-                    'templates/builder-fedora.json'
-                ])
-            },
-            {
-                stage: "primary",
-                env: buildEnv(templateByStage(templates, config => config.stage !== 'secondary'))
-            },
-            {
-                stage: "apps",
-                env: buildEnv(templateByStage(templates, config => config.stage === 'secondary'))
-            }
+            ...templateByStage(templates, config => !config.stage || config.stage === 'primary'),
+            ...templateByStage(templates, config => config.stage === 'secondary'),
+            ...templateByStage(templates, config => config.stage === 'apps'),
         ]
     },
     script: [
@@ -55,7 +48,7 @@ const main = async () => {
     const files = await readDir(path);
     const templates = {};
     for (const template of files.filter(x => x.endsWith('.yaml')).map(file => join(path, file))) {
-        templates[template] = await readFile(template);
+        templates[template] = yaml.safeLoad(await readFile(template));
     }
     const output_content = yaml.safeDump(render(templates), null, 4);
     await writeFile('./.travis.yml', output_content);
