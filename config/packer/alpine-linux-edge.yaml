@@ -1,0 +1,12 @@
+name: alpine-edge
+distro: alpine
+edition: server
+codename: edge
+pname: Alpine Linux Edge
+arch: x64
+version: 'edge'
+disk_size: '5'
+uefi_support: '0'
+format: qcow
+template_file: templates/manual/alpine-edge-syslinux.json
+stage: 'secondary'

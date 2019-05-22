@@ -6,19 +6,28 @@ const readDir = util.promisify(fs.readdir);
 const writeFile = util.promisify(fs.writeFile);
 const {join} = require('path');
 const yaml = require('js-yaml');
+const {qcow} = require('./lib/naming');
 
 const render_templates = config => {
     const chroot_mounts = [
-                    ["proc", "proc", "/proc"],
-                    ["sysfs", "sysfs", "/sys"],
-                    ["bind", "/dev", "/dev"],
-                    ["devpts", "devpts", "/dev/pts"],
-                    ["binfmt_misc", "binfmt_misc", "/proc/sys/fs/binfmt_misc"],
-                ];
-    if(config.selinux === '1') {
+        ["proc", "proc", "/proc"],
+        ["sysfs", "sysfs", "/sys"],
+        ["bind", "/dev", "/dev"],
+        ["devpts", "devpts", "/dev/pts"],
+        ["binfmt_misc", "binfmt_misc", "/proc/sys/fs/binfmt_misc"],
+    ];
+    if (config.selinux === '1') {
         // Extra selinuxfs for SELinux & 'fixfiles' command
         chroot_mounts.push(["selinuxfs", "none", "/sys/fs/selinux"]);
     }
+    const tags = {
+        "arch": config.arch,
+        "distro": config.distro,
+        "release": config.version,
+        "edition": config.edition,
+        "codename": config.codename,
+        "recommended": {"disk": {"size": 20}}
+    };
     return {
         variables: {
             source_image: "image-builder-fedora",
@@ -35,14 +44,7 @@ const render_templates = config => {
             disk_size: "10",
             image_name: config.pname,
             ssh_name: 'my-ssh',
-            image_description: JSON.stringify({
-                "arch":config.arch,
-                "distro":config.distro,
-                "release":config.version,
-                "edition":config.edition,
-                "codename":config.codename,
-                "recommended":{"disk":{"size":20}}
-            }),
+            image_description: JSON.stringify(tags),
             public_netadp_service: "public",
             vm_type: 'a1.small'
         },
@@ -110,14 +112,17 @@ const render_templates = config => {
 
 
 const main = async () => {
-    const path = './config/qcow';
+    const path = './config/packer';
     const files = await readDir(path);
     for (const file of files.filter(x => x.endsWith('.yaml'))) {
         const input_content = await readFile(join(path, file));
         const config = yaml.safeLoad(input_content);
+        if(config.format !== 'qcow'){
+            continue;
+        }
         const template = render_templates(config);
         const output_content = JSON.stringify(template, null, 4);
-        await writeFile(join('./templates/qcow', file.replace('.yaml', '.json')), output_content);
+        await writeFile(join('./templates/qcow', `${qcow(config)}`), output_content);
     }
 };
 main().then(console.log).catch(console.error);

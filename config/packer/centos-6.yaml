@@ -14,3 +14,4 @@ custom_scripts:
   - ./scripts/centos/centos-6.sh
 uefi_support: '0'
 selinux: '1'
+format: qcow

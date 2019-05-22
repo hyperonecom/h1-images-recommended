@@ -14,6 +14,18 @@
         "image_name": "Ubuntu 16.04 (xenial xerus)",
         "ssh_name": "my-ssh",
         "image_description": "{\"arch\":\"x64\",\"distro\":\"ubuntu\",\"release\":\"16.04\",\"edition\":\"server\",\"codename\":\"xenial xerus\",\"recommended\":{\"disk\":{\"size\":20}}}",
+        "image_tags": {
+            "arch": "x64",
+            "distro": "ubuntu",
+            "release": "16.04",
+            "edition": "server",
+            "codename": "xenial xerus",
+            "recommended": {
+                "disk": {
+                    "size": 20
+                }
+            }
+        },
         "public_netadp_service": "public",
         "vm_type": "a1.small"
     },

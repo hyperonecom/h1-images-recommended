@@ -11,7 +11,7 @@ declare DISK_SIZE="10";
 declare USER="clouduser"
 declare USERDATA="./tests/userdata"
 declare SSH_KEY_NAME="";
-declare NETWORK="5784e97be2627505227b578c";
+declare NETWORK="builder-network";
 
 while getopts "s:i:o:v:d:n:c:" opt; do
   case $opt in
@@ -51,6 +51,7 @@ VM_NAME="image-${IMAGE}-test"
 PASSWORD=$(openssl rand -hex 15)
 
 EXTERNAL_IP=$(${RBX_CLI} ip create --query "[].{ip:address}" -o tsv);
+
 if [ "$os" == "windows" ]; then
 	INTERNAL_IP=$(${RBX_CLI} network ip create --network $NETWORK -o id);
 fi;
@@ -76,7 +77,7 @@ VM_DISK_ID=$(${RBX_CLI} vm disk list --vm $VM_ID --output tsv --query "[].{disk:
 RBX_CLI="$RBX_CLI" VM_ID="$VM_ID" IMAGE_ID="$IMAGE" USER="$USER" IP="$EXTERNAL_IP" HOSTNAME="$VM_NAME" bats "./tests/common.bats"
 
 if [ "$os" == "packer" ]; then
-	for i in {1..300}; do echo -n '.'; sleep 1; done; echo "";
+	for i in {1..60}; do echo -n '.'; sleep 1; done; echo "";
 	${RBX_CLI} vm serialport log --vm "$VM_ID";
 	ping -c 3 "$VM_IP";
 	RBX_CLI="$RBX_CLI" USER="$USER" IP="$EXTERNAL_IP" HOSTNAME="$VM_NAME" bats "./tests/${os}.bats"

@@ -15,3 +15,4 @@ custom_scripts:
   - ./scripts/fedora/fedora-28.sh
 uefi_support: '0'
 selinux: '1'
+format: qcow

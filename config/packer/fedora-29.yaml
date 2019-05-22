@@ -16,3 +16,4 @@ custom_scripts:
   - ./scripts/fedora/fedora-29.sh
 uefi_support: '0'
 selinux: '1'
+format: qcow

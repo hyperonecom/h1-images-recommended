@@ -1,0 +1,39 @@
+{
+  "variables": {
+    "source_image": "5ce4b4bdcff350f992b365f5",
+    "disk_size": "2",
+    "ssh_name": "my-ssh",
+    "public_netadp_service": "public",
+    "vm_type": "a1.medium",
+    "image_description": "{\"arch\":\"x64\",\"distro\":\"docker\",\"release\":\"edge\",\"edition\":\"server\",\"codename\":\"alpine\",\"recommended\":{\"disk\":{\"size\":5}}}",
+    "scripts": "./scripts/alpine/docker.sh,./scripts/cleanup_linux.sh"
+  },
+  "builders": [
+    {
+      "type": "hyperone",
+      "vm_name": "image-builder",
+      "source_image": "{{user `source_image`}}",
+      "image_name": "alpine-docker",
+      "disk_size": 10,
+      "vm_type": "{{user `vm_type`}}",
+      "ssh_keys": "{{user `ssh_name`}}",
+      "public_netadp_service": "{{user `public_netadp_service`}}",
+      "image_description": "{{user `image_description`}}",
+      "ssh_file_transfer_method": "sftp",
+      "ssh_read_write_timeout": "30s"
+    },
+    {
+      "type": "docker",
+      "image": "alpine",
+      "commit": true,
+      "run_command": ["-d", "-i", "-t", "--entrypoint=/bin/sh", "--", "{{.Image}}"]
+    }
+  ],
+  "provisioners": [
+    {
+      "type": "shell",
+      "scripts": "{{user `scripts`}}",
+      "execute_command": "chmod +x {{ .Path }}; {{ .Vars }} sudo -E {{ .Path }}"
+    }
+  ]
+}

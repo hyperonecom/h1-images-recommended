@@ -14,6 +14,18 @@
         "image_name": "CentOS 7",
         "ssh_name": "my-ssh",
         "image_description": "{\"arch\":\"x64\",\"distro\":\"centos\",\"release\":\"7\",\"edition\":\"server\",\"codename\":\"core\",\"recommended\":{\"disk\":{\"size\":20}}}",
+        "image_tags": {
+            "arch": "x64",
+            "distro": "centos",
+            "release": "7",
+            "edition": "server",
+            "codename": "core",
+            "recommended": {
+                "disk": {
+                    "size": 20
+                }
+            }
+        },
         "public_netadp_service": "public",
         "vm_type": "a1.small"
     },
