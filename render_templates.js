@@ -28,6 +28,7 @@ const render_templates = config => {
         "codename": config.codename,
         "recommended": {"disk": {"size": 20}}
     };
+
     return {
         variables: {
             source_image: "image-builder-fedora",

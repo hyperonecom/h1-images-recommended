@@ -7,6 +7,5 @@ arch: x64
 version: 'alpine'
 disk_size: '5'
 uefi_support: '0'
-format: qcow
 template_file: templates/manual/alpine-docker.json
 stage: 'secondary'

@@ -14,18 +14,6 @@
         "image_name": "Debian GNU/Linux 8 (jessie)",
         "ssh_name": "my-ssh",
         "image_description": "{\"arch\":\"x64\",\"distro\":\"debian\",\"release\":\"8\",\"edition\":\"server\",\"codename\":\"jessie\",\"recommended\":{\"disk\":{\"size\":20}}}",
-        "image_tags": {
-            "arch": "x64",
-            "distro": "debian",
-            "release": "8",
-            "edition": "server",
-            "codename": "jessie",
-            "recommended": {
-                "disk": {
-                    "size": 20
-                }
-            }
-        },
         "public_netadp_service": "public",
         "vm_type": "a1.small"
     },
