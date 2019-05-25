@@ -33,11 +33,11 @@ from cloudinit.netinfo import netdev_info
 
 LOG = logging.getLogger(__name__)
 ETC_HOSTS = '/etc/hosts'
+BIN_BASH = '/bin/bash'
 
 
 def get_manage_etc_hosts():
-    hosts = _read_file(ETC_HOSTS)
-    if hosts:
+    if os.path.isfile(ETC_HOSTS):
         LOG.debug('/etc/hosts exists - setting manage_etc_hosts to False')
         return False
     LOG.debug('/etc/hosts does not exists - setting manage_etc_hosts to True')
@@ -45,8 +45,7 @@ def get_manage_etc_hosts():
 
 
 def get_shell():
-    hosts = _read_file('/bin/bash')
-    if hosts:
+    if os.path.isfile('/bin/bash'):
         LOG.debug('/bin/bash exists - use bash as default for user')
         return '/bin/bash'
     LOG.debug('/bin/bash does not exists - use sh as default for user')
@@ -66,13 +65,11 @@ def _get_meta_data(filepath):
     content = _read_file(filepath)
     if not content:
         return None
-
     try:
         content = util.load_json(content)
     except Exception:
         util.logexc(LOG, 'Failed parsing meta data file from json.')
         return None
-
     return content
 
 

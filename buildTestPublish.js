@@ -115,7 +115,7 @@ const main = async () => {
         const mode_runtime = require(`./lib/build_modes/${mode}.js`);
         const content = await readFile(input_file);
         const imageConfig = yaml.safeLoad(content);
-        imageConfig.template_file = config.template_file || `templates/qcow/${qcow(imageConfig)}`;
+        imageConfig.template_file = imageConfig.template_file || `templates/qcow/${qcow(imageConfig)}`;
         let imageId;
         if(!program.image) {
             imageId = await mode_runtime.build(imageConfig, platformConfig);
