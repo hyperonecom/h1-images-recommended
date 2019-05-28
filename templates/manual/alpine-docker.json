@@ -18,7 +18,7 @@
     "public_netadp_service": "public",
     "vm_type": "a1.small",
     "linux_package": "linux-virt",
-    "image_description": "{\"arch\":\"x64\",\"distro\":\"docker\",\"release\":\"edge\",\"edition\":\"server\",\"codename\":\"alpine\",\"recommended\":{\"disk\":{\"size\":5}}}"
+    "image_description": "{\"arch\":\"x64\",\"distro\":\"alpine\",\"release\":\"3.9\",\"edition\":\"docker\",\"codename\":\"edge\",\"recommended\":{\"disk\":{\"size\":5}}}"
   },
   "builders": [
     {
