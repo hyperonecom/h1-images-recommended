@@ -1,39 +1,89 @@
 {
   "variables": {
-    "source_image": "5ce4b4bdcff350f992b365f5",
+    "source_image": "image-builder-fedora",
+    "efi_fs": "vfat",
+    "cloud_fs": "vfat",
+    "root_fs": "ext4",
+    "features": "ata base ide scsi usb virtio ext4",
+    "modules": "sd-mod,usb-storage,ext4",
+    "rel": "edge",
+    "mirror": "http://dl-cdn.alpinelinux.org/alpine",
+    "apkv": "2.10.3-r1",
+    "cloud_init_ds_dir": "/usr/lib/python3.7/site-packages/cloudinit/sources/",
+    "cloud_init_ds_src": "./resources/cloud-init/ds_v2/DataSourceRbxCloud.py",
+    "cloud_init_tmp_path": "/tmp/cloud_init.py",
     "disk_size": "2",
-    "ssh_name": "my-ssh",
+    "scripts": "./scripts/alpine/edge.sh,./scripts/alpine/docker.sh,./scripts/cleanup_linux.sh",
+    "image_name": "Alpine Docker",
     "public_netadp_service": "public",
-    "vm_type": "a1.medium",
-    "image_description": "{\"arch\":\"x64\",\"distro\":\"docker\",\"release\":\"edge\",\"edition\":\"server\",\"codename\":\"alpine\",\"recommended\":{\"disk\":{\"size\":5}}}",
-    "scripts": "./scripts/alpine/docker.sh,./scripts/cleanup_linux.sh"
+    "vm_type": "a1.small",
+    "linux_package": "linux-virt",
+    "image_description": "{\"arch\":\"x64\",\"distro\":\"docker\",\"release\":\"edge\",\"edition\":\"server\",\"codename\":\"alpine\",\"recommended\":{\"disk\":{\"size\":5}}}"
   },
   "builders": [
     {
       "type": "hyperone",
-      "vm_name": "image-builder",
-      "source_image": "{{user `source_image`}}",
-      "image_name": "alpine-docker",
       "disk_size": 10,
+      "chroot_disk": true,
+      "mount_partition": 3,
+      "source_image": "{{user `source_image`}}",
       "vm_type": "{{user `vm_type`}}",
       "ssh_keys": "{{user `ssh_name`}}",
-      "public_netadp_service": "{{user `public_netadp_service`}}",
+      "chroot_command_wrapper": "sudo {{.Command}}",
+      "chroot_disk_size": "{{user `disk_size`}}",
+      "image_name": "{{user `image_name`}}",
       "image_description": "{{user `image_description`}}",
-      "ssh_file_transfer_method": "sftp",
-      "ssh_read_write_timeout": "30s"
-    },
-    {
-      "type": "docker",
-      "image": "alpine",
-      "commit": true,
-      "run_command": ["-d", "-i", "-t", "--entrypoint=/bin/sh", "--", "{{.Image}}"]
+      "public_netadp_service": "{{user `public_netadp_service`}}",
+      "pre_mount_commands": [
+        "sgdisk -Z {{.Device}}",
+        "sgdisk -n 1:0:+50MB {{.Device}}",
+        "sgdisk -t 1:8300 {{.Device}}",
+        "sgdisk -c 1:EFI {{.Device}}",
+        "sgdisk -n 2:0:+50MB {{.Device}}",
+        "sgdisk -t 2:EBD0A0A2-B9E5-4433-87C0-68B6B72699C7 {{.Device}}",
+        "sgdisk -c 2:CLOUDMD {{.Device}}",
+        "sgdisk -n 3:0:+1GB {{.Device}}",
+        "sgdisk -t 3:8300 {{.Device}}",
+        "sgdisk -c 3:ROOT {{.Device}}",
+        "sgdisk -A 3:set:2 {{.Device}}",
+        "partprobe",
+        "sleep 1",
+        "mkfs.fat {{.Device}}1",
+        "mkfs.fat {{.Device}}2",
+        "dosfslabel {{.Device}}1 EFI",
+        "dosfslabel {{.Device}}2 CLOUDMD",
+        "mkfs.{{user `root_fs`}} {{.Device}}3",
+        "parted {{.Device}} print"
+      ],
+      "post_mount_commands": [
+        "curl -s {{user `mirror`}}/{{user `rel`}}/main/$(uname -m)/apk-tools-static-{{user `apkv`}}.apk | tar xz",
+        "mkdir -p {{.MountPath}}/boot/efi",
+        "mount -t vfat {{.Device}}1 {{.MountPath}}/boot/efi",
+        "./sbin/apk.static --repository {{user `mirror`}}/{{user `rel`}}/main --update-cache --allow-untrusted --root {{.MountPath}} --initdb add alpine-base syslinux"
+      ]
     }
   ],
   "provisioners": [
     {
       "type": "shell",
       "scripts": "{{user `scripts`}}",
-      "execute_command": "chmod +x {{ .Path }}; {{ .Vars }} sudo -E {{ .Path }}"
+      "environment_vars": [
+        "REL={{user `rel`}}",
+        "MIRROR={{user `mirror`}}",
+        "LINUX_PACKAGE={{user `linux_package`}}",
+        "MODULES={{user `modules`}}"
+      ]
+    },
+    {
+      "type": "file",
+      "source": "{{user `cloud_init_ds_src`}}",
+      "destination": "{{user `cloud_init_tmp_path`}}"
+    },
+    {
+      "type": "shell",
+      "inline": [
+        "mv {{user `cloud_init_tmp_path`}} {{user `cloud_init_ds_dir`}}/DataSourceRbxCloud.py "
+      ]
     }
   ]
 }

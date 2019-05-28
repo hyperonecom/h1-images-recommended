@@ -106,15 +106,15 @@ const main = async () => {
         .option('--skip-test', 'Skip tests of image')
         .option('-p, --publish', 'Publish image')
         .option('--cleanup', 'Perform cleanup of old resources')
-        .option('--mode [mode]', 'Mode of build images', /^(packer|windows)$/i)
+        .option('--mode <mode>', 'Mode of build images', /^(packer|windows)$/i)
         .parse(process.argv);
 
     try {
         const input_file = program.config;
-        const mode = program.mode;
-        const mode_runtime = require(`./lib/build_modes/${mode}.js`);
         const content = await readFile(input_file);
         const imageConfig = yaml.safeLoad(content);
+        const mode = program.mode || imageConfig.mode || 'packer';
+        const mode_runtime = require(`./lib/build_modes/${mode}.js`);
         imageConfig.template_file = imageConfig.template_file || `templates/qcow/${qcow(imageConfig)}`;
         let imageId;
         if(!program.image) {
