@@ -42,7 +42,7 @@ const render_templates = config => {
             cloud_init_ds_dir: config.cloud_init_ds_dir,
             cloud_init_ds_src: config.cloud_init_ds_src || './resources/cloud-init/ds/DataSourceRbxCloud.py',
             // disk_size: config.disk_size || 10,
-            disk_size: "10",
+            disk_size: config.disk_size || "10",
             image_name: config.pname,
             ssh_name: 'my-ssh',
             image_description: JSON.stringify(tags),

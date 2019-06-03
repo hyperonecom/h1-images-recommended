@@ -7,7 +7,7 @@ arch: x64
 version: '29'
 download_url: >-
   https://download.fedoraproject.org/pub/fedora/linux/releases/29/Cloud/x86_64/images/Fedora-Cloud-Base-29-1.2.x86_64.qcow2
-disk_size: '2'
+disk_size: '5'
 qcow_part: /dev/sda1
 cloud_init_ds_src: ./resources/cloud-init/ds_v2/DataSourceRbxCloud.py
 cloud_init_ds_dir: /usr/lib/python3.7/site-packages/cloudinit/sources

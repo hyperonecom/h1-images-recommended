@@ -10,7 +10,7 @@
         "scripts": "./scripts/fedora/fedora-28.sh,./scripts/fedora/fedora-29.sh",
         "cloud_init_ds_dir": "/usr/lib/python3.7/site-packages/cloudinit/sources",
         "cloud_init_ds_src": "./resources/cloud-init/ds_v2/DataSourceRbxCloud.py",
-        "disk_size": "10",
+        "disk_size": "5",
         "image_name": "Fedora 29",
         "ssh_name": "my-ssh",
         "image_description": "{\"arch\":\"x64\",\"distro\":\"fedora\",\"release\":\"29\",\"edition\":\"server\",\"codename\":\"core\",\"recommended\":{\"disk\":{\"size\":20}}}",

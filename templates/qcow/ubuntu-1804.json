@@ -10,7 +10,7 @@
         "scripts": "./scripts/ubuntu/ubuntu-1710.sh",
         "cloud_init_ds_dir": "/usr/lib/python3/dist-packages/cloudinit/sources/",
         "cloud_init_ds_src": "./resources/cloud-init/ds_v2/DataSourceRbxCloud.py",
-        "disk_size": "10",
+        "disk_size": "5",
         "image_name": "Ubuntu 18.04 (bionic beaver)",
         "ssh_name": "my-ssh",
         "image_description": "{\"arch\":\"x64\",\"distro\":\"ubuntu\",\"release\":\"18.04\",\"edition\":\"server\",\"codename\":\"bionic beaver\",\"recommended\":{\"disk\":{\"size\":20}}}",

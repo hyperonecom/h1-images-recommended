@@ -10,7 +10,7 @@
         "scripts": "./scripts/centos/centos-6.sh",
         "cloud_init_ds_dir": "/usr/lib/python2.6/site-packages/cloudinit/sources/",
         "cloud_init_ds_src": "./resources/cloud-init/ds/DataSourceRbxCloud.py",
-        "disk_size": "10",
+        "disk_size": "5",
         "image_name": "CentOS 6",
         "ssh_name": "my-ssh",
         "image_description": "{\"arch\":\"x64\",\"distro\":\"centos\",\"release\":\"6\",\"edition\":\"server\",\"codename\":\"core\",\"recommended\":{\"disk\":{\"size\":20}}}",
