@@ -1,6 +1,6 @@
 {
   "variables": {
-    "source_image": "image-builder-fedora",
+    "source_image": "fedora:29",
     "efi_fs": "vfat",
     "cloud_fs": "vfat",
     "root_fs": "ext4",
@@ -8,17 +8,16 @@
     "modules": "sd-mod,usb-storage,ext4",
     "rel": "edge",
     "mirror": "http://dl-cdn.alpinelinux.org/alpine",
-    "apkv": "2.10.4-r0",
     "cloud_init_ds_dir": "/usr/lib/python3.7/site-packages/cloudinit/sources/",
     "cloud_init_ds_src": "./resources/cloud-init/ds_v2/DataSourceRbxCloud.py",
     "cloud_init_tmp_path": "/tmp/cloud_init.py",
     "disk_size": "2",
-    "scripts": "./scripts/alpine/edge.sh,./scripts/alpine/docker.sh,./scripts/cleanup_linux.sh",
-    "image_name": "Alpine Docker",
+    "scripts": "./scripts/alpine/edge.sh",
+    "image_name": "Alpine Linux Edge",
     "public_netadp_service": "public",
     "vm_type": "a1.small",
     "linux_package": "linux-virt",
-    "image_description": "{\"arch\":\"x64\",\"distro\":\"alpine\",\"release\":\"3.9\",\"edition\":\"docker\",\"codename\":\"edge\",\"recommended\":{\"disk\":{\"size\":5}}}"
+    "image_description": "{\"arch\":\"x64\",\"distro\":\"alpine\",\"release\":\"3.9\",\"edition\":\"server\",\"codename\":\"edge\",\"recommended\":{\"disk\":{\"size\":5}}}"
   },
   "builders": [
     {
@@ -35,6 +34,7 @@
       "image_description": "{{user `image_description`}}",
       "public_netadp_service": "{{user `public_netadp_service`}}",
       "pre_mount_commands": [
+        "sudo yum install -y mtools gdisk dosfstools wget",
         "sgdisk -Z {{.Device}}",
         "sgdisk -n 1:0:+50MB {{.Device}}",
         "sgdisk -t 1:8300 {{.Device}}",
@@ -56,7 +56,7 @@
         "parted {{.Device}} print"
       ],
       "post_mount_commands": [
-        "curl -s {{user `mirror`}}/{{user `rel`}}/main/$(uname -m)/apk-tools-static-{{user `apkv`}}.apk | tar xz",
+        "curl -s {{user `mirror`}}/{{user `rel`}}/main/$(uname -m)/$(curl {{user `mirror`}}/{{user `rel`}}/main/$(uname -m)/ -s | sed -n -E 's/.*(apk-tools-static.*apk).*/\\1/p') | tar xz",
         "mkdir -p {{.MountPath}}/boot/efi",
         "mount -t vfat {{.Device}}1 {{.MountPath}}/boot/efi",
         "./sbin/apk.static --repository {{user `mirror`}}/{{user `rel`}}/main --update-cache --allow-untrusted --root {{.MountPath}} --initdb add alpine-base syslinux"

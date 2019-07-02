@@ -40,6 +40,14 @@ skip
 
 }
 
+@test "resize rootfs" {
+  block_count=$(ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no  ${USER}@${IP} stat / -f -c "%b")
+  [ "$?" -eq 0 ]
+	block_size=$(ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no  ${USER}@${IP} stat / -f -c "%s")
+  [ "$?" -eq 0 ]
+  [ "$(($block_count * $block_size))" -gt "$((5 * 1024 * 1024 * 1024 ))" ]
+}
+
 
 @test "check default target" {
 
@@ -52,8 +60,7 @@ skip
     else
        [ "$target" == "multi-user.target" ]
     fi
-  else 
+  else
     [ 1 ]
   fi
 }
-

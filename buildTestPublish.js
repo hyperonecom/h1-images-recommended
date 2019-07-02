@@ -108,7 +108,9 @@ const main = async () => {
         .option('--cleanup', 'Perform cleanup of old resources')
         .option('--mode <mode>', 'Mode of build images', /^(packer|windows)$/i)
         .parse(process.argv);
-
+        if(!program.config){
+            program.help()
+        }
     try {
         const input_file = program.config;
         const content = await readFile(input_file);

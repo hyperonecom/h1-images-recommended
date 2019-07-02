@@ -13,17 +13,21 @@ cat /etc/update-extlinux.conf;
 apk add "${LINUX_PACKAGE}"
 sed -e 's;^#ttyS0;ttyS0;g' -i /etc/inittab
 extlinux -i /boot
-dd bs=440 conv=notrunc count=1 if=/usr/share/syslinux/gptmbr.bin of=/dev/sdb;
-apk --no-cache add --repository "${MIRROR}/${REL}/testing" cloud-init cloud-init-openrc;
-apk --no-cache add eudev; # to provide mdadm required by cloud-init (installed size: 1.17 MB)
-apk --no-cache add ifupdown; # to provide 'ip --all' required by cloud-init (installed size: 84 kB)
-apk --no-cache add iproute2; # to provide 'ip addr show permanent' required by cloud-init (installed size: 1.66MB)
-apk --no-cache add openssh-server; # to provide ssh connectivity (managed by cloud-init)
+update-extlinux -v
+apk --no-cache add --repository "${MIRROR}/edge/testing" cloud-init cloud-init-openrc
+apk --no-cache add --repository "${MIRROR}/edge/testing" cloud-utils; # to provide growpart required by cloud-init
+apk --no-cache add eudev; # to provide mdadm required by cloud-init
+apk --no-cache add ifupdown; # to provide 'ip --all' required by cloud-init
+apk --no-cache add iproute2; # to provide 'ip addr show permanent' required by cloud-init
+apk --no-cache add openssh-server; # to provide ssh connectivity
 apk --no-cache add openssh-sftp-server; # for Packer-provisionability
 apk --no-cache add sudo; # to provide root access (users managed by cloud-init)
 echo 'datasource_list: [ RbxCloud ]' > /etc/cloud/cloud.cfg.d/90_dpkg.cfg
 apk -U add haveged && rc-update add haveged
 sed '/after localmount/a    after haveged' -i /etc/init.d/cloud-init-local
+dd bs=440 conv=notrunc count=1 if=/usr/share/syslinux/gptmbr.bin of=/dev/sdb;
+dd bs=440 conv=notrunc count=1 if=/dev/sdb | xxd;
+sync;
 cat /etc/init.d/cloud-init-local
 rc-update -q add devfs sysinit
 rc-update -q add dmesg sysinit

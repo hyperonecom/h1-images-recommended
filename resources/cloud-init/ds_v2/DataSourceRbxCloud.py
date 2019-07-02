@@ -87,7 +87,7 @@ def generate_network_config(meta_data, distro):
     ARPING = "arping -c 2 -S "
     ARPING_RHEL = "arping -c 2 -s "
 
-    if distro in ['rhel', 'fedora', 'alpine']:
+    if distro in ['rhel', 'centos', 'fedora', 'alpine']:
         ARPING=ARPING_RHEL
 
     return {
