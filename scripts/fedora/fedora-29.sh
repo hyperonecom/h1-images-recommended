@@ -1,3 +1,4 @@
+#!/bin/sh
 # Update cloud-init version to 18.5
 # See:
 # - https://bugzilla.redhat.com/show_bug.cgi?id=1661441

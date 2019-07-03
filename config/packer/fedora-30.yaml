@@ -1,0 +1,20 @@
+name: fedora-30
+codename: core
+pname: Fedora 30
+distro: fedora
+edition: server
+arch: x64
+version: '30'
+download_url: >-
+  https://ftp.icm.edu.pl/pub/Linux/fedora/linux/releases/30/Cloud/x86_64/images/Fedora-Cloud-Base-30-1.2.x86_64.qcow2
+disk_size: '5'
+qcow_part: /dev/sda1
+cloud_init_ds_src: ./resources/cloud-init/ds_v2/DataSourceRbxCloud.py
+cloud_init_ds_dir: /usr/lib/python3.7/site-packages/cloudinit/sources
+custom_scripts:
+  - ./scripts/fedora/fedora-28.sh
+  - ./scripts/fedora/fedora-29.sh
+  - ./scripts/fedora/fedora-30.sh
+uefi_support: '0'
+selinux: '1'
+format: qcow
