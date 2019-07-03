@@ -1,8 +1,8 @@
-name: debian-9-docker
+name: debian-docker
 codename: docker
 pname: Debian GNU/Linux (with Docker)
 distro: debian
-edition: server
+edition: docker
 arch: x64
 version: '9'
 download_url: >-
