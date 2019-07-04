@@ -13,11 +13,11 @@
     "cloud_init_tmp_path": "/tmp",
     "disk_size": "2",
     "scripts": "./scripts/alpine/edge.sh,./scripts/alpine/docker.sh",
-    "image_name": "Alpine 3.10 Docker",
+    "image_name": "Alpine 3 Docker",
     "public_netadp_service": "public",
     "vm_type": "a1.small",
     "linux_package": "linux-virt",
-    "image_description": "{\"arch\":\"x64\",\"distro\":\"alpine\",\"release\":\"3.10\",\"edition\":\"docker\",\"codename\":\"edge\",\"recommended\":{\"disk\":{\"size\":5}}}"
+    "image_description": "{\"arch\":\"x64\",\"distro\":\"alpine\",\"release\":\"3\",\"edition\":\"docker\",\"codename\":\"edge\",\"recommended\":{\"disk\":{\"size\":5}}}"
   },
   "builders": [
     {
