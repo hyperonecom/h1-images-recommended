@@ -1,10 +1,10 @@
-name: docker-alpine
+name: alpine-3.10-docker
 distro: alpine
 edition: server
-codename: ''
-pname: Alpine Docker
+codename: 'stable'
+pname: Alpine 3.10 Docker
 arch: x64
-version: '3'
+version: '3.10'
 disk_size: '5'
 uefi_support: '0'
 template_file: templates/manual/alpine-3.10-docker.json

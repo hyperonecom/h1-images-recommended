@@ -14,3 +14,4 @@ custom_scripts:
   - ./scripts/debian/debian-10-buster.sh
 uefi_support: '0'
 format: qcow
+image_tenant_access: 5c5d7eb1a5e06e1eb5532770

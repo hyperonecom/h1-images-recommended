@@ -17,7 +17,7 @@
     "public_netadp_service": "public",
     "vm_type": "a1.small",
     "linux_package": "linux-virt",
-    "image_description": "{\"arch\":\"x64\",\"distro\":\"alpine\",\"release\":\"3\",\"edition\":\"server\",\"codename\":\"edge\",\"recommended\":{\"disk\":{\"size\":5}}}"
+    "image_description": "{\"arch\":\"x64\",\"distro\":\"alpine\",\"release\":\"3.10\",\"edition\":\"server\",\"codename\":\"stable\",\"recommended\":{\"disk\":{\"size\":5}}}"
   },
   "builders": [
     {
@@ -34,7 +34,7 @@
       "image_description": "{{user `image_description`}}",
       "public_netadp_service": "{{user `public_netadp_service`}}",
       "pre_mount_commands": [
-        "sudo yum install -y mtools gdisk dosfstools wget",
+        "yum install -y mtools gdisk dosfstools wget",
         "sgdisk -Z {{.Device}}",
         "sgdisk -n 1:0:+50MB {{.Device}}",
         "sgdisk -t 1:8300 {{.Device}}",
