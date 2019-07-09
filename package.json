@@ -8,6 +8,6 @@
   "dependencies": {
     "commander": "^2.20.0",
     "hyper_one_api": "https://github.com/hyperonecom/h1-client-js/archive/v0.0.2.tar.gz",
-    "js-yaml": "^3.12.1"
+    "js-yaml": "^3.13.1"
   }
 }
