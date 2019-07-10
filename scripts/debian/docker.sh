@@ -1,6 +1,6 @@
 #!/bin/sh
 # Docker-Engine + Docker-CLI
-apt-get install \
+apt-get install -y \
     apt-transport-https \
     ca-certificates \
     curl \
