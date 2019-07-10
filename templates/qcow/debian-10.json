@@ -4,7 +4,7 @@
         "download_path": "/home/guru/image-{{timestamp}}.qcow",
         "mount_qcow_path": "/home/guru/qcow-{{timestamp}}",
         "cloud_init_tmp_path": "/tmp/cloud_init.py",
-        "download_url": "http://cdimage.debian.org/images/cloud/OpenStack/10.0.0/debian-10.0.0-openstack-amd64.qcow2",
+        "download_url": "http://cdimage.debian.org/images/cloud/OpenStack/current-10/debian-10-openstack-amd64.qcow2",
         "qcow_part": "/dev/sda1",
         "img_fs": "ext4",
         "scripts": "./scripts/debian/debian-10-buster.sh",
