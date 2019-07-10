@@ -4,14 +4,14 @@ pname: Debian GNU/Linux (with Docker)
 distro: debian
 edition: docker
 arch: x64
-version: '9'
+version: '10'
 download_url: >-
-  https://cdimage.debian.org/cdimage/openstack/current-9/debian-9-openstack-amd64.qcow2
+  http://cdimage.debian.org/images/cloud/OpenStack/current-10/debian-10-openstack-amd64.qcow2
 disk_size: '5'
 qcow_part: /dev/sda1
 cloud_init_ds_dir: /usr/lib/python3/dist-packages/cloudinit/sources/
 custom_scripts:
-  - ./scripts/debian/debian-8-jessie.sh
+  - ./scripts/debian/debian-10-buster.sh
   - ./scripts/debian/docker.sh
 uefi_support: '0'
 format: qcow
