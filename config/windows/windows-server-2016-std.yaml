@@ -7,7 +7,7 @@ edition: standard
 arch: x64
 version: "2016"
 iso: 598872a120793a9932894dfa
-disk_size: "25"
+disk_size: "40"
 disk_type: ssd
 vm_type: m2.medium
 image_recommended_disk_size: "50"
