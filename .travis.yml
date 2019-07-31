@@ -12,10 +12,6 @@ jobs:
     - stage: primary
       env: CONFIG="config/packer/alpine-3.10.yaml" MODE="packer" SCOPE=RBX
     - stage: primary
-      env: CONFIG="config/packer/centos-6.yaml" MODE="packer" SCOPE=H1
-    - stage: primary
-      env: CONFIG="config/packer/centos-6.yaml" MODE="packer" SCOPE=RBX
-    - stage: primary
       env: CONFIG="config/packer/centos-7.yaml" MODE="packer" SCOPE=H1
     - stage: primary
       env: CONFIG="config/packer/centos-7.yaml" MODE="packer" SCOPE=RBX
