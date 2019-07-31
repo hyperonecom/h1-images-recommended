@@ -47,7 +47,10 @@ const render_templates = config => {
             ssh_name: 'my-ssh',
             image_description: JSON.stringify(tags),
             public_netadp_service: "public",
-            vm_type: 'a1.small'
+            vm_type: 'a1.small',
+            repository: 'https://packages.hyperone.cloud',
+            cli_package: 'h1-cli',
+            scope_name: 'HyperOne'
         },
         builders: [
             {
@@ -105,7 +108,12 @@ const render_templates = config => {
             },
             {
                 type: "shell",
-                scripts: "{{user `scripts`}}"
+                scripts: "{{user `scripts`}}",
+                environment_vars: [
+                    "SCOPE_NAME={{user `scope_name`}}",
+                    "REPOSITORY={{user `repository`}}",
+                    "CLI_PACKAGE={{user `cli_package`}}",
+                ]
             }
         ]
     }

@@ -14,6 +14,7 @@ cloud_init_ds_dir: /usr/lib/python3.7/site-packages/cloudinit/sources
 custom_scripts:
   - ./scripts/fedora/fedora-28.sh
   - ./scripts/fedora/fedora-29.sh
+  - ./scripts/fedora/cli.sh
 uefi_support: '0'
 selinux: '1'
 format: qcow

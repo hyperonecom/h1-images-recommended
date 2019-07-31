@@ -7,7 +7,7 @@
         "download_url": "http://cloud.centos.org/centos/7/images/CentOS-7-x86_64-GenericCloud.qcow2",
         "qcow_part": "/dev/sda1",
         "img_fs": "ext4",
-        "scripts": "./scripts/centos/centos-7.sh",
+        "scripts": "./scripts/centos/centos-7.sh,./scripts/centos/cli.sh",
         "cloud_init_ds_dir": "/usr/lib/python2.7/site-packages/cloudinit/sources/",
         "cloud_init_ds_src": "./resources/cloud-init/ds/DataSourceRbxCloud.py",
         "disk_size": "5",
@@ -15,7 +15,10 @@
         "ssh_name": "my-ssh",
         "image_description": "{\"arch\":\"x64\",\"distro\":\"centos\",\"release\":\"7\",\"edition\":\"server\",\"codename\":\"core\",\"recommended\":{\"disk\":{\"size\":20}}}",
         "public_netadp_service": "public",
-        "vm_type": "a1.small"
+        "vm_type": "a1.small",
+        "repository": "https://packages.hyperone.cloud",
+        "cli_package": "h1-cli",
+        "scope_name": "HyperOne"
     },
     "builders": [
         {
@@ -106,7 +109,12 @@
         },
         {
             "type": "shell",
-            "scripts": "{{user `scripts`}}"
+            "scripts": "{{user `scripts`}}",
+            "environment_vars": [
+                "SCOPE_NAME={{user `scope_name`}}",
+                "REPOSITORY={{user `repository`}}",
+                "CLI_PACKAGE={{user `cli_package`}}"
+            ]
         }
     ]
 }

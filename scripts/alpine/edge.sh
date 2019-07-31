@@ -51,3 +51,4 @@ rc-update -q add cloud-final default
 rc-update -q add cloud-init-local boot
 rc-update -q add cloud-init default
 rm -f /etc/hosts
+apk add --repository "http://dl-cdn.alpinelinux.org/alpine/edge/testing" h1-cli

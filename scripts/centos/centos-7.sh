@@ -9,7 +9,7 @@ echo 'blacklist floppy' > /etc/modprobe.d/blacklist-floppy.conf
 echo 'omit_drivers+="floppy"' > /etc/dracut.conf.d/nofloppy.conf
 dracut -f  --regenerate-all
 sed -i 's/^GRUB_CMDLINE_LINUX=.*$/GRUB_CMDLINE_LINUX="elevator=noop consoleblank=0 console=tty0 console=ttyS0,115200n8"/' /etc/default/grub
-sed -i 's/^GRUB_CMDLINE_LINUX_DEFAULT=.*$/GRUB_CMDLINE_LINUX_DEFAULT="quiet"/' /etc/default/grub 
+sed -i 's/^GRUB_CMDLINE_LINUX_DEFAULT=.*$/GRUB_CMDLINE_LINUX_DEFAULT="quiet"/' /etc/default/grub
 grub2-mkconfig -o /boot/grub2/grub.cfg
 grub2-set-default 0
 grub2-install /dev/sdb

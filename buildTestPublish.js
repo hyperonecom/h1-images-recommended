@@ -23,7 +23,10 @@ const config = {
         netadp_service: '5899b0f8d44c81202ab51308',
         vm_test_service: 'light',
         vm_builder_service: 'medium',
-        disk_type: 'ssd'
+        disk_type: 'ssd',
+        repository: 'https://packages.rootbox.cloud',
+        cli_package: 'rbx-cli',
+        scope_name: 'Rootbox',
     },
     h1: {
         scope: 'h1',
@@ -32,7 +35,10 @@ const config = {
         vm_test_service: 'a1.nano',
         vm_builder_service: 'a1.small',
         network: 'builder-private-network',
-        disk_type: 'ssd'
+        disk_type: 'ssd',
+        repository: 'https://packages.hyperone.cloud',
+        cli_package: 'h1-cli',
+        scope_name: 'HyperOne',
     }
 };
 const platformConfig=config[scope];

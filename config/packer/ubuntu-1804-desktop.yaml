@@ -14,5 +14,6 @@ cloud_init_ds_dir: /usr/lib/python3/dist-packages/cloudinit/sources/
 custom_scripts:
   - ./scripts/ubuntu/ubuntu-1710.sh
   - ./scripts/ubuntu/ubuntu-1804-desktop.sh
+  - ./scripts/ubuntu/cli.sh
 uefi_support: '1'
 format: qcow
