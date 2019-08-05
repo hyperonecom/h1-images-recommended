@@ -7,7 +7,7 @@
         "download_url": "https://ftp.icm.edu.pl/pub/Linux/fedora/linux/releases/30/Cloud/x86_64/images/Fedora-Cloud-Base-30-1.2.x86_64.qcow2",
         "qcow_part": "/dev/sda1",
         "img_fs": "ext4",
-        "scripts": "./scripts/fedora/fedora-28.sh,./scripts/fedora/fedora-29.sh,./scripts/fedora/fedora-30.sh,./scripts/fedora/cli.sh",
+        "scripts": "./scripts/fedora/fedora-28.sh,./scripts/fedora/fedora-29.sh,./scripts/fedora/cli.sh",
         "cloud_init_ds_dir": "/usr/lib/python3.7/site-packages/cloudinit/sources",
         "cloud_init_ds_src": "./resources/cloud-init/ds_v2/DataSourceRbxCloud.py",
         "disk_size": "5",
@@ -84,7 +84,7 @@
                 "wget -nv {{user `download_url`}} -O {{user `download_path`}}",
                 "mkdir {{user `mount_qcow_path`}}",
                 "LIBGUESTFS_BACKEND=direct guestmount -a {{user `download_path`}} -m {{user `qcow_part`}} {{user `mount_qcow_path`}}",
-                "rsync -aH --inplace -W --numeric-ids -A -v {{user `mount_qcow_path`}}/ {{.MountPath}}/ | pv -l -c -n >/dev/null"
+                "rsync -aH -X --inplace -W --numeric-ids -A -v {{user `mount_qcow_path`}}/ {{.MountPath}}/ | pv -l -c -n >/dev/null"
             ]
         }
     ],
