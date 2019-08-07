@@ -28,7 +28,22 @@ const render_templates = config => {
         "codename": config.codename,
         "recommended": {"disk": {"size": 20}}
     };
-
+    const post_mount_commands = [
+                    "mkdir -p {{.MountPath}}/boot/efi",
+                    "mount -t vfat {{.Device}}1 {{.MountPath}}/boot/efi",
+                    "wget -nv {{user `download_url`}} -O {{user `download_path`}}",
+                    "mkdir {{user `mount_qcow_path`}}",
+                    "LIBGUESTFS_BACKEND=direct guestmount -a {{user `download_path`}} -m {{user `qcow_part`}} {{user `mount_qcow_path`}}",
+                ] ;
+    if(config.selinux === '1' ){
+        post_mount_commands.push(
+            "rsync -aH -X --inplace -W --numeric-ids -A -v {{user `mount_qcow_path`}}/ {{.MountPath}}/ | pv -l -c -n >/dev/null"
+        );
+    }else{
+        post_mount_commands.push(
+            "rsync -aH --inplace -W --numeric-ids -A -v {{user `mount_qcow_path`}}/ {{.MountPath}}/ | pv -l -c -n >/dev/null"
+        )
+    }
     return {
         variables: {
             source_image: "image-builder-fedora",
@@ -77,14 +92,7 @@ const render_templates = config => {
                     "dosfslabel {{.Device}}2 CLOUDMD",
                 ],
                 chroot_mounts,
-                post_mount_commands: [
-                    "mkdir -p {{.MountPath}}/boot/efi",
-                    "mount -t vfat {{.Device}}1 {{.MountPath}}/boot/efi",
-                    "wget -nv {{user `download_url`}} -O {{user `download_path`}}",
-                    "mkdir {{user `mount_qcow_path`}}",
-                    "LIBGUESTFS_BACKEND=direct guestmount -a {{user `download_path`}} -m {{user `qcow_part`}} {{user `mount_qcow_path`}}",
-                    "rsync -aH -X --inplace -W --numeric-ids -A -v {{user `mount_qcow_path`}}/ {{.MountPath}}/ | pv -l -c -n >/dev/null"
-                ]
+                post_mount_commands
             }
         ],
         provisioners: [
