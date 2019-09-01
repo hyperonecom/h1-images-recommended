@@ -17,10 +17,6 @@ update-grub
 echo 'blacklist floppy' > /etc/modprobe.d/blacklist-floppy.conf
 update-initramfs -u
 systemctl set-default multi-user
-# userdel  debian
-# rm -r /home/debian/
-ls -lah /home/
-
 echo 'interface ignore wildcard' >> /etc/ntp.conf
 (echo 'source-directory interfaces.d'; echo 'source interfaces.d/*.cfg') > /etc/network/interfaces
 sed -i 's/^ForwardToConsole=.*$/ForwardToConsole=no/' /etc/systemd/journald.conf
