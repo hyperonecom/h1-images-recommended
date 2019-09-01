@@ -34,6 +34,7 @@ const render_templates = config => {
                     "wget -nv {{user `download_url`}} -O {{user `download_path`}}",
                     "mkdir {{user `mount_qcow_path`}}",
                     "LIBGUESTFS_BACKEND=direct guestmount -a {{user `download_path`}} -m {{user `qcow_part`}} {{user `mount_qcow_path`}}",
+                    "setenforce 0",
                 ] ;
     if(config.selinux === '1' ){
         post_mount_commands.push(

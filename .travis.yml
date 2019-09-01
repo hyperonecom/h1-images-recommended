@@ -44,6 +44,10 @@ jobs:
     - stage: primary
       env: CONFIG="config/packer/fedora-30.yaml" MODE="packer" SCOPE=RBX
     - stage: primary
+      env: CONFIG="config/packer/fedora-31.yaml" MODE="packer" SCOPE=H1
+    - stage: primary
+      env: CONFIG="config/packer/fedora-31.yaml" MODE="packer" SCOPE=RBX
+    - stage: primary
       env: CONFIG="config/packer/ubuntu-1604-desktop.yaml" MODE="packer" SCOPE=H1
     - stage: primary
       env: CONFIG="config/packer/ubuntu-1604-desktop.yaml" MODE="packer" SCOPE=RBX
