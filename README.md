@@ -64,3 +64,17 @@ h1 project credentials add --name builder-ssh --sshkey-file ./resources/ssh/id_r
 ```
 
 Finally you can use ```run_tests.sh``` or ```buildTestPublish.js``` to manange images.
+
+# Windows
+
+To build Windows prepare container image:
+
+```sh
+docker build -f Dockerfile.windows -t h1cr.io/h1-images-recommended-windows:2 .
+```
+
+Then build image:
+
+```sh
+docker run -e H1_TOKEN="..." h1cr.io/h1-images-recommended-windows:2 nodejs buildTestPublish.js --mode 'windows' --config ./config/windows/windows-server-2016-dc-core.yaml;
+```

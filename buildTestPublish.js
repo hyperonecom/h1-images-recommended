@@ -127,14 +127,24 @@ const main = async () => {
         let imageId;
         if(!program.image) {
             imageId = await mode_runtime.build(imageConfig, platformConfig);
+            console.log(`Builded image ${imageId}`);
         }else{
             imageId = program.image;
+            console.log(`Choose image ${imageId}`);
         }
         if(!program.skipTest){
-            await  await mode_runtime.test(imageConfig, platformConfig, imageId);
+            console.log(`Testing image ${imageId}`);
+            await mode_runtime.test(imageConfig, platformConfig, imageId);
+            console.log(`Tested image ${imageId}`);
+        }else{
+            console.log(`Skip testing image ${imageId}`);
         }
         if(program.publish) {
+            console.log(`Publishing image ${imageId}`);
             await publishImage(imageId, imageConfig.image_tenant_access || '*');
+            console.log(`Published image ${imageId}`);
+        }else{
+            console.log(`Skip publishing image ${imageId}`);
         }
     } finally {
         if(program.cleanup) {
