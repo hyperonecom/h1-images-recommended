@@ -6,7 +6,7 @@ edition: server
 arch: x64
 version: '28'
 download_url: >-
-  https://mirror.karneval.cz/pub/linux/fedora/linux/releases/28/Cloud/x86_64/images/Fedora-Cloud-Base-28-1.1.x86_64.qcow2
+  https://archives.fedoraproject.org/pub/archive/fedora/linux/releases/28/Cloud/x86_64/images/Fedora-Cloud-Base-28-1.1.x86_64.qcow2
 disk_size: '5'
 qcow_part: /dev/sda1
 cloud_init_ds_src: ./resources/cloud-init/ds_v2/DataSourceRbxCloud.py
