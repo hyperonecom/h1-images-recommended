@@ -1,5 +1,5 @@
 FROM node
-ENV H1_CLI_VERSION="1.4.0"
+ENV H1_CLI_VERSION="1.7.0"
 ENV PACKER_VERSION="1.3.5"
 RUN apt-get update \
 && apt-get install -y bats unzip \
@@ -15,7 +15,6 @@ WORKDIR /src/
 COPY ./package*.json /src/
 COPY ./resources/ssh/id_rsa* /root/.ssh/
 RUN chmod 0600 /root/.ssh/id_rsa*
-RUN md5sum /root/.ssh/* && ls -lah /root/.ssh
 RUN npm ci
 COPY ./ /src/
 CMD ["nodejs", "./buildTestPublish.js", "./templates/qcow/debian-8.json"]
