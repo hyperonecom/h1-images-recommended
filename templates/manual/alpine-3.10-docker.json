@@ -26,6 +26,7 @@
       "chroot_disk": true,
       "mount_partition": 3,
       "source_image": "{{user `source_image`}}",
+      "vm_name": "packer-alpine-docker",
       "vm_type": "{{user `vm_type`}}",
       "ssh_keys": "{{user `ssh_name`}}",
       "chroot_command_wrapper": "sudo {{.Command}}",
