@@ -43,9 +43,15 @@ const config = {
 };
 const platformConfig=config[scope];
 
-const publishImage = (imageId, project) => {
+const publishImage = async (imageId, project) => {
     console.log(`Publishing image ${imageId}.`);
-    return imageApi.imagePostAccessrights(imageId, ({identity: project}));
+    const original_header = imageApi.apiClient.defaultHeaders;
+    imageApi.apiClient.defaultHeaders = {}
+    try{
+        return await imageApi.imagePostAccessrights(imageId, ({identity: project}));
+    }finally{
+        imageApi.apiClient.defaultHeaders = original_header;
+    }
 };
 
 const cleanupImage = async () => {

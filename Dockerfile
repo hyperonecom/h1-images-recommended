@@ -10,7 +10,7 @@ RUN curl -s -L "https://releases.hashicorp.com/packer/${PACKER_VERSION}/packer_$
 && rm /tmp/packer.zip
 #RUN curl -s -L "https://github.com/hyperonecom/h1-cli/releases/download/v${H1_CLI_VERSION}/h1-linux" -o /bin/h1 \
 #&& chmod +x /bin/h1
-RUN npm install -g https://github.com/hyperonecom/h1-cli/archive/netadp-scoping.tar.gz
+RUN npm install -g https://github.com/hyperonecom/h1-cli/archive/develop.tar.gz
 WORKDIR /src/
 COPY ./package*.json /src/
 COPY ./resources/ssh/id_rsa* /root/.ssh/

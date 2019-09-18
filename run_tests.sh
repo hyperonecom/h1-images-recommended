@@ -48,7 +48,9 @@ if [[ $OPTIND -eq 1 ]]; then echo "$help"; exit 2; fi
 RBX_CLI="${scope}";
 OS_DISK="$DISK_SERVICE,$DISK_SIZE"
 VM_NAME=$(echo "image-${IMAGE}-test" | tr -cd 'a-zA-Z0-9\-_ ' )
+set +x
 PASSWORD=$(openssl rand -hex 15)
+set -x
 
 EXTERNAL_IP=$(${RBX_CLI} ip create --query "[].{ip:address}" -o tsv);
 
@@ -60,6 +62,7 @@ if [ "$os" == "packer" ]; then
 	INTERNAL_IP=$EXTERNAL_IP
 fi
 
+set +x
 VM_ID=$(${RBX_CLI} vm create --image $IMAGE \
     --name $VM_NAME \
     --username $USER \
@@ -70,6 +73,7 @@ VM_ID=$(${RBX_CLI} vm create --image $IMAGE \
     --userdata-file $USERDATA \
     --ip $INTERNAL_IP \
     -o tsv | cut -f1 )
+set -x;
 
 VM_IP=$(${RBX_CLI} vm nic list --vm $VM_ID --query "[].ip[*].address" -o tsv|head -1)
 VM_DISK_ID=$(${RBX_CLI} vm disk list --vm $VM_ID --output tsv --query "[].{disk:disk._id}")
