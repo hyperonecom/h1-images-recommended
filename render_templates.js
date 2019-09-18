@@ -111,17 +111,17 @@ const render_templates = config => {
             },
             {
                 type: "shell",
-                inline: [
-                    "mv {{user `cloud_init_tmp_path`}} {{user `cloud_init_ds_dir`}}/DataSourceRbxCloud.py"
-                ]
-            },
-            {
-                type: "shell",
                 scripts: "{{user `scripts`}}",
                 environment_vars: [
                     "SCOPE_NAME={{user `scope_name`}}",
                     "REPOSITORY={{user `repository`}}",
                     "CLI_PACKAGE={{user `cli_package`}}",
+                ]
+            },
+            {
+                type: "shell",
+                inline: [
+                    "mv {{user `cloud_init_tmp_path`}} {{user `cloud_init_ds_dir`}}/DataSourceRbxCloud.py"
                 ]
             }
         ]
