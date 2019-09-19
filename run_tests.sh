@@ -73,7 +73,8 @@ VM_ID=$(${RBX_CLI} vm create --image $IMAGE \
     --userdata-file $USERDATA \
     --ip $INTERNAL_IP \
     -o tsv | cut -f1 )
-set -x;
+set -x
+echo "VM created: ${VM_ID}"
 
 VM_IP=$(${RBX_CLI} vm nic list --vm $VM_ID --query "[].ip[*].address" -o tsv|head -1)
 VM_DISK_ID=$(${RBX_CLI} vm disk list --vm $VM_ID --output tsv --query "[].{disk:disk._id}")

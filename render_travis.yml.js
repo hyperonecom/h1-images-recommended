@@ -18,7 +18,7 @@ const templateByStage = (templates, test) => {
         }
         for (const scope of scope_list) {
             stages.push({
-                stage: config.stage || 'primary',
+                stage: template,
                 env:`CONFIG="${template}" MODE="packer" SCOPE=${scope}`
             })
         }
