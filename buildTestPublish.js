@@ -7,14 +7,14 @@ const program = require('commander');
 const {ensureState} = require('./lib/api');
 const {qcow} = require('./lib/naming');
 const {
-    imageApi, vmApi, diskApi, ipApi
+    imageApi, vmApi, diskApi, ipApi,
 } = require('./lib/api');
 
 const scope = (process.env.SCOPE || 'h1').toLowerCase();
 
 const readFile = util.promisify(fs.readFile);
 
-const olderThan = (resource, ageInMinutes) => new Date(resource.createdOn) < (new Date() - ageInMinutes * 60 * 1000);
+const olderThan = (resource, ageInMinutes) => new Date(resource.createdOn) < new Date() - ageInMinutes * 60 * 1000;
 
 const config = {
     rbx: {
@@ -39,23 +39,23 @@ const config = {
         repository: 'https://packages.hyperone.cloud',
         cli_package: 'h1-cli',
         scope_name: 'HyperOne',
-    }
+    },
 };
 const platformConfig=config[scope];
 
 const publishImage = async (imageId, project) => {
     console.log(`Publishing image ${imageId}.`);
     const original_header = imageApi.apiClient.defaultHeaders;
-    imageApi.apiClient.defaultHeaders = {}
-    try{
-        return await imageApi.imagePostAccessrights(imageId, ({identity: project}));
-    }finally{
+    imageApi.apiClient.defaultHeaders = {};
+    try {
+        return await imageApi.imagePostAccessrights(imageId, {identity: project});
+    } finally {
         imageApi.apiClient.defaultHeaders = original_header;
     }
 };
 
 const cleanupImage = async () => {
-    console.log("Fetching available images");
+    console.log('Fetching available images');
     const images = await imageApi.imageList();
     console.log(`Found ${images.length} images`);
     const keep_images = {};
@@ -74,7 +74,7 @@ const cleanupImage = async () => {
 };
 
 const cleanupVm = async () => {
-    console.log("Fetching available VMs");
+    console.log('Fetching available VMs');
     const vms = await vmApi.vmList();
     console.log(`Found ${vms.length} VMs`);
     const vm = vms.find(vm => olderThan(vm, 90) && ensureState(vm, ['Running']) && !vm.name.includes('windows'));
@@ -87,7 +87,7 @@ const cleanupVm = async () => {
 };
 
 const cleanupDisk = async () => {
-    console.log("Fetching available disks.");
+    console.log('Fetching available disks.');
     const disks = await diskApi.diskList();
     console.log(`Found ${disks.length} disks`);
     const disk = disks.find(disk => ensureState(disk, ['Detached']));
@@ -99,7 +99,7 @@ const cleanupDisk = async () => {
 };
 
 const cleanupIp = async () => {
-    console.log("Fetching available ip.");
+    console.log('Fetching available ip.');
     const ips = await ipApi.ipList();
     console.log(`Found ${ips.length} ips`);
     const ip = ips.find(ip => ensureState(ip, ['Unallocated']));
@@ -120,9 +120,9 @@ const main = async () => {
         .option('--cleanup', 'Perform cleanup of old resources')
         .option('--mode <mode>', 'Mode of build images', /^(packer|windows)$/i)
         .parse(process.argv);
-        if(!program.config){
-            program.help()
-        }
+    if (!program.config) {
+        program.help();
+    }
     try {
         const input_file = program.config;
         const content = await readFile(input_file);
@@ -131,29 +131,29 @@ const main = async () => {
         const mode_runtime = require(`./lib/build_modes/${mode}.js`);
         imageConfig.template_file = imageConfig.template_file || `templates/qcow/${qcow(imageConfig)}`;
         let imageId;
-        if(!program.image) {
+        if (!program.image) {
             imageId = await mode_runtime.build(imageConfig, platformConfig);
             console.log(`Builded image ${imageId}`);
-        }else{
+        } else {
             imageId = program.image;
             console.log(`Choose image ${imageId}`);
         }
-        if(!program.skipTest){
+        if (!program.skipTest) {
             console.log(`Testing image ${imageId}`);
             await mode_runtime.test(imageConfig, platformConfig, imageId);
             console.log(`Tested image ${imageId}`);
-        }else{
+        } else {
             console.log(`Skip testing image ${imageId}`);
         }
-        if(program.publish) {
+        if (program.publish) {
             console.log(`Publishing image ${imageId}`);
             await publishImage(imageId, imageConfig.image_tenant_access || '*');
             console.log(`Published image ${imageId}`);
-        }else{
+        } else {
             console.log(`Skip publishing image ${imageId}`);
         }
     } finally {
-        if(program.cleanup) {
+        if (program.cleanup) {
             await cleanupImage();
             await cleanupVm();
             await cleanupDisk();

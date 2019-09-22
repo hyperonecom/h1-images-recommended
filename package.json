@@ -3,11 +3,18 @@
   "version": "1.0.0",
   "description": "A set of Packer templates for building recommended images for the HyperOne platform and compatible with it.",
   "main": "buildTestPublish.js",
+  "scripts": {
+    "lint": "eslint ."
+  },
   "author": "",
   "license": "MIT",
   "dependencies": {
     "commander": "^2.20.0",
     "hyper_one_api": "https://github.com/hyperonecom/h1-client-js/archive/v0.0.2.tar.gz",
     "js-yaml": "^3.13.1"
+  },
+  "devDependencies": {
+    "@hyperone/eslint-config": "^2.0.0",
+    "eslint": "^6.4.0"
   }
 }

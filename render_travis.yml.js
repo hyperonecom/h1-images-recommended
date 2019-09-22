@@ -1,3 +1,4 @@
+'use strict';
 const fs = require('fs');
 const util = require('util');
 const {join} = require('path');
@@ -19,29 +20,29 @@ const templateByStage = (templates, test) => {
         for (const scope of scope_list) {
             stages.push({
                 stage: config.stage || 'primary',
-                env:`CONFIG="${template}" MODE="packer" SCOPE=${scope}`
-            })
+                env:`CONFIG="${template}" MODE="packer" SCOPE=${scope}`,
+            });
         }
     }
     return stages;
 };
 
 const render = templates => ({
-    language: "nodejs",
-    services: ["docker"],
+    language: 'nodejs',
+    services: ['docker'],
     jobs: {
         include: [
             ...templateByStage(templates, config => !config.stage || config.stage === 'primary'),
             ...templateByStage(templates, config => config.stage === 'secondary'),
             ...templateByStage(templates, config => config.stage === 'apps'),
-        ]
+        ],
     },
     script: [
         'travis_retry ./buildTravis.sh',
     ],
     before_install: [
-        './installTravis.sh "$ENCRYPT_KEY"'
-    ]
+        './installTravis.sh "$ENCRYPT_KEY"',
+    ],
 });
 
 const main = async () => {
