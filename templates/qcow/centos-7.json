@@ -9,7 +9,7 @@
         "img_fs": "ext4",
         "scripts": "./scripts/centos/centos-7.sh,./scripts/centos/cli.sh",
         "cloud_init_ds_dir": "/usr/lib/python2.7/site-packages/cloudinit/sources/",
-        "cloud_init_ds_src": "./resources/cloud-init/ds/DataSourceRbxCloud.py",
+        "cloud_init_ds_src": "./resources/cloud-init/ds_v2/DataSourceRbxCloud.py",
         "disk_size": "5",
         "image_name": "CentOS 7",
         "ssh_name": "my-ssh",
@@ -98,11 +98,6 @@
             ]
         },
         {
-            "type": "file",
-            "source": "{{user `cloud_init_ds_src`}}",
-            "destination": "{{user `cloud_init_tmp_path`}}"
-        },
-        {
             "type": "shell",
             "scripts": "{{user `scripts`}}",
             "environment_vars": [
@@ -112,9 +107,16 @@
             ]
         },
         {
+            "type": "file",
+            "source": "{{user `cloud_init_ds_src`}}",
+            "destination": "{{user `cloud_init_tmp_path`}}"
+        },
+        {
             "type": "shell",
             "inline": [
-                "mv {{user `cloud_init_tmp_path`}} {{user `cloud_init_ds_dir`}}/DataSourceRbxCloud.py"
+                "CLOUD_INIT_DS_DIR=$(find /usr -name cloudinit -type d)",
+                "echo Found cloud-init in path: ${CLOUD_INIT_DS_DIR}",
+                "mv {{user `cloud_init_tmp_path`}} ${CLOUD_INIT_DS_DIR}/sources/DataSourceRbxCloud.py"
             ]
         }
     ]

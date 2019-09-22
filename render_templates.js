@@ -105,11 +105,6 @@ const render_templates = config => {
                 ]
             },
             {
-                type: "file",
-                source: "{{user `cloud_init_ds_src`}}",
-                destination: "{{user `cloud_init_tmp_path`}}"
-            },
-            {
                 type: "shell",
                 scripts: "{{user `scripts`}}",
                 environment_vars: [
@@ -119,9 +114,16 @@ const render_templates = config => {
                 ]
             },
             {
+                type: "file",
+                source: "{{user `cloud_init_ds_src`}}",
+                destination: "{{user `cloud_init_tmp_path`}}"
+            },
+            {
                 type: "shell",
                 inline: [
-                    "mv {{user `cloud_init_tmp_path`}} {{user `cloud_init_ds_dir`}}/DataSourceRbxCloud.py"
+                    "CLOUD_INIT_DS_DIR=$(find /usr -name cloudinit -type d)",
+                    "echo Found cloud-init in path: ${CLOUD_INIT_DS_DIR}",
+                    "mv {{user `cloud_init_tmp_path`}} ${CLOUD_INIT_DS_DIR}/sources/DataSourceRbxCloud.py"
                 ]
             }
         ]
