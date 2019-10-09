@@ -1,6 +1,16 @@
 language: nodejs
 services:
   - docker
+
+addons:
+  # Travis-CI not always have Docker-CLI
+  # See:
+  # https://travis-ci.com/hyperonecom/h1-images-recommended/jobs/243664519
+  # https://travis-ci.com/hyperonecom/h1-images-recommended/jobs/243664519/config
+  apt:
+    packages:
+      - docker-ce
+
 jobs:
   include:
     - stage: primary
