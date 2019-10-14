@@ -1,4 +1,6 @@
 language: nodejs
+dist: bionic
+
 services:
   - docker
 
