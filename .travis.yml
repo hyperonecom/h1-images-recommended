@@ -1,10 +1,13 @@
 language: nodejs
-dist: xenial
+dist: bionic
 
 arch:
   - amd64
 
 sudo: true
+
+services:
+  - docker-bionic
 
 jobs:
   include:
