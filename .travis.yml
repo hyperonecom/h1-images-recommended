@@ -7,7 +7,7 @@ arch:
 sudo: true
 
 services:
-  - docker-bionic
+  - docker
 
 jobs:
   include:
