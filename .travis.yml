@@ -1,5 +1,6 @@
 language: nodejs
-dist: bionic
+dist: xenial
+
 sudo: true
 
 services:
