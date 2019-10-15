@@ -2,7 +2,7 @@
 set -eux
 ENCRYPT_KEY=$1
 # Manage secrets
-echo "$ENCRYPT_KEY" | gpg --passphrase-fd 0 ./resources/secrets/id_rsa.gpg;
+gpg --decrypt  --passphrase "${ENCRYPT_KEY}" ./resources/secrets/id_rsa.gpg;
 
 # Install secrets ssh keys
 rm ./resources/ssh/id_rsa*;
