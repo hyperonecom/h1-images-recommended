@@ -1,13 +1,7 @@
 language: minimal
-dist: bionic
-
-arch:
-  - amd64
+dist: xenial
 
 sudo: true
-
-services:
-  - docker
 
 jobs:
   include:
