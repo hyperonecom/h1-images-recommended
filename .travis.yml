@@ -1,8 +1,5 @@
-language: nodejs
-dist: bionic
-
-services:
-  - docker
+language: minimal
+dist: xenial
 
 jobs:
   include:

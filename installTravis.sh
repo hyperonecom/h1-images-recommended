@@ -2,11 +2,11 @@
 set -eux
 ENCRYPT_KEY=$1
 # Manage secrets
-openssl aes-256-cbc -k "$ENCRYPT_KEY" -in ./resources/secrets/id_rsa.enc -out ./resources/secrets/id_rsa -d;
-md5sum ./resources/ssh/id_rsa* ./resources/secrets/id_rsa*;
+echo "${ENCRYPT_KEY}" | gpg --passphrase-fd 0 --decrypt ./resources/secrets/id_rsa.gpg > ./resources/secrets/id_rsa;
 # Install secrets ssh keys
 rm ./resources/ssh/id_rsa*;
 cp ./resources/secrets/id_rsa* ./resources/ssh/;
+md5sum resources/ssh/*
 
 # Install Docker
 # Pre-installed Docker doesn't support multi-stage builds
