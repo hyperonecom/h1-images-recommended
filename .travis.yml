@@ -2,7 +2,7 @@ language: nodejs
 dist: xenial
 
 arch:
-  - arm64
+  - amd64
 
 sudo: true
 
