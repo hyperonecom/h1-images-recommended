@@ -6,9 +6,6 @@ arch:
 
 sudo: true
 
-services:
-  - docker
-
 jobs:
   include:
     - stage: primary
