@@ -1,4 +1,4 @@
-language: nodejs
+language: minimal
 dist: bionic
 
 arch:
