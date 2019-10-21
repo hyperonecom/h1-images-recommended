@@ -1,8 +1,6 @@
 language: minimal
 dist: xenial
 
-sudo: true
-
 jobs:
   include:
     - stage: primary
