@@ -28,8 +28,9 @@ const templateByStage = (templates, test) => {
 };
 
 const render = templates => ({
-    language: 'nodejs',
     services: ['docker'],
+    language: 'minimal',
+    dist: 'xenial',
     jobs: {
         include: [
             ...templateByStage(templates, config => !config.stage || config.stage === 'primary'),
