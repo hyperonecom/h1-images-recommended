@@ -3,7 +3,7 @@
 set -xueo pipefail
 
 declare scope="h1"
-declare help="Usage $0 -s [rbx|h1] -i image_id -o [packer|windows] -v vm_service -c credentials_id_or_name"
+declare help="Usage $0 -s [rbx|h1] -i image_id -o [packer|windows] -v vm_service -c credentials_id_or_name -n network_id_or_name"
 declare IMAGE=""
 declare VM_TYPE="a1.nano"
 declare DISK_SERVICE="ssd";
@@ -48,6 +48,9 @@ if [[ $OPTIND -eq 1 ]]; then echo "$help"; exit 2; fi
 RBX_CLI="${scope}";
 OS_DISK="$DISK_SERVICE,$DISK_SIZE"
 VM_NAME=$(echo "image-${IMAGE}-test" | tr -cd 'a-zA-Z0-9\-_ ' )
+IMAGE_NAME=$(h1 image show --image ${IMAGE} -o tsv --query '[].{name:name}' | tr -c 'a-zA-Z0-9\-' '_')
+IMAGE_ID=$(h1 image show --image ${IMAGE} -o tsv --query '[].{id:id}')
+
 set +x
 PASSWORD=$(openssl rand -hex 15)
 set -x
@@ -62,6 +65,10 @@ if [ "$os" == "packer" ]; then
 	INTERNAL_IP=$EXTERNAL_IP
 fi
 
+start_time=$(date +'%s');
+
+sed "$USERDATA" -e "s/%%REQUEST_TIME%%/${start_time}/g" -e "s/%%INFLUXDB_HOST%%/${INFLUXDB_HOST}/g" -e "s/%%INFLUXDB_USER%%/${INFLUXDB_USER}/g" -e "s/%%INFLUXDB_PASSWORD%%/${INFLUXDB_PASSWORD}/g" -e "s/%%VM_TYPE%%/${VM_TYPE}/g" -e "s/%%IMAGE_ID%%/$IMAGE/g";
+
 set +x
 VM_ID=$(${RBX_CLI} vm create --image $IMAGE \
     --name $VM_NAME \
@@ -70,11 +77,20 @@ VM_ID=$(${RBX_CLI} vm create --image $IMAGE \
     --ssh $SSH_KEY_NAME \
     --type $VM_TYPE \
     --os-disk $OS_DISK \
-    --userdata-file $USERDATA \
+    --userdata-file <( sed "$USERDATA" \
+        -e "s/%%REQUEST_TIME%%/${start_time}/g" \
+        -e "s/%%INFLUXDB_HOST%%/${INFLUXDB_HOST}/g" \
+        -e "s/%%INFLUXDB_USER%%/${INFLUXDB_USER}/g" \
+        -e "s/%%INFLUXDB_PASSWORD%%/${INFLUXDB_PASSWORD}/g" \
+        -e "s/%%VM_TYPE%%/${VM_TYPE}/g" \
+        -e "s/%%IMAGE_ID%%/${IMAGE_ID}/g" \
+        -e "s/%%IMAGE_NAME%%/${IMAGE_NAME}/g" ) \
     --ip $INTERNAL_IP \
     -o tsv | cut -f1 )
 set -x
 echo "VM created: ${VM_ID}"
+
+
 
 VM_IP=$(${RBX_CLI} vm nic list --vm $VM_ID --query "[].ip[*].address" -o tsv|head -1)
 VM_DISK_ID=$(${RBX_CLI} vm disk list --vm $VM_ID --output tsv --query "[].{disk:disk._id}")

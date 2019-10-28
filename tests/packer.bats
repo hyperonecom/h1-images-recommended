@@ -21,6 +21,11 @@ skip
   [ "$?" -eq 0 ]
 }
 
+@test "check userdata available" {
+  result=$(ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no ${USER}@${IP} "cat /userdata")
+  [ "$?" -eq 0 ]
+}
+
 @test "check grub console redirection" {
   result=$(ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no  ${USER}@${IP} "grep 'console=ttyS0,115200n8' /proc/cmdline")
   [ "$?" -eq 0 ]
@@ -50,7 +55,6 @@ skip
 
 
 @test "check default target" {
-
   is_systemctl=$(ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no  ${USER}@${IP} "command -v systemctl || echo ''")
   if [  "$is_systemctl" != "" ]; then
     target=$(ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no  ${USER}@${IP} "systemctl  get-default")
@@ -64,3 +68,4 @@ skip
     [ 1 ]
   fi
 }
+
