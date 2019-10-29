@@ -13,6 +13,6 @@ cloud_init_ds_dir: /usr/lib/python2.7/site-packages/cloudinit/sources/
 custom_scripts:
   - ./scripts/centos/centos-7.sh
   - ./scripts/centos/cli.sh
-uefi_support: '0'
+uefi_support: '1'
 selinux: '1'
 format: qcow
