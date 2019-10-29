@@ -39,7 +39,7 @@ const render = templates => ({
         ],
     },
     script: [
-        'travis_retry ./buildTravis.sh',
+        './buildTravis.sh',
     ],
     before_install: [
         './installTravis.sh "$ENCRYPT_KEY"',

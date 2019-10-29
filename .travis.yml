@@ -5,14 +5,6 @@ dist: xenial
 jobs:
   include:
     - stage: primary
-      env: CONFIG="config/packer/ubuntu-1910-desktop.yaml" MODE="packer" SCOPE=H1
-    - stage: primary
-      env: CONFIG="config/packer/ubuntu-1910-desktop.yaml" MODE="packer" SCOPE=RBX
-    - stage: primary
-      env: CONFIG="config/packer/ubuntu-1910.yaml" MODE="packer" SCOPE=H1
-    - stage: primary
-      env: CONFIG="config/packer/ubuntu-1910.yaml" MODE="packer" SCOPE=RBX
-    - stage: primary
       env: CONFIG="config/packer/alpine-3.10-docker.yaml" MODE="packer" SCOPE=H1
     - stage: primary
       env: CONFIG="config/packer/alpine-3.10-docker.yaml" MODE="packer" SCOPE=RBX
@@ -88,7 +80,15 @@ jobs:
       env: CONFIG="config/packer/ubuntu-1904.yaml" MODE="packer" SCOPE=H1
     - stage: primary
       env: CONFIG="config/packer/ubuntu-1904.yaml" MODE="packer" SCOPE=RBX
+    - stage: primary
+      env: CONFIG="config/packer/ubuntu-1910-desktop.yaml" MODE="packer" SCOPE=H1
+    - stage: primary
+      env: CONFIG="config/packer/ubuntu-1910-desktop.yaml" MODE="packer" SCOPE=RBX
+    - stage: primary
+      env: CONFIG="config/packer/ubuntu-1910.yaml" MODE="packer" SCOPE=H1
+    - stage: primary
+      env: CONFIG="config/packer/ubuntu-1910.yaml" MODE="packer" SCOPE=RBX
 script:
-  - travis_retry ./buildTravis.sh
+  - ./buildTravis.sh
 before_install:
   - ./installTravis.sh "$ENCRYPT_KEY"
