@@ -26,7 +26,6 @@ echo 'datasource_list: [ RbxCloud ]' > /etc/cloud/cloud.cfg.d/90_dpkg.cfg
 apk -U add haveged && rc-update add haveged
 sed '/after localmount/a    after haveged' -i /etc/init.d/cloud-init-local
 dd bs=440 conv=notrunc count=1 if=/usr/share/syslinux/gptmbr.bin of=/dev/sdb;
-dd bs=440 conv=notrunc count=1 if=/dev/sdb | xxd;
 sync;
 cat /etc/init.d/cloud-init-local
 rc-update -q add devfs sysinit
@@ -51,4 +50,14 @@ rc-update -q add cloud-final default
 rc-update -q add cloud-init-local boot
 rc-update -q add cloud-init default
 rm -f /etc/hosts
+# CLI installation
 apk add --repository "http://dl-cdn.alpinelinux.org/alpine/edge/testing" h1-cli
+# UEFI installation
+mkdir -p /boot/efi/EFI/BOOT
+cp /usr/share/syslinux/efi64/* /boot/efi/EFI/BOOT/
+cp /boot/extlinux.conf /boot/efi/EFI/BOOT/syslinux.cfg
+sed -e 's@LINUX vmlinuz-virt@LINUX /vmlinuz-virt@' -e 's@INITRD initramfs-virt@INITRD /initramfs-virt@' /boot/efi/EFI/BOOT/syslinux.cfg -i
+cp /boot/efi/EFI/BOOT/syslinux.efi /boot/efi/EFI/BOOT/BOOTX64.EFI
+cp /boot/vmlinuz* /boot/efi/
+cp /boot/initramfs* /boot/efi/
+sync;
