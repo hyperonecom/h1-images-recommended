@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-set -xueo pipefail
+set -xeo pipefail
 
 declare scope="h1"
 declare help="Usage $0 -s [rbx|h1] -i image_id -o [packer|windows] -v vm_service -c credentials_id_or_name -n network_id_or_name"
