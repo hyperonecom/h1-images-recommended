@@ -6,7 +6,7 @@ edition: server
 arch: x64
 version: '31'
 download_url: >-
-  https://ftp.icm.edu.pl/pub/Linux/fedora/linux/releases/test/31_Beta/Cloud/x86_64/images/Fedora-Cloud-Base-31_Beta-1.1.x86_64.qcow2
+  https://ftp.icm.edu.pl/pub/Linux/fedora/linux/releases/31/Cloud/x86_64/images/Fedora-Cloud-Base-31-1.9.x86_64.qcow2
 disk_size: '5'
 qcow_part: /dev/sda1
 cloud_init_ds_src: ./resources/cloud-init/ds_v2/DataSourceRbxCloud.py
