@@ -12,15 +12,13 @@ sed -i 's/^GRUB_CMDLINE_LINUX_DEFAULT=.*$/GRUB_CMDLINE_LINUX_DEFAULT="quiet"/' /
 grub2-mkconfig -o /boot/grub2/grub.cfg
 grub2-set-default 0
 grub2-install /dev/sdb
-dnf -y install grub2-efi shim
-#grub2-install --removable --target=x86_64-efi /dev/sdb
 grub2-mkconfig -o /boot/efi/EFI/fedora/grub.cfg
-sed -i 's/linux16/linuxefi/' /boot/efi/EFI/fedora/grub.cfg
-sed -i 's/initrd16/initrdefi/' /boot/efi/EFI/fedora/grub.cfg
+# Install Grub for UEFI
 mkdir -p  /boot/efi/EFI/BOOT
+yum -y install grub2-efi-x64 shim-x64
 rm -f /boot/efi/EFI/BOOT/BOOTX64.EFI
-cp /boot/efi/EFI/fedora/grubia32.efi /boot/efi/EFI/BOOT/BOOTX64.EFI
-#KERN=$(rpm -q --queryformat '%{PROVIDEVERSION}' kernel) && dracut -f /boot/initramfs-${KERN}.x86_64.img ${KERN}.x86_64
+cp /boot/efi/EFI/fedora/grubx64.efi /boot/efi/EFI/BOOT/BOOTX64.EFI
+# Update network script
 rm -f /etc/sysconfig/network-scripts/ifcfg-eth0
 sed -i 's/^ForwardToConsole=.*$/ForwardToConsole=no/' /etc/systemd/journald.conf
 echo 'datasource_list: [ RbxCloud ]' > /etc/cloud/cloud.cfg.d/90_dpkg.cfg
