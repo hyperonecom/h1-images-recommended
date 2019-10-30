@@ -79,7 +79,7 @@ VM_ID=$(${RBX_CLI} vm create --image $IMAGE \
     --os-disk $OS_DISK \
     --userdata-file <( sed "$USERDATA" \
         -e "s/%%REQUEST_TIME%%/${start_time}/g" \
-        -e "s/%%INFLUXDB_HOST%%/${INFLUXDB_HOST}/g" \
+        -e "s@%%INFLUXDB_HOST%%@${INFLUXDB_HOST}@g" \
         -e "s/%%INFLUXDB_USER%%/${INFLUXDB_USER}/g" \
         -e "s/%%INFLUXDB_PASSWORD%%/${INFLUXDB_PASSWORD}/g" \
         -e "s/%%VM_TYPE%%/${VM_TYPE}/g" \
