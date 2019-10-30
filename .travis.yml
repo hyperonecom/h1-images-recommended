@@ -33,10 +33,6 @@ jobs:
     - stage: primary
       env: CONFIG="config/packer/debian-docker.yaml" MODE="packer" SCOPE=RBX
     - stage: primary
-      env: CONFIG="config/packer/fedora-28.yaml" MODE="packer" SCOPE=H1
-    - stage: primary
-      env: CONFIG="config/packer/fedora-28.yaml" MODE="packer" SCOPE=RBX
-    - stage: primary
       env: CONFIG="config/packer/fedora-29.yaml" MODE="packer" SCOPE=H1
     - stage: primary
       env: CONFIG="config/packer/fedora-29.yaml" MODE="packer" SCOPE=RBX
@@ -64,14 +60,6 @@ jobs:
       env: CONFIG="config/packer/ubuntu-1804.yaml" MODE="packer" SCOPE=H1
     - stage: primary
       env: CONFIG="config/packer/ubuntu-1804.yaml" MODE="packer" SCOPE=RBX
-    - stage: primary
-      env: CONFIG="config/packer/ubuntu-1810-desktop.yaml" MODE="packer" SCOPE=H1
-    - stage: primary
-      env: CONFIG="config/packer/ubuntu-1810-desktop.yaml" MODE="packer" SCOPE=RBX
-    - stage: primary
-      env: CONFIG="config/packer/ubuntu-1810.yaml" MODE="packer" SCOPE=H1
-    - stage: primary
-      env: CONFIG="config/packer/ubuntu-1810.yaml" MODE="packer" SCOPE=RBX
     - stage: primary
       env: CONFIG="config/packer/ubuntu-1904-desktop.yaml" MODE="packer" SCOPE=H1
     - stage: primary
