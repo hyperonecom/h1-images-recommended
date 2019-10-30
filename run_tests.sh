@@ -48,8 +48,8 @@ if [[ $OPTIND -eq 1 ]]; then echo "$help"; exit 2; fi
 RBX_CLI="${scope}";
 OS_DISK="$DISK_SERVICE,$DISK_SIZE"
 VM_NAME=$(echo "image-${IMAGE}-test" | tr -cd 'a-zA-Z0-9\-_ ' )
-IMAGE_NAME=$(h1 image show --image ${IMAGE} -o tsv --query '[].{name:name}' | tr -c 'a-zA-Z0-9\-' '_')
-IMAGE_ID=$(h1 image show --image ${IMAGE} -o tsv --query '[].{id:id}')
+IMAGE_NAME=$(${RBX_CLI} image show --image ${IMAGE} -o tsv --query '[].{name:name}' | tr -c 'a-zA-Z0-9\-' '_')
+IMAGE_ID=$(${RBX_CLI} image show --image ${IMAGE} -o tsv --query '[].{id:id}')
 
 set +x
 PASSWORD=$(openssl rand -hex 15)
