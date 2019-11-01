@@ -22,6 +22,7 @@ apk --no-cache add iproute2; # to provide 'ip addr show permanent' required by c
 apk --no-cache add openssh-server; # to provide ssh connectivity
 apk --no-cache add openssh-sftp-server; # for Packer-provisionability
 apk --no-cache add sudo; # to provide root access (users managed by cloud-init)
+apk --no-cache add curl; # to provide InfluxDB metrics
 echo 'datasource_list: [ RbxCloud ]' > /etc/cloud/cloud.cfg.d/90_dpkg.cfg
 apk -U add haveged && rc-update add haveged
 sed '/after localmount/a    after haveged' -i /etc/init.d/cloud-init-local
