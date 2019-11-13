@@ -55,10 +55,14 @@ rm -f /etc/hosts
 apk add --repository "http://dl-cdn.alpinelinux.org/alpine/edge/testing" h1-cli
 # UEFI installation
 mkdir -p /boot/efi/EFI/BOOT
-cp /usr/share/syslinux/efi64/* /boot/efi/EFI/BOOT/
+cp /usr/lib/SYSLINUX.EFI/efi64/syslinux.efi* /boot/efi/EFI/BOOT/
 cp /boot/extlinux.conf /boot/efi/EFI/BOOT/syslinux.cfg
 sed -e 's@LINUX vmlinuz-virt@LINUX /vmlinuz-virt@' -e 's@INITRD initramfs-virt@INITRD /initramfs-virt@' /boot/efi/EFI/BOOT/syslinux.cfg -i
 cp /boot/efi/EFI/BOOT/syslinux.efi /boot/efi/EFI/BOOT/BOOTX64.EFI
 cp /boot/vmlinuz* /boot/efi/
 cp /boot/initramfs* /boot/efi/
 sync;
+# Time synchronization
+apk add chrony
+echo 'refclock PHC /dev/ptp0 poll 3 dpoll -2 offset 0' >> /etc/chrony/chrony.conf
+sudo rc-update -q add chronyd default
