@@ -9,7 +9,7 @@ version: "2016"
 iso: 598afd7fcd7f442cad2c89cc
 disk_size: "25"
 disk_type: ssd
-vm_type: m2.medium
+vm_type: m2.large
 image_recommended_disk_size: "50"
 image_recommended_vm_type: m2.large
 #base_image: base-windows-server-2016-standard
