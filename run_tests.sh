@@ -48,7 +48,7 @@ if [[ $OPTIND -eq 1 ]]; then echo "$help"; exit 2; fi
 RBX_CLI="${scope}";
 OS_DISK="$DISK_SERVICE,$DISK_SIZE"
 VM_NAME=$(echo "image-${IMAGE}-test" | tr -cd 'a-zA-Z0-9\-_ ' )
-IMAGE_NAME=$(${RBX_CLI} image show --image ${IMAGE} -o tsv --query '[].{name:name}' | tr -c 'a-zA-Z0-9\-' '_')
+IMAGE_NAME=$(${RBX_CLI} image show --image ${IMAGE} -o tsv --query '[].{name:name}' | sed -e 's/[^a-zA-Z0-9\-]/_/g' -e 's/__*/_/g' -e 's/_$//g' )
 IMAGE_ID=$(${RBX_CLI} image show --image ${IMAGE} -o tsv --query '[].{id:id}')
 
 set +x
