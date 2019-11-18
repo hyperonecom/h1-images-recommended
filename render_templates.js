@@ -86,7 +86,7 @@ const render_templates = config => {
                 public_netadp_service: '{{user `public_netadp_service`}}',
                 pre_mount_commands: [
                     'sfdisk -uS --force "{{.Device}}" <<END\n2048,102400,ef\n104448,102400,b\n206848,,L,*\nEND',
-                    'partprobe', 'sleep 1', 'partprobe',
+                    'partprobe', 'sleep 1', 'partprobe', 'sleep 2',
                     'mkfs.fat {{.Device}}1',
                     'mkfs.fat {{.Device}}2',
                     'mkfs.{{user `img_fs`}} {{.Device}}3',

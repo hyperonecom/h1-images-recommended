@@ -20,8 +20,6 @@ sed -i 's/initrd16/initrdefi/' /boot/efi/EFI/centos/grub.cfg
 mkdir -p  /boot/efi/EFI/BOOT
 rm -f /boot/efi/EFI/BOOT/BOOTX64.EFI
 cp /boot/efi/EFI/centos/grubx64.efi /boot/efi/EFI/BOOT/BOOTX64.EFI
-#grub2-install --removable --target=x86_64-efi /dev/sdb
-#KERN=$(rpm -q --queryformat '%{PROVIDEVERSION}' kernel) && dracut -f /boot/initramfs-${KERN}.x86_64.img ${KERN}.x86_64
 rm -f /etc/sysconfig/network-scripts/ifcfg-eth0
 sed -i 's/^ForwardToConsole=.*$/ForwardToConsole=no/' /etc/systemd/journald.conf
 echo 'datasource_list: [ RbxCloud ]' > /etc/cloud/cloud.cfg.d/90_dpkg.cfg

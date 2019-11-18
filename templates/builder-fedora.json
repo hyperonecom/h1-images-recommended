@@ -9,7 +9,7 @@
   "builders": [
     {
       "type": "hyperone",
-      "source_image": "fedora:28",
+      "source_image": "fedora:31",
       "image_name": "image-builder-fedora",
       "disk_size": 10,
       "vm_type": "{{user `vm_type`}}",
@@ -21,7 +21,7 @@
     {
       "type": "shell",
       "inline": [
-        "sudo yum install -y mtools libguestfs-tools wget pv",
+        "sudo dnf install -y mtools libguestfs-tools wget pv",
         "echo 'kvm' | sudo tee /etc/modules",
         "sudo dracut -fv"
       ]
