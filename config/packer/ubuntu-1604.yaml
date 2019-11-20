@@ -15,5 +15,5 @@ custom_scripts:
   - ./scripts/ubuntu/ubuntu-1604.sh
   - ./scripts/ubuntu/cli.sh
 cloud_init_ds_src: ./resources/cloud-init/ds_v2/DataSourceRbxCloud.py
-uefi_support: '1'
+# uefi_support: '1'
 format: qcow
