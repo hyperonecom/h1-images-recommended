@@ -15,5 +15,5 @@ custom_scripts:
   - ./scripts/debian/debian-10-buster.sh
   - ./scripts/debian/cli.sh
   - ./scripts/debian/docker.sh
-# uefi_support: '0'
+uefi_support: '0'
 format: qcow
