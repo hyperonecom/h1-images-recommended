@@ -1,4 +1,9 @@
+#!/bin/sh
+set -eux
+DEVICE=$(df -P . | awk 'END{print $1}')
+DEVICE_DISK=$(echo $DEVICE | sed 's/[0-9]//g' )
 fixfiles onboot
+fixfiles -F -f relabel
 echo 'nameserver 9.9.9.9' > /etc/resolv.conf
 echo 'nameserver 8.8.8.8' >> /etc/resolv.conf
 dnf -y update
@@ -12,12 +17,13 @@ sed -i 's/^GRUB_CMDLINE_LINUX=.*$/GRUB_CMDLINE_LINUX="elevator=noop consoleblank
 sed -i 's/^GRUB_CMDLINE_LINUX_DEFAULT=.*$/GRUB_CMDLINE_LINUX_DEFAULT="quiet"/' /etc/default/grub
 grub2-mkconfig -o /boot/grub2/grub.cfg
 grub2-set-default 0
-grub2-install /dev/sdb # legacy BIOS install
+grub2-install "${DEVICE_DISK}"; # legacy BIOS install
 # UEFI install
 mkdir -p  /boot/efi/EFI/BOOT
-rm -f /boot/efi/EFI/BOOT/BOOTX64.EFI
 grub2-mkconfig -o /boot/efi/EFI/fedora/grub.cfg
-cp /boot/efi/EFI/fedora/grubx64.efi /boot/efi/EFI/BOOT/BOOTX64.EFI
+find /boot/efi/EFI
+# rm -f /boot/efi/EFI/BOOT/BOOTX64.EFI
+# cp /boot/efi/EFI/fedora/grubx64.efi /boot/efi/EFI/BOOT/BOOTX64.EFI
 # Regenerate initrd
 dracut -f  --regenerate-all
 # Update network script
@@ -26,4 +32,5 @@ sed -i 's/^ForwardToConsole=.*$/ForwardToConsole=no/' /etc/systemd/journald.conf
 echo 'datasource_list: [ RbxCloud ]' > /etc/cloud/cloud.cfg.d/90_dpkg.cfg
 rm -f /etc/hosts
 dnf install -y network-scripts
+fixfiles onboot
 fixfiles -F -f relabel
