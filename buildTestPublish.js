@@ -33,7 +33,7 @@ const config = {
         ssh: 'builder-ssh',
         netadp_service: '561e7e30a8cfd461e469ad18',
         vm_gen1_test_service: 'a1.nano',
-        vm_gen2_test_service: '_dev.gen2',
+        vm_gen2_test_service: '_dev.gen2_1',
         vm_builder_service: 'a1.small',
         network: 'builder-private-network',
         disk_type: 'ssd',
