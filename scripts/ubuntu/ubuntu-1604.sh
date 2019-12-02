@@ -21,5 +21,3 @@ systemctl set-default multi-user
 sed -i 's/^ForwardToConsole=.*$/ForwardToConsole=no/' /etc/systemd/journald.conf
 echo 'datasource_list: [ RbxCloud ]' > /etc/cloud/cloud.cfg.d/90_dpkg.cfg
 rm /etc/hosts
-echo "net.ipv4.conf.all.arp_notify = 1" >> /etc/sysctl.d/gratuitous-arp.conf
-echo "net.ipv4.conf.default.arp_notify = 1" >> /etc/sysctl.d/gratuitous-arp.conf
