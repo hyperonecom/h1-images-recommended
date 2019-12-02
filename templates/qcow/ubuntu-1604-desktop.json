@@ -88,10 +88,7 @@
     "provisioners": [
         {
             "type": "shell",
-            "inline": [
-                "DISK_UUID=$(blkid -s UUID -o value /dev/sdb3)",
-                "echo \"UUID=$DISK_UUID    /    ext4    defaults    1    1\" > /etc/fstab"
-            ]
+            "scripts": "./scripts/fstab.sh"
         },
         {
             "type": "shell",
