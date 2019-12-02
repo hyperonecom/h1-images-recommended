@@ -83,6 +83,7 @@ VM_ID=$(${RBX_CLI} vm create --image $IMAGE \
         -e "s/%%INFLUXDB_USER%%/${INFLUXDB_USER}/g" \
         -e "s/%%INFLUXDB_PASSWORD%%/${INFLUXDB_PASSWORD}/g" \
         -e "s/%%VM_TYPE%%/${VM_TYPE}/g" \
+        -e "s/%%SCOPE%%/${SCOPE}/g" \
         -e "s/%%IMAGE_ID%%/${IMAGE_ID}/g" \
         -e "s/%%IMAGE_NAME%%/${IMAGE_NAME}/g" ) \
     --ip $INTERNAL_IP \

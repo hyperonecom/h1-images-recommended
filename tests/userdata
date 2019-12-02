@@ -7,4 +7,4 @@ duration=`expr ${end_time} - %%REQUEST_TIME%%`;
 
 curl -XPOST "http://%%INFLUXDB_HOST%%/write?db=recommended_image" \
     -u "%%INFLUXDB_USER%%:%%INFLUXDB_PASSWORD%%" \
-    --data-binary "startup_time,vm_type=%%VM_TYPE%%,image=%%IMAGE_ID%%,image_name=%%IMAGE_NAME%% duration=${duration} ${end_time}000000000"
+    --data-binary "startup_time,vm_type=%%VM_TYPE%%,scope=%%SCOPE%%,image=%%IMAGE_ID%%,image_name=%%IMAGE_NAME%% duration=${duration} ${end_time}000000000"
