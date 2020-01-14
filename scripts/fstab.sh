@@ -1,5 +1,6 @@
 #!/bin/sh
 set -eux
+rm /etc/mtab
 ln -s /proc/self/mounts /etc/mtab;
 DEVICE=$(df -P . | awk 'END{print $1}')
 DISK_UUID=$(blkid -s UUID -o value "$DEVICE")
