@@ -5,9 +5,9 @@ const util = require('util');
 const readFile = util.promisify(fs.readFile);
 const readDir = util.promisify(fs.readdir);
 const writeFile = util.promisify(fs.writeFile);
-const {join} = require('path');
+const { join } = require('path');
 const yaml = require('js-yaml');
-const {qcow} = require('./lib/naming');
+const { qcow } = require('./lib/naming');
 
 const render_templates = config => {
     const chroot_mounts = [
@@ -27,7 +27,7 @@ const render_templates = config => {
         release: config.version,
         edition: config.edition,
         codename: config.codename,
-        recommended: {disk: {size: 20}},
+        recommended: { disk: { size: 20 } },
     };
     const post_mount_commands = [
         'mkdir -p {{.MountPath}}/boot/efi',
@@ -36,7 +36,7 @@ const render_templates = config => {
         'mkdir {{user `mount_qcow_path`}}',
         'LIBGUESTFS_BACKEND=direct guestmount -a {{user `download_path`}} -m {{user `qcow_part`}} {{user `mount_qcow_path`}}',
         'setenforce 0',
-    ] ;
+    ];
     if (config.selinux === '1') {
         post_mount_commands.push(
             'rsync -aH -X --inplace -W --numeric-ids -A -v {{user `mount_qcow_path`}}/ {{.MountPath}}/ | pv -l -c -n >/dev/null'
@@ -46,6 +46,27 @@ const render_templates = config => {
             'rsync -aH --inplace -W --numeric-ids -A -v {{user `mount_qcow_path`}}/ {{.MountPath}}/ | pv -l -c -n >/dev/null'
         );
     }
+
+    let cloud_init_variables = {
+        cloud_init_ds_src: config.cloud_init_ds_src || './resources/cloud-init/ds_v2/DataSourceRbxCloud.py',
+    };
+
+    let cloud_init_provisioners = [
+        {
+            type: 'shell',
+            inline: [
+                'CLOUD_INIT_DS_DIR=$(find /usr -name cloudinit -type d)',
+                'echo Found cloud-init in path: ${CLOUD_INIT_DS_DIR}',
+                'mv {{user `cloud_init_tmp_path`}} ${CLOUD_INIT_DS_DIR}/sources/DataSourceRbxCloud.py',
+            ],
+        },
+    ];
+
+    if (config.install_cloudinit_ds) {
+        cloud_init_variables = {};
+        cloud_init_provisioners = [];
+    }
+
     return {
         variables: {
             source_image: 'image-builder-fedora',
@@ -56,8 +77,7 @@ const render_templates = config => {
             qcow_part: config.qcow_part,
             img_fs: config.img_fs || 'ext4',
             scripts: config.custom_scripts.join(','),
-            cloud_init_ds_dir: config.cloud_init_ds_dir,
-            cloud_init_ds_src: config.cloud_init_ds_src || './resources/cloud-init/ds/DataSourceRbxCloud.py',
+            ...cloud_init_variables,
             // disk_size: config.disk_size || 10,
             disk_size: config.disk_size || '10',
             image_name: config.pname,
@@ -100,10 +120,7 @@ const render_templates = config => {
         provisioners: [
             {
                 type: 'shell',
-                inline: [
-                    'DISK_UUID=$(blkid -s UUID -o value /dev/sdb3)',
-                    'echo "UUID=$DISK_UUID    /    ext4    defaults    1    1" > /etc/fstab',
-                ],
+                scripts: './scripts/fstab.sh',
             },
             {
                 type: 'shell',
@@ -119,14 +136,7 @@ const render_templates = config => {
                 source: '{{user `cloud_init_ds_src`}}',
                 destination: '{{user `cloud_init_tmp_path`}}',
             },
-            {
-                type: 'shell',
-                inline: [
-                    'CLOUD_INIT_DS_DIR=$(find /usr -name cloudinit -type d)',
-                    'echo Found cloud-init in path: ${CLOUD_INIT_DS_DIR}',
-                    'mv {{user `cloud_init_tmp_path`}} ${CLOUD_INIT_DS_DIR}/sources/DataSourceRbxCloud.py',
-                ],
-            },
+            ...cloud_init_provisioners,
         ],
     };
 };

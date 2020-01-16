@@ -6,5 +6,6 @@ pname: Alpine 3.10 Docker
 arch: x64
 version: '3.10'
 disk_size: '5'
+cloud_init_install: true
 template_file: templates/manual/alpine-3.10-docker.json
 uefi_support: '1'
