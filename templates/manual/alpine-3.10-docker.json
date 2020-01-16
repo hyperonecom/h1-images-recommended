@@ -53,7 +53,7 @@
         "mkfs.fat {{.Device}}2",
         "dosfslabel {{.Device}}1 EFI",
         "dosfslabel {{.Device}}2 CLOUDMD",
-        "mkfs.{{user `root_fs`}} {{.Device}}3",
+        "mkfs.{{user `root_fs`}} -O ^64bit {{.Device}}3",
         "parted {{.Device}} print"
       ],
       "post_mount_commands": [
