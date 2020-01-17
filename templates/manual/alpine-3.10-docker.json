@@ -6,18 +6,18 @@
     "root_fs": "ext4",
     "features": "ata base ide scsi usb virtio ext4",
     "modules": "sd-mod,usb-storage,ext4",
-    "rel": "v3.10",
+    "rel": "v3.11",
     "mirror": "http://dl-cdn.alpinelinux.org/alpine",
     "cloud_init_ds_dir": "/usr/lib/python3.8/site-packages/cloudinit/",
     "cloud_init_ds_src": "./resources/cloud-init/ds_v2/",
     "cloud_init_tmp_path": "/tmp",
     "disk_size": "2",
     "scripts": "./scripts/fstab.sh,./scripts/alpine/edge.sh,./scripts/alpine/docker.sh",
-    "image_name": "Alpine 3.10 Docker",
+    "image_name": "Alpine 3.11 Docker",
     "public_netadp_service": "public",
     "vm_type": "a1.small",
     "linux_package": "linux-virt",
-    "image_description": "{\"arch\":\"x64\",\"distro\":\"alpine\",\"release\":\"3.10\",\"edition\":\"docker\",\"codename\":\"edge\",\"recommended\":{\"disk\":{\"size\":5}}}"
+    "image_description": "{\"arch\":\"x64\",\"distro\":\"alpine\",\"release\":\"3.11\",\"edition\":\"docker\",\"codename\":\"edge\",\"recommended\":{\"disk\":{\"size\":5}}}"
   },
   "builders": [
     {

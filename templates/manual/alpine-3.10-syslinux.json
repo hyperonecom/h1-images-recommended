@@ -13,11 +13,11 @@
     "cloud_init_tmp_path": "/tmp",
     "disk_size": "2",
     "scripts": "./scripts/fstab.sh,./scripts/alpine/edge.sh",
-    "image_name": "Alpine 3.10 Server",
+    "image_name": "Alpine 3.11 Server",
     "public_netadp_service": "public",
     "vm_type": "a1.small",
     "linux_package": "linux-virt",
-    "image_description": "{\"arch\":\"x64\",\"distro\":\"alpine\",\"release\":\"3.10\",\"edition\":\"server\",\"codename\":\"stable\",\"recommended\":{\"disk\":{\"size\":5}}}"
+    "image_description": "{\"arch\":\"x64\",\"distro\":\"alpine\",\"release\":\"3.11\",\"edition\":\"server\",\"codename\":\"stable\",\"recommended\":{\"disk\":{\"size\":5}}}"
   },
   "builders": [
     {
