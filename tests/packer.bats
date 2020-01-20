@@ -22,16 +22,16 @@ skip
 }
 
 
-@test "check cloudinit done" {
-  result=$(ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no ${USER}@${IP} "grep 'done' <(cloud-init status)")
-  [ "$?" -eq 0 ]
-}
+# @test "check cloudinit done" {
+#   result=$(ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no ${USER}@${IP} "grep 'done' <(cloud-init status)")
+#   [ "$?" -eq 0 ]
+# }
 
 
-@test "check arping executed" {
-  result=$(ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no ${USER}@${IP} "grep -E 'packets transmitted|Sent' /var/log/cloud-init*")
-  [ "$?" -eq 0 ]
-}
+# @test "check arping executed" {
+#   result=$(ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no ${USER}@${IP} "grep -E 'packets transmitted|Sent' /var/log/cloud-init*")
+#   [ "$?" -eq 0 ]
+# }
 
 
 @test "check userdata available" {
