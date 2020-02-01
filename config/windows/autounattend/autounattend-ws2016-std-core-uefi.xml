@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="utf-8"?>
+<unattend xmlns="urn:schemas-microsoft-com:unattend">
+    <settings pass="windowsPE">
+        <component name="Microsoft-Windows-Setup" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+            <DiskConfiguration>
+                <WillShowUI>OnError</WillShowUI>
+                <Disk wcm:action="add">
+                    <CreatePartitions>
+                        <CreatePartition wcm:action="add">
+                            <Order>1</Order>
+                            <Size>100</Size>
+                            <Type>EFI</Type>
+                        </CreatePartition>
+                        <CreatePartition wcm:action="add">
+							<Order>2</Order> 
+							<Type>MSR</Type> 
+							<Size>128</Size> 
+                        </CreatePartition>
+                        <CreatePartition wcm:action="add">
+							<Order>3</Order> 
+							<Type>Primary</Type> 
+							<Extend>true</Extend> 
+                        </CreatePartition>
+                    </CreatePartitions>
+                    <ModifyPartitions>
+                        <ModifyPartition wcm:action="add">
+							<Order>1</Order> 
+							<PartitionID>1</PartitionID> 
+							<Label>System</Label> 
+							<Format>FAT32</Format> 
+						</ModifyPartition>
+						<ModifyPartition wcm:action="add">
+							<Order>2</Order> 
+							<PartitionID>3</PartitionID> 
+							<Letter>C</Letter> 
+							<Format>NTFS</Format> 
+                            <Label>System</Label>
+						</ModifyPartition>
+					</ModifyPartitions>
+                    <DiskID>0</DiskID>
+                    <WillWipeDisk>true</WillWipeDisk>
+                </Disk>
+            </DiskConfiguration>
+            <ImageInstall>
+                <OSImage>
+                    <InstallTo>
+                        <PartitionID>3</PartitionID>
+                        <DiskID>0</DiskID>
+                    </InstallTo>
+                    <InstallToAvailablePartition>false</InstallToAvailablePartition>
+                    <WillShowUI>OnError</WillShowUI>
+                    <InstallFrom>
+                        <MetaData wcm:action="add">
+                            <Key>/IMAGE/NAME</Key>
+                            <Value>Windows Server 2016 SERVERSTANDARDCORE</Value>
+                        </MetaData>
+                    </InstallFrom>
+                </OSImage>
+            </ImageInstall>
+            <UserData>
+                <AcceptEula>true</AcceptEula>
+                <!--
+                <ProductKey>
+                    <Key>XXXXX-XXXXX-XXXXX-XXXXX-XXXXX</Key>
+                    <WillShowUI>OnError</WillShowUI>
+                </ProductKey>
+                -->
+            </UserData>
+        </component>
+        <component name="Microsoft-Windows-International-Core-WinPE" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+            <SetupUILanguage>
+                <UILanguage>en-US</UILanguage>
+            </SetupUILanguage>
+            <InputLocale>en-US</InputLocale>
+            <UILanguage>en-US</UILanguage>
+            <SystemLocale>en-US</SystemLocale>
+            <UserLocale>en-US</UserLocale>
+        </component>
+    </settings>
+    <settings pass="oobeSystem">
+        <component name="Microsoft-Windows-Shell-Setup" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+            <VisualEffects>
+                <FontSmoothing>ClearType</FontSmoothing>
+            </VisualEffects>
+            <OOBE>
+                <HideEULAPage>true</HideEULAPage>
+                <!--
+                    ProtectYourPC:
+                    1 Specifies the recommended level of protection for your computer.
+                    2 Specifies that only updates are installed.
+                    3 Specifies that automatic protection is disabled.
+                -->
+                <ProtectYourPC>3</ProtectYourPC>
+                <NetworkLocation>Work</NetworkLocation>
+                <HideOnlineAccountScreens>true</HideOnlineAccountScreens>
+                <HideLocalAccountScreen>true</HideLocalAccountScreen>
+                <HideWirelessSetupInOOBE>true</HideWirelessSetupInOOBE>
+            </OOBE>
+            <!-- Use FirstLogonCommands instead of LogonCommands if you don't need to install Windows Updates -->
+            <FirstLogonCommands>
+
+                <SynchronousCommand wcm:action="add">
+                    <CommandLine>cmd.exe /c C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -File C:\Windows\Temp\SetupWindowsImage.ps1</CommandLine>
+                    <Description>Setup Windows Image - Install software, windows updates and do sysprep</Description>
+                    <Order>100</Order>
+                </SynchronousCommand>
+
+            </FirstLogonCommands>
+            <!--
+            <FirstLogonCommands>
+                <SynchronousCommand wcm:action="add">
+                    <CommandLine>C:\Windows\System32\Sysprep\Sysprep.exe /generalize /oobe /shutdown /unattend:C:\tools\Unattend.xml</CommandLine>
+                    <Order>1</Order>
+                </SynchronousCommand>
+            </FirstLogonCommands>
+            -->
+            <UserAccounts>
+                <AdministratorPassword>
+                    <Value>Passw0rd</Value>
+                    <PlainText>true</PlainText>
+                </AdministratorPassword>
+                <!-- The following is needed on a client OS -->
+                <!--
+                <LocalAccounts>
+                    <LocalAccount wcm:action="add">
+                        <Description>Admin user</Description>
+                        <DisplayName>Admin</DisplayName>
+                        <Group>Administrators</Group>
+                        <Name>Admin</Name>
+                    </LocalAccount>
+                </LocalAccounts>
+                -->
+            </UserAccounts>
+            <AutoLogon>
+                <Password>
+                    <Value>Passw0rd</Value>
+                    <PlainText>true</PlainText>
+                </Password>
+                <Enabled>true</Enabled>
+                <LogonCount>50</LogonCount>
+                <Username>Administrator</Username>
+            </AutoLogon>
+            <ComputerName>*</ComputerName>
+        </component>
+    </settings>
+    <settings pass="specialize">
+        <component name="Microsoft-Windows-Shell-Setup" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="NonSxS" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+            <TimeZone>UTC</TimeZone>
+            <ComputerName>*</ComputerName>
+        </component>
+        <component name="Microsoft-Windows-Deployment" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+            <RunSynchronous>
+
+
+                <!-- Download and install various utilities -->
+
+                <RunSynchronousCommand wcm:action="add">
+                    <Order>1</Order>
+                    <Path>powershell -NoLogo -Command "Invoke-WebRequest -Uri https://bitbucket.org/rbxcom/rbx-windows-image/raw/master/SetupWindowsImage.ps1 -OutFile C:\Windows\Temp\SetupWindowsImage.ps1"</Path>
+                    <Description>Download script fo creating windows image</Description>
+                </RunSynchronousCommand>
+
+            </RunSynchronous>
+        </component>
+        <component name="Microsoft-Windows-SQMApi" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="NonSxS" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+            <CEIPEnabled>0</CEIPEnabled>
+        </component>
+    </settings>
+</unattend>
