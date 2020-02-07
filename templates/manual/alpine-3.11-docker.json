@@ -1,23 +1,23 @@
 {
   "variables": {
-    "source_image": "fedora:29",
+    "source_image": "fedora:30",
     "efi_fs": "vfat",
     "cloud_fs": "vfat",
     "root_fs": "ext4",
     "features": "ata base ide scsi usb virtio ext4",
     "modules": "sd-mod,usb-storage,ext4",
-    "rel": "edge",
+    "rel": "v3.11",
     "mirror": "http://dl-cdn.alpinelinux.org/alpine",
     "cloud_init_ds_dir": "/usr/lib/python3.8/site-packages/cloudinit/",
     "cloud_init_ds_src": "./resources/cloud-init/ds_v2/",
     "cloud_init_tmp_path": "/tmp",
     "disk_size": "2",
-    "scripts": "./scripts/fstab.sh,./scripts/alpine/edge.sh",
-    "image_name": "Alpine 3.11 Server",
+    "scripts": "./scripts/fstab.sh,./scripts/alpine/edge.sh,./scripts/alpine/docker.sh",
+    "image_name": "Alpine 3.11 Docker",
     "public_netadp_service": "public",
     "vm_type": "a1.small",
     "linux_package": "linux-virt",
-    "image_description": "{\"arch\":\"x64\",\"distro\":\"alpine\",\"release\":\"3.11\",\"edition\":\"server\",\"codename\":\"stable\",\"recommended\":{\"disk\":{\"size\":5}}}"
+    "image_description": "{\"arch\":\"x64\",\"distro\":\"alpine\",\"release\":\"3.11\",\"edition\":\"docker\",\"codename\":\"stable\",\"recommended\":{\"disk\":{\"size\":5}}}"
   },
   "builders": [
     {
@@ -26,7 +26,7 @@
       "chroot_disk": true,
       "mount_partition": 3,
       "source_image": "{{user `source_image`}}",
-      "vm_name": "packer-alpine-syslinux",
+      "vm_name": "packer-alpine-docker",
       "vm_type": "{{user `vm_type`}}",
       "ssh_keys": "{{user `ssh_name`}}",
       "chroot_command_wrapper": "sudo {{.Command}}",
@@ -72,8 +72,7 @@
         "REL={{user `rel`}}",
         "MIRROR={{user `mirror`}}",
         "LINUX_PACKAGE={{user `linux_package`}}",
-        "MODULES={{user `modules`}}",
-        "DEVICE={{.Device}}"
+        "MODULES={{user `modules`}}"
       ]
     },
     {
