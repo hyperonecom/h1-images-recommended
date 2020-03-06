@@ -11,9 +11,6 @@ sed -e 's;^#ttyS0;ttyS0;g' -i /etc/inittab
 apk --no-cache add util-linux # to fix 'sfdisk'
 apk --no-cache add --repository "${MIRROR}/edge/testing" cloud-init cloud-init-openrc
 apk --no-cache add --repository "${MIRROR}/edge/testing" cloud-utils # to provide growpart required by cloud-init
-# downgrade python for cloud-init
-rm /usr/lib/python3.8/site-packages/__pycache__/ -r
-mv /usr/lib/python3.8/site-packages/* /usr/lib/python3.7/site-packages/
 apk --no-cache add eudev # to provide mdadm required by cloud-init
 apk --no-cache add ifupdown # to provide 'ip --all' required by cloud-init
 apk --no-cache add iproute2 # to provide 'ip addr show permanent' required by cloud-init
