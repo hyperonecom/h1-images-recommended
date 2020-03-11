@@ -55,7 +55,6 @@ skip
   result=$(ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no  ${USER}@${IP} hostname)
   [ "$?" -eq 0 ]
   [ "$result" == "$HOSTNAME" ]
-
 }
 
 @test "resize rootfs" {
@@ -66,6 +65,10 @@ skip
   [ "$(($block_count * $block_size))" -gt "$((5 * 1024 * 1024 * 1024 ))" ]
 }
 
+@test "available /dev/rtc0" {
+  ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no  ${USER}@${IP} ls /dev/rtc0;
+  [ "$?" -eq 0 ]
+}
 
 @test "check default target" {
   is_systemctl=$(ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no  ${USER}@${IP} "command -v systemctl || echo ''")
