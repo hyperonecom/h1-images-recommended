@@ -66,7 +66,6 @@ const render_templates = config => {
         cloud_init_variables = {};
         cloud_init_provisioners = [];
     }
-
     return {
         variables: {
             source_image: 'image-builder-fedora',
@@ -75,7 +74,7 @@ const render_templates = config => {
             cloud_init_tmp_path: '/tmp/cloud_init.py',
             download_url: config.download_url,
             qcow_part: config.qcow_part,
-            img_fs: config.img_fs || 'ext4',
+            root_fs: config.root_fs || 'ext4',
             scripts: config.custom_scripts.join(','),
             ...cloud_init_variables,
             // disk_size: config.disk_size || 10,
@@ -94,7 +93,7 @@ const render_templates = config => {
                 type: 'hyperone',
                 disk_size: 10,
                 chroot_disk: true,
-                mount_partition: 3,
+                mount_partition: 4,
                 vm_name: `packer-${config.name}`,
                 source_image: '{{user `source_image`}}',
                 vm_type: '{{user `vm_type`}}',
@@ -105,13 +104,17 @@ const render_templates = config => {
                 image_description: '{{user `image_description`}}',
                 public_netadp_service: '{{user `public_netadp_service`}}',
                 pre_mount_commands: [
-                    'sfdisk -uS --force "{{.Device}}" <<END\n2048,102400,ef\n104448,102400,b\n206848,,L,*\nEND',
-                    'partprobe', 'sleep 1', 'partprobe', 'sleep 2',
-                    'mkfs.fat {{.Device}}1',
-                    'mkfs.fat {{.Device}}2',
-                    'mkfs.{{user `img_fs`}} {{.Device}}3',
-                    'dosfslabel {{.Device}}1 EFI',
-                    'dosfslabel {{.Device}}2 CLOUDMD',
+                    'sgdisk -Z {{.Device}}',
+                    'sgdisk -n 1:0:+50MB -t 1:EF01 -c 1:EFI {{.Device}}',
+                    'sgdisk -n 2:0:+50MB -t 2:0700 -c 2:CLOUDMD {{.Device}}',
+                    'sgdisk -n 3:0:+1MB  -t 3:EF02 -c 3:BIOS {{.Device}}',
+                    'sgdisk -n 4:0:-0    -t 4:8300 -c 4:ROOT {{.Device}}',
+                    'partprobe',
+                    'gdisk -l {{.Device}}',
+                    'sleep 2',
+                    'mkfs.fat {{.Device}}1 -n EFI',
+                    'mkfs.fat {{.Device}}2 -n CLOUDMD',
+                    'mkfs.{{user `root_fs`}} {{.Device}}4',
                 ],
                 chroot_mounts,
                 post_mount_commands,
