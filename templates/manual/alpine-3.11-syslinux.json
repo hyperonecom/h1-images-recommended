@@ -24,7 +24,7 @@
       "type": "hyperone",
       "disk_size": 10,
       "chroot_disk": true,
-      "mount_partition": 3,
+      "mount_partition": 4,
       "source_image": "{{user `source_image`}}",
       "vm_name": "packer-alpine-syslinux",
       "vm_type": "{{user `vm_type`}}",
