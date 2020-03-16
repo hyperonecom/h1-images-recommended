@@ -1,6 +1,6 @@
 FROM node
 ENV H1_CLI_VERSION="1.7.0"
-ENV PACKER_VERSION="1.3.5"
+ENV PACKER_VERSION="1.5.4"
 RUN apt-get update \
 && apt-get install -y bats unzip \
 && rm -rf /var/lib/apt/lists/*
