@@ -13,7 +13,7 @@ cloud_init_install: true
 cloud_init_ds_src: ./resources/cloud-init/ds/DataSourceRbxCloud.py
 custom_scripts:
   - ./scripts/fstab.sh
-  - ./scripts/debian/debian-8-jessie.sh
+  - ./scripts/debian/debian-9-stretch.sh
   - ./scripts/debian/cli.sh
 uefi_support: '1'
 format: qcow
