@@ -1,0 +1,13 @@
+name: rhel-8.1
+distro: rhel
+edition: server
+codename: 'stable'
+pname: RHEL 8.1
+arch: x64
+version: '8.1'
+disk_size: '5'
+cloud_init_install: true
+template_file: templates/manual/rhel-8.json
+uefi_support: '1'
+scope:
+  - h1

@@ -1,0 +1,13 @@
+name: rhel-7.7
+distro: rhel
+edition: server
+codename: 'stable'
+pname: RHEL 7.7
+arch: x64
+version: '7.7'
+disk_size: '5'
+cloud_init_install: true
+template_file: templates/manual/rhel-7.json
+uefi_support: '1'
+scope:
+  - h1
