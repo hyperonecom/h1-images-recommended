@@ -1,9 +1,13 @@
+#!/bin/sh
+set -eux
+DEVICE=$(df -P . | awk 'END{print $1}')
+DEVICE_DISK=$(echo $DEVICE | sed 's/[0-9]//g' )
 fixfiles onboot
 fixfiles -F -f relabel
 echo 'nameserver 9.9.9.9' > /etc/resolv.conf
 echo 'nameserver 8.8.8.8' >> /etc/resolv.conf
 yum -y update
-yum -y install vim resolvconf arping curl redhat-lsb-core
+yum -y install vim resolvconf arping curl redhat-lsb-core gdisk
 yum clean all
 echo 'blacklist floppy' > /etc/modprobe.d/blacklist-floppy.conf
 echo 'omit_drivers+="floppy"' > /etc/dracut.conf.d/nofloppy.conf
@@ -12,7 +16,7 @@ sed -i 's/^GRUB_CMDLINE_LINUX=.*$/GRUB_CMDLINE_LINUX="elevator=noop consoleblank
 sed -i 's/^GRUB_CMDLINE_LINUX_DEFAULT=.*$/GRUB_CMDLINE_LINUX_DEFAULT="quiet"/' /etc/default/grub
 grub2-mkconfig -o /boot/grub2/grub.cfg
 grub2-set-default 0
-grub2-install /dev/sdb
+grub2-install "${DEVICE_DISK}"
 yum -y install grub2-efi-x64 shim-x64 grub2-efi-modules
 grub2-mkconfig -o /boot/efi/EFI/centos/grub.cfg
 sed -i 's/linux16/linuxefi/' /boot/efi/EFI/centos/grub.cfg
