@@ -8,7 +8,6 @@ export DEBIAN_FRONTEND=noninteractive;
 echo 'nameserver 9.9.9.9' > /etc/resolv.conf
 echo 'nameserver 8.8.8.8' >> /etc/resolv.conf
 
-echo "deb [check-valid-until=no] http://archive.debian.org/debian jessie-backports main" > /etc/apt/sources.list.d/jessie-backports.list
 apt-get -o Acquire::Check-Valid-Until=false update && apt-get -o Acquire::Check-Valid-Until=false -y dist-upgrade
 apt-get -y install debconf-utils vim resolvconf arping curl
 echo "grub-pc grub-pc/install_devices string ${DEVICE_DISK}" | debconf-set-selections
@@ -29,12 +28,13 @@ echo 'interface ignore wildcard' >> /etc/ntp.conf
 sed -i 's/^ForwardToConsole=.*$/ForwardToConsole=no/' /etc/systemd/journald.conf
 
 # Debian 8 is almost EOL, so repository system is not well-maintaned
-wget http://archive.debian.org/debian/pool/main/c/cloud-init/cloud-init_0.7.7~bzr1156-1~bpo8+1_all.deb -O /tmp/cloduinit.db
+rm /etc/cloud/cloud.cfg /etc/cloud/cloud.cfg.d/ -r
+wget http://archive.debian.org/debian/pool/main/c/cloud-init/cloud-init_0.7.7~bzr1156-1~bpo8+1_all.deb -O /tmp/cloduinit.deb
+wget http://archive.debian.org/debian/pool/main/c/cloud-utils/cloud-guest-utils_0.29-1~bpo8+1_all.deb -O /tmp/cloud-guest-utils.deb
 wget http://archive.debian.org/debian/pool/main/c/cloud-utils/cloud-utils_0.29-1~bpo8+1_all.deb -O /tmp/cloud-utils.deb
 wget http://httpredir.debian.org/debian/pool/main/c/cdrkit/genisoimage_1.1.11-3_amd64.deb -O /tmp/geniso.deb
 wget http://httpredir.debian.org/debian/pool/main/liba/libaio/libaio1_0.3.110-1_amd64.deb -O /tmp/libaio.deb
-dpkg -i /tmp/*.deb
-apt-get -f install -y
+dpkg --force-confdef -i /tmp/*.deb || apt-get  -o Dpkg::Options::="--force-confdef" -f install -y
 echo 'datasource_list: [ RbxCloud ]' > /etc/cloud/cloud.cfg.d/90_dpkg.cfg
 echo 'network: {config: disabled}' > /etc/cloud/cloud.cfg.d/99-disable-network-config.cfg
 rm /etc/hosts
