@@ -15,7 +15,11 @@ echo "grub-pc grub-pc/install_devices string $DEVICE_DISK" | debconf-set-selecti
 apt-get -y install  grub2
 apt-get clean
 sed -i 's/^GRUB_CMDLINE_LINUX=.*$/GRUB_CMDLINE_LINUX="elevator=noop consoleblank=0 console=tty0 console=ttyS0,115200n8"/' /etc/default/grub
-sed -i 's/^GRUB_CMDLINE_LINUX_DEFAULT=.*$/GRUB_CMDLINE_LINUX_DEFAULT="quiet"/' /etc/default/grub 
+sed -i 's/^GRUB_CMDLINE_LINUX_DEFAULT=.*$/GRUB_CMDLINE_LINUX_DEFAULT="quiet"/' /etc/default/grub
+echo 'GRUB_DISABLE_OS_PROBER=true' >> /etc/default/grub
+# Ubuntu >=19.10 force partuuid
+# Ubuntu < 19.10 not have that file
+[ -f "/etc/default/grub.d/40-force-partuuid.cfg" ] && rm /etc/default/grub.d/40-force-partuuid.cfg
 grub-mkconfig -o /boot/grub/grub.cfg
 grub-install "$DEVICE_DISK";
 apt-get install -y --reinstall grub-efi
