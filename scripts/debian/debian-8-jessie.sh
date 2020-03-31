@@ -8,8 +8,8 @@ export DEBIAN_FRONTEND=noninteractive;
 echo 'nameserver 9.9.9.9' > /etc/resolv.conf
 echo 'nameserver 8.8.8.8' >> /etc/resolv.conf
 
-apt-get -o Acquire::Check-Valid-Until=false update && apt-get -o Acquire::Check-Valid-Until=false -y dist-upgrade
-apt-get -y install debconf-utils vim resolvconf arping curl
+apt-get update && apt-get -y dist-upgrade
+apt-get -y install debconf-utils vim resolvconf arping curl gdisk
 echo "grub-pc grub-pc/install_devices string ${DEVICE_DISK}" | debconf-set-selections
 echo "grub-efi-amd64 grub2/force_efi_extra_removable boolean true" | debconf-set-selections
 apt-get install -y grub2-common grub-efi-amd64-bin grub-pc
