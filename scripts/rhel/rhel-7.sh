@@ -33,12 +33,11 @@ sed -i 's/linux16/linuxefi/' /boot/efi/EFI/*/grub.cfg
 sed -i 's/initrd16/initrdefi/' /boot/efi/EFI/*/grub.cfg
 
 # Add required packages
-yum install firewalld
+yum install -y firewalld
 sudo systemctl enable firewalld
 
 # Remove extra packages
-yum remove ovirt-guest-agent qemu-guest-agent rpcbind
-yum remove microcode_ctl
+yum remove -y ovirt-guest-agent qemu-guest-agent microcode_ctl
 
 # Install Cloud-init
 yum install -y cloud-init cloud-utils-growpart wget gdisk
