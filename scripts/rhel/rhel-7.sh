@@ -45,7 +45,7 @@ yum clean all
 
 CLOUD_INIT_DS_DIR=$(find /usr -name cloudinit -type d)
 echo "Found cloud-init in path: ${CLOUD_INIT_DS_DIR}"
-wget -O "${CLOUD_INIT_DS_DIR}/sources/DataSourceRbxCloud.py" https://raw.githubusercontent.com/ad-m/cloud-init/patch-3/cloudinit/sources/DataSourceRbxCloud.py
+wget -O "${CLOUD_INIT_DS_DIR}/sources/DataSourceRbxCloud.py" https://raw.githubusercontent.com/canonical/cloud-init/master/cloudinit/sources/DataSourceRbxCloud.py
 echo 'datasource_list: [ RbxCloud ]' > /etc/cloud/cloud.cfg.d/90_dpkg.cfg
 # Remove /etc/host to manage by cloud-init
 rm -f /etc/hosts
