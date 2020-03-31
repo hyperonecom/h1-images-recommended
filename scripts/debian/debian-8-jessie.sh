@@ -32,9 +32,11 @@ rm /etc/cloud/cloud.cfg /etc/cloud/cloud.cfg.d/ -r
 wget http://archive.debian.org/debian/pool/main/c/cloud-init/cloud-init_0.7.7~bzr1156-1~bpo8+1_all.deb -O /tmp/cloduinit.deb
 wget http://archive.debian.org/debian/pool/main/c/cloud-utils/cloud-guest-utils_0.29-1~bpo8+1_all.deb -O /tmp/cloud-guest-utils.deb
 wget http://archive.debian.org/debian/pool/main/c/cloud-utils/cloud-utils_0.29-1~bpo8+1_all.deb -O /tmp/cloud-utils.deb
-wget http://httpredir.debian.org/debian/pool/main/c/cdrkit/genisoimage_1.1.11-3_amd64.deb -O /tmp/geniso.deb
-wget http://httpredir.debian.org/debian/pool/main/liba/libaio/libaio1_0.3.110-1_amd64.deb -O /tmp/libaio.deb
-dpkg --force-confdef -i /tmp/*.deb || apt-get  -o Dpkg::Options::="--force-confdef" -f install -y
+wget http://archive.debian.org/debian/pool/main/c/cdrkit/genisoimage_1.1.11-3_amd64.deb -O /tmp/geniso.deb
+wget http://archive.debian.org/debian/pool/main/liba/libaio/libaio1_0.3.110-1_amd64.deb -O /tmp/libaio.deb
+wget http://archive.debian.org/debian/pool/main/c/cloud-utils/cloud-image-utils_0.29-1~bpo8+1_all.deb -o /tmp/cloud-image-utils.deb
+dpkg -i /tmp/*.deb || apt-get -f install -f -y
+mv /etc/cloud/cloud.cfg.dpkg-dist /etc/cloud/cloud.cfg
 echo 'datasource_list: [ RbxCloud ]' > /etc/cloud/cloud.cfg.d/90_dpkg.cfg
 echo 'network: {config: disabled}' > /etc/cloud/cloud.cfg.d/99-disable-network-config.cfg
 rm /etc/hosts
