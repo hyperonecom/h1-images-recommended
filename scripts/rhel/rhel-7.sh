@@ -32,6 +32,8 @@ grub2-mkconfig -o "/boot/efi/EFI/BOOT/grub.cfg"
 sed -i 's/linux16/linuxefi/' /boot/efi/EFI/*/grub.cfg
 sed -i 's/initrd16/initrdefi/' /boot/efi/EFI/*/grub.cfg
 
+# Install update
+yum update -y
 # Add required packages
 yum install -y firewalld
 sudo systemctl enable firewalld
