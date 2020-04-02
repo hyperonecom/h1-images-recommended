@@ -1,5 +1,5 @@
 param(
-  [String] $Repo = "https://bitbucket.org/rbxcom/rbx-windows-image/raw/master/",
+  [String] $Repo = "https://raw.githubusercontent.com/hyperonecom/h1-images-recommended/windows/resources/powershell/",
   [String] $TempDir = "C:\Windows\Temp\",
   [String] $Logfile = "$($TempDir)SetupWindowsImage.log"
 )
