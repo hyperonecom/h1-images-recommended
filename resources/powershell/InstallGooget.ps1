@@ -1,6 +1,6 @@
 param(
-   [String] $GoogetSource = "http://googet.packages.hyperone.cloud/googet.exe",
-   [String] $GoogleRepo = "http://googet.packages.hyperone.cloud/repo",
+   [String] $GoogetSource = "http://5e5fdc83d9fe4b5b0d0338f1.website.pl-waw-1.hyperone.cloud/googet.exe",
+   [String] $GoogleRepo = "http://5e5fdc83d9fe4b5b0d0338f1.website.pl-waw-1.hyperone.cloud/repo",
    [String] $GoogetRoot = "C:\ProgramData\GooGet"
 )
 
