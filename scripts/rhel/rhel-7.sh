@@ -11,8 +11,8 @@ echo '62.181.8.127 rhui.pl-waw-1.hyperone.cloud'  | tee -a /etc/hosts
 
 # Access RHUI
 . /etc/os-release
-curl "http://travis:${REDHAT_SECRET}@5e704ae4d9fe4b5b0d13a090.website.pl-waw-1.hyperone.cloud/rhel-server-${VERSION_ID}.rpm" -o "rhel-server-${VERSION_ID}.rpm"
-rpm -i "rhel-server-${VERSION_ID}.rpm";
+curl "http://travis:${REDHAT_SECRET}@5e704ae4d9fe4b5b0d13a090.website.pl-waw-1.hyperone.cloud/rhel-server-${VERSION_ID}.rpm" -o "/tmp/rhel-server-${VERSION_ID}.rpm"
+rpm -i "/tmp/rhel-server-${VERSION_ID}.rpm";
 
 # Install GRUB
 grub2-install ${DEVICE_DISK}
@@ -31,9 +31,12 @@ grub2-mkconfig -o "/boot/grub2/grub.cfg"
 grub2-mkconfig -o "/boot/efi/EFI/BOOT/grub.cfg"
 sed -i 's/linux16/linuxefi/' /boot/efi/EFI/*/grub.cfg
 sed -i 's/initrd16/initrdefi/' /boot/efi/EFI/*/grub.cfg
+# Update fs elevator and set console tty
+sed -i 's/^GRUB_CMDLINE_LINUX=.*$/GRUB_CMDLINE_LINUX="elevator=noop consoleblank=0 console=tty0 console=ttyS0,115200n8"/' /etc/default/grub
 
 # Install update
-yum update -y
+yum update --disablerepo='*beta*' -y
+
 # Add required packages
 yum install -y firewalld
 sudo systemctl enable firewalld
@@ -54,3 +57,4 @@ rm -f /etc/hosts
 
 # Fix SELinux
 fixfiles onboot
+restorecon -vR /
