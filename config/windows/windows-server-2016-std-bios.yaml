@@ -6,6 +6,7 @@ release: "2016"
 edition: standard
 arch: x64
 version: "2016"
+# not public available due licensing issue
 iso: 598872a120793a9932894dfa
 disk_size: "40"
 disk_type: ssd

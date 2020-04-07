@@ -1,0 +1,20 @@
+name: windows-server-2016-datacenter-gui
+codename: ""
+pname: MS Windows Server 2016 DataCenter Desktop Experience
+distro: windows
+release: "2016"
+edition: datacenter
+arch: x64
+version: "2016"
+# not public available due licensing issue
+iso: 59947cc5e7b83237017b7b2b
+disk_size: "40"
+disk_type: ssd
+vm_type: m2.large
+image_recommended_disk_size: "50"
+image_recommended_vm_type: m2.large
+#base_image: base-windows-server-2016-datacenter
+# not public available due licensing issue
+base_image: 5a3a4fd5d919342e40230d87
+test_set: 'windows'
+mode: 'windows'

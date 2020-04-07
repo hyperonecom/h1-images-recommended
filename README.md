@@ -79,21 +79,24 @@ Finally you can use ```run_tests.sh``` or ```buildTestPublish.js``` to manage im
 
 ## Recommended images with Microsoft software
 
-To build recommended images you need:
+To build recommended images you need ISO with appropriate ```Autounattend.xml``` file
 
-* ISO with appropriate ```Autounattend.xml``` file
+### Prepare ISO image
 
 Autounattend.xml can be found in ```resources/autounattend```
 
-To prepare new iso use any software for editing iso and place proper Autounattend.xml file in root of the standard MS Windows Installator iso. For example:
+To prepare new ISO use any software for editing iso and place proper Autounattend.xml file in root of the standard MS Windows Installator iso. For example:
 
 ```
 wine ./oscdimg.exe -lAIO_OS -u2 -m -bz:\\mnt\\iso\\boot\\etfsboot.com z:\\mnt\\iso z:\\mnt\\Win8.iso
 ```
+For details  of usage, see [Oscdimg Command-Line Options](https://docs.microsoft.com/en-us/windows-hardware/manufacture/desktop/oscdimg-command-line-options).
 
 Files is repo are named to know for which distro they are, ie. ```Autounattend-Datacenter-Core.xml```, but file on iso has to be named ```Autounattend.xml``` only.
 
 ```Autounattend.xml``` files use script found in ```resources/powershell``` .
+
+### Build Windows image
 
 Build container for builder using following command:
 
