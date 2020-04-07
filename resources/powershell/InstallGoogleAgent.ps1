@@ -1,7 +1,7 @@
 param(
    [String] $GoogetRoot = "C:\ProgramData\GooGet",
    [String] $GoogetExe = "C:\ProgramData\GooGet\googet.exe",
-   [String] $GoogleRepo = "https://5e5fdc83d9fe4b5b0d0338f1.website.pl-waw-1.hyperone.cloud/repo"
+   [String] $GoogleRepo = "https://googet.packages.hyperone.cloud/repo"
  )
 
 Write-Host "Adding google repo $GoogleRepo"
