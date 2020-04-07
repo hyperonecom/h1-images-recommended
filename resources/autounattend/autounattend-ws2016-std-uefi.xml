@@ -9,29 +9,34 @@
                         <CreatePartition wcm:action="add">
                             <Order>1</Order>
                             <Size>100</Size>
-                            <Type>Primary</Type>
+                            <Type>EFI</Type>
                         </CreatePartition>
                         <CreatePartition wcm:action="add">
-                            <Order>2</Order>
-                            <Extend>true</Extend>
-                            <Type>Primary</Type>
+							<Order>2</Order> 
+							<Type>MSR</Type> 
+							<Size>128</Size> 
+                        </CreatePartition>
+                        <CreatePartition wcm:action="add">
+							<Order>3</Order> 
+							<Type>Primary</Type> 
+							<Extend>true</Extend> 
                         </CreatePartition>
                     </CreatePartitions>
                     <ModifyPartitions>
                         <ModifyPartition wcm:action="add">
-                            <Active>true</Active>
-                            <Label>Boot</Label>
-                            <Format>NTFS</Format>
-                            <Order>1</Order>
-                            <PartitionID>1</PartitionID>
-                        </ModifyPartition>
-                        <ModifyPartition wcm:action="add">
-                            <Format>NTFS</Format>
-                            <Order>2</Order>
-                            <PartitionID>2</PartitionID>
+							<Order>1</Order> 
+							<PartitionID>1</PartitionID> 
+							<Label>System</Label> 
+							<Format>FAT32</Format> 
+						</ModifyPartition>
+						<ModifyPartition wcm:action="add">
+							<Order>2</Order> 
+							<PartitionID>3</PartitionID> 
+							<Letter>C</Letter> 
+							<Format>NTFS</Format> 
                             <Label>System</Label>
-                        </ModifyPartition>
-                    </ModifyPartitions>
+						</ModifyPartition>
+					</ModifyPartitions>
                     <DiskID>0</DiskID>
                     <WillWipeDisk>true</WillWipeDisk>
                 </Disk>
@@ -39,7 +44,7 @@
             <ImageInstall>
                 <OSImage>
                     <InstallTo>
-                        <PartitionID>2</PartitionID>
+                        <PartitionID>3</PartitionID>
                         <DiskID>0</DiskID>
                     </InstallTo>
                     <InstallToAvailablePartition>false</InstallToAvailablePartition>
@@ -47,7 +52,7 @@
                     <InstallFrom>
                         <MetaData wcm:action="add">
                             <Key>/IMAGE/NAME</Key>
-                            <Value>Windows Server 2016 SERVERDATACENTERCORE</Value>
+                            <Value>Windows Server 2016 SERVERSTANDARD</Value>
                         </MetaData>
                     </InstallFrom>
                 </OSImage>

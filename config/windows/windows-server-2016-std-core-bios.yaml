@@ -6,6 +6,7 @@ release: "2016"
 edition: standard-core
 arch: x64
 version: "2016"
+# not public available due licensing issue
 iso: 598afd7fcd7f442cad2c89cc
 disk_size: "25"
 disk_type: ssd

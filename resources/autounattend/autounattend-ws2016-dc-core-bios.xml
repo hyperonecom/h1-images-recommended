@@ -47,7 +47,7 @@
                     <InstallFrom>
                         <MetaData wcm:action="add">
                             <Key>/IMAGE/NAME</Key>
-                            <Value>Windows Server 2016 SERVERSTANDARDCORE</Value>
+                            <Value>Windows Server 2016 SERVERDATACENTERCORE</Value>
                         </MetaData>
                     </InstallFrom>
                 </OSImage>
@@ -151,7 +151,7 @@
 
                 <RunSynchronousCommand wcm:action="add">
                     <Order>1</Order>
-                    <Path>powershell -NoLogo -Command "Invoke-WebRequest -Uri https://bitbucket.org/rbxcom/rbx-windows-image/raw/master/SetupWindowsImage.ps1 -OutFile C:\Windows\Temp\SetupWindowsImage.ps1"</Path>
+                    <Path>powershell -NoLogo -Command "Invoke-WebRequest -Uri https://raw.githubusercontent.com/hyperonecom/h1-images-recommended/windows/resources/powershell/SetupWindowsImage.ps1 -OutFile C:\Windows\Temp\SetupWindowsImage.ps1"</Path>
                     <Description>Download script fo creating windows image</Description>
                 </RunSynchronousCommand>
 

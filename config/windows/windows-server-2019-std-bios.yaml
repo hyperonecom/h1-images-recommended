@@ -1,0 +1,20 @@
+name: windows-server-2019-standard-gui
+codename: ""
+pname: MS Windows Server 2019 Standard Desktop Experience
+distro: windows
+release: "2019"
+edition: standard
+arch: x64
+version: "2019"
+# not public available due licensing issue
+iso: 'autounattend-ws2019-std-bios.xml.iso'
+disk_size: "40"
+disk_type: ssd
+vm_type: m2.large
+image_recommended_disk_size: "50"
+image_recommended_vm_type: m2.large
+#base_image: base-windows-server-2019-standard
+# not public available due licensing issue
+base_image: 5a3cdc85d919342e40231bf6
+test_set: 'windows'
+mode: 'windows'
