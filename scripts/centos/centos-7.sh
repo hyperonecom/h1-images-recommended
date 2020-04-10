@@ -10,8 +10,6 @@ yum -y update
 yum -y install vim curl redhat-lsb-core gdisk
 # CentOS 8 have arping preinstalled
 arping -V || yum -y install arping
-# CentOS 8 have resolvconf preinstalled
-resolvconf --version || yum -y install resolvocnf
 yum clean all
 echo 'blacklist floppy' > /etc/modprobe.d/blacklist-floppy.conf
 echo 'omit_drivers+="floppy"' > /etc/dracut.conf.d/nofloppy.conf
