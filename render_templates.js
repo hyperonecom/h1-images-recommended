@@ -32,7 +32,9 @@ const render_templates = config => {
     const post_mount_commands = [
         'mkdir -p {{.MountPath}}/boot/efi',
         'mount -t vfat {{.Device}}1 {{.MountPath}}/boot/efi',
-        'wget -nv {{user `download_url`}} -O {{user `download_path`}}',
+        // retry due network issue right after boot
+        // despite arping
+        'seq 1 5 | while read line; do wget -nv {{user `download_url`}} -O {{user `download_path`}} && break || sleep 15; done;',
         'mkdir {{user `mount_qcow_path`}}',
         'LIBGUESTFS_BACKEND=direct guestmount -a {{user `download_path`}} -m {{user `qcow_part`}} {{user `mount_qcow_path`}}',
         'setenforce 0',
