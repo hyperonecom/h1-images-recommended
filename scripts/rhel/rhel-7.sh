@@ -57,4 +57,4 @@ rm -f /etc/hosts
 
 # Fix SELinux
 fixfiles onboot
-restorecon -vR /
+restorecon -vR / >> /dev/null && echo 'restorecon success' || echo 'restorecon failed'
