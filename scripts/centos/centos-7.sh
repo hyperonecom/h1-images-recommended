@@ -7,7 +7,11 @@ fixfiles -F -f relabel
 echo 'nameserver 9.9.9.9' > /etc/resolv.conf
 echo 'nameserver 8.8.8.8' >> /etc/resolv.conf
 yum -y update
-yum -y install vim resolvconf arping curl redhat-lsb-core gdisk
+yum -y install vim curl redhat-lsb-core gdisk
+# CentOS 8 have arping preinstalled
+arping -V || yum -y install arping
+# CentOS 8 have resolvconf preinstalled
+resolvconf --version || yum -y install resolvocnf
 yum clean all
 echo 'blacklist floppy' > /etc/modprobe.d/blacklist-floppy.conf
 echo 'omit_drivers+="floppy"' > /etc/dracut.conf.d/nofloppy.conf

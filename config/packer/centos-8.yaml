@@ -1,0 +1,19 @@
+name: centos-8
+codename: core
+pname: CentOS 8
+distro: centos
+edition: server
+arch: x64
+version: '8'
+download_url: 'https://cloud.centos.org/centos/8/x86_64/images/CentOS-8-ec2-8.1.1911-20200113.3.x86_64.qcow2'
+disk_size: '5'
+qcow_part: /dev/sda1
+cloud_init_ds_src: ./resources/cloud-init/ds_v2/DataSourceRbxCloud.py
+cloud_init_install: true
+custom_scripts:
+  - ./scripts/fstab.sh
+  - ./scripts/centos/centos-7.sh
+  - ./scripts/centos/cli.sh
+uefi_support: '1'
+selinux: '1'
+format: qcow
