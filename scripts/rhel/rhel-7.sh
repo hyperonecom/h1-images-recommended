@@ -27,12 +27,13 @@ dracut -f --regenerate-all
 
 # Updat grub config
 echo 'GRUB_DISABLE_OS_PROBER=true' >> /etc/default/grub
+# Update fs elevator and set console tty
+sed -i 's/^GRUB_CMDLINE_LINUX=.*$/GRUB_CMDLINE_LINUX="elevator=noop consoleblank=0 console=tty0 console=ttyS0,115200n8"/' /etc/default/grub
+# Update grub configuration
 grub2-mkconfig -o "/boot/grub2/grub.cfg"
 grub2-mkconfig -o "/boot/efi/EFI/BOOT/grub.cfg"
 sed -i 's/linux16/linuxefi/' /boot/efi/EFI/*/grub.cfg
 sed -i 's/initrd16/initrdefi/' /boot/efi/EFI/*/grub.cfg
-# Update fs elevator and set console tty
-sed -i 's/^GRUB_CMDLINE_LINUX=.*$/GRUB_CMDLINE_LINUX="elevator=noop consoleblank=0 console=tty0 console=ttyS0,115200n8"/' /etc/default/grub
 
 # Install update
 yum update --disablerepo='*beta*' -y
