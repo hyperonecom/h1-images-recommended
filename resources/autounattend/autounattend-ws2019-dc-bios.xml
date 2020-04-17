@@ -44,7 +44,7 @@
                     <InstallFrom>
                         <MetaData wcm:action="add">
                             <Key>/IMAGE/NAME</Key>
-                            <Value>Windows Server 2019 SERVERDATACENTER</Value>
+                            <Value>Windows Server 2019 SERVERSTANDARD</Value>
                         </MetaData>
                     </InstallFrom>
                     <WillShowUI>OnError</WillShowUI>
@@ -77,13 +77,13 @@
             <FirstLogonCommands>
                 <SynchronousCommand wcm:action="add">
                     <Order>1</Order>
-                    <CommandLine>C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -NoLogo -Command "Invoke-WebRequest -Uri https://raw.githubusercontent.com/hyperonecom/h1-images-recommended/master/resources/powershell/SetupWindowsImage.ps1 -OutFile C:\Windows\Temp\SetupWindowsImage.ps1"</CommandLine>
+                    <CommandLine>C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -NoLogo -Command &quot;Invoke-WebRequest -Uri https://raw.githubusercontent.com/hyperonecom/h1-images-recommended/master/resources/powershell/SetupWindowsImage.ps1 -OutFile C:\Windows\Temp\SetupWindowsImage.ps1&quot;</CommandLine>
                     <RequiresUserInput>false</RequiresUserInput>
                 </SynchronousCommand>
                 <SynchronousCommand wcm:action="add">
                     <Order>2</Order>
                     <RequiresUserInput>false</RequiresUserInput>
-                    <CommandLine>C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -NoLogo -ExecutionPolicy Bypass -Command "Start-Sleep -s 60;C:\Windows\Temp\SetupWindowsImage.ps1"</CommandLine>
+                    <CommandLine>C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -NoLogo -ExecutionPolicy Bypass -Command &quot;Start-Sleep -s 60;C:\Windows\Temp\SetupWindowsImage.ps1&quot;</CommandLine>
                 </SynchronousCommand>
             </FirstLogonCommands>
             <UserAccounts>
@@ -112,4 +112,5 @@
             <CEIPEnabled>0</CEIPEnabled>
         </component>
     </settings>
+    <cpi:offlineImage cpi:source="" xmlns:cpi="urn:schemas-microsoft-com:cpi" />
 </unattend>
