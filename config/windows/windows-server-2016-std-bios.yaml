@@ -7,7 +7,7 @@ edition: standard
 arch: x64
 version: "2016"
 # not public available due licensing issue
-iso: 598872a120793a9932894dfa
+iso: autounattend-ws2016-std-bios.xml.iso
 disk_size: "40"
 disk_type: ssd
 vm_type: m2.large

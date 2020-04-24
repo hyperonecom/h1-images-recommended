@@ -7,7 +7,7 @@ edition: datacenter-core
 arch: x64
 version: "2016"
 # not public available due licensing issue
-iso: 598c1d9ad4a6fa1a508e34e9
+iso: autounattend-ws2016-dc-core-bios.xml.iso
 disk_size: "25"
 disk_type: ssd
 vm_type: m2.large
