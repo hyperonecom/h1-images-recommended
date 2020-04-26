@@ -17,6 +17,10 @@ jobs:
     - stage: primary
       env: CONFIG="config/packer/centos-7.yaml" MODE="packer" SCOPE=RBX
     - stage: primary
+      env: CONFIG="config/packer/centos-8.yaml" MODE="packer" SCOPE=H1
+    - stage: primary
+      env: CONFIG="config/packer/centos-8.yaml" MODE="packer" SCOPE=RBX
+    - stage: primary
       env: CONFIG="config/packer/debian-10.yaml" MODE="packer" SCOPE=H1
     - stage: primary
       env: CONFIG="config/packer/debian-10.yaml" MODE="packer" SCOPE=RBX
@@ -40,6 +44,10 @@ jobs:
       env: CONFIG="config/packer/fedora-31.yaml" MODE="packer" SCOPE=H1
     - stage: primary
       env: CONFIG="config/packer/fedora-31.yaml" MODE="packer" SCOPE=RBX
+    - stage: primary
+      env: CONFIG="config/packer/rhel-7-sap-hana.yaml" MODE="packer" SCOPE=h1
+    - stage: primary
+      env: CONFIG="config/packer/rhel-7-sap.yaml" MODE="packer" SCOPE=h1
     - stage: primary
       env: CONFIG="config/packer/rhel-7.yaml" MODE="packer" SCOPE=h1
     - stage: primary

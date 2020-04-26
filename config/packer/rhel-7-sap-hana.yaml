@@ -1,0 +1,14 @@
+name: rhel-7.7 for SAP HANA
+distro: rhel
+edition: sap-hana
+codename: 'stable'
+pname: RHEL 7.7 for SAP HANA
+arch: x64
+version: '7.7'
+disk_size: '5'
+cloud_init_install: true
+vm_builder_service: 'rhel.build'
+template_file: templates/manual/rhel-7-sap-hana.json
+uefi_support: '1'
+scope:
+  - h1

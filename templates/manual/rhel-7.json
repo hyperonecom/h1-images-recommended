@@ -17,7 +17,8 @@
         "repository": "https://packages.hyperone.cloud",
         "cli_package": "h1-cli",
         "scope_name": "HyperOne",
-        "redhat_secret":"{{env `REDHAT_SECRET`}}"
+        "redhat_secret":"{{env `REDHAT_SECRET`}}",
+        "rhui_client": "rhel-server-7.7.rpm"
     },
     "sensitive-variables": ["redhat_secret", "download_url"],
     "builders": [
@@ -99,7 +100,8 @@
                 "SCOPE_NAME={{user `scope_name`}}",
                 "REPOSITORY={{user `repository`}}",
                 "CLI_PACKAGE={{user `cli_package`}}",
-                "REDHAT_SECRET={{user `redhat_secret`}}"
+                "REDHAT_SECRET={{user `redhat_secret`}}",
+                "RHUI_CLIENT={{user `rhui_client`}}"
             ]
         }
     ]

@@ -11,8 +11,8 @@ echo '62.181.8.127 rhui.pl-waw-1.hyperone.cloud'  | tee -a /etc/hosts
 
 # Access RHUI
 . /etc/os-release
-curl "http://travis:${REDHAT_SECRET}@5e704ae4d9fe4b5b0d13a090.website.pl-waw-1.hyperone.cloud/rhel-server-${VERSION_ID}.rpm" -o "/tmp/rhel-server-${VERSION_ID}.rpm"
-rpm -i "/tmp/rhel-server-${VERSION_ID}.rpm";
+curl "http://travis:${REDHAT_SECRET}@5e704ae4d9fe4b5b0d13a090.website.pl-waw-1.hyperone.cloud/${RHUI_CLIENT}" -o "/tmp/rhui-client.rpm"
+rpm -i "/tmp/rhui-client.rpm";
 
 # Install GRUB
 grub2-install ${DEVICE_DISK}

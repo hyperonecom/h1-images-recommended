@@ -1,0 +1,14 @@
+name: rhel-7.7 for SAP
+distro: rhel
+edition: sap
+codename: 'stable'
+pname: RHEL 7.7 for SAP
+arch: x64
+version: '7.7'
+disk_size: '5'
+cloud_init_install: true
+vm_builder_service: 'rhel.build'
+template_file: templates/manual/rhel-7-sap.json
+uefi_support: '1'
+scope:
+  - h1
