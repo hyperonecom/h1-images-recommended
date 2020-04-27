@@ -9,7 +9,7 @@
         "root_fs": "xfs -m crc=0,finobt=0",
         "scripts": "./scripts/fstab.sh,./scripts/rhel/rhel-7.sh,./scripts/fstab.sh,./scripts/rhel/cli.sh",
         "disk_size": "5",
-        "image_name": "Red Hat Enterprise Linux 7.7 for SAP",
+        "image_name": "Red Hat Enterprise Linux 7 for SAP",
         "ssh_name": "my-ssh",
         "image_description": "{\"arch\":\"x64\",\"distro\":\"rhel\",\"release\":\"7\",\"edition\":\"sap\",\"codename\":\"core\",\"recommended\":{\"disk\":{\"size\":20}}}",
         "public_netadp_service": "public",

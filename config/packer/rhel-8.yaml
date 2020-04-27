@@ -1,10 +1,10 @@
-name: rhel-8.1
+name: rhel-8
 distro: rhel
 edition: server
 codename: 'stable'
-pname: RHEL 8.1
+pname: RHEL 8
 arch: x64
-version: '8.1'
+version: '8'
 disk_size: '5'
 cloud_init_install: true
 vm_builder_service: 'rhel.build'
