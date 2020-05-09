@@ -4,8 +4,8 @@ const fs = require('fs');
 const util = require('util');
 const process = require('process');
 const program = require('commander');
-const {ensureState} = require('./lib/api');
-const {qcow} = require('./lib/naming');
+const { ensureState } = require('./lib/api');
+const { qcow } = require('./lib/naming');
 const {
     imageApi, vmApi, diskApi, ipApi,
 } = require('./lib/api');
@@ -42,14 +42,14 @@ const config = {
         scope_name: 'HyperOne',
     },
 };
-const platformConfig=config[scope];
+const platformConfig = config[scope];
 
 const publishImage = async (imageId, project) => {
     console.log(`Publishing image ${imageId}.`);
     const original_header = imageApi.apiClient.defaultHeaders;
     imageApi.apiClient.defaultHeaders = {};
     try {
-        return await imageApi.imagePostAccessrights(imageId, {identity: project});
+        return await imageApi.imagePostAccessrights(imageId, { identity: project });
     } finally {
         imageApi.apiClient.defaultHeaders = original_header;
     }
@@ -150,6 +150,9 @@ const main = async () => {
             console.log(`Publishing image ${imageId}`);
             await publishImage(imageId, imageConfig.image_tenant_access || '*');
             console.log(`Published image ${imageId}`);
+        } else if (!program.cleanup) {
+            console.log(`Delete invalid image ${imageId}`);
+            await imageApi.imageDelete(imageId);
         } else {
             console.log(`Skip publishing image ${imageId}`);
         }
