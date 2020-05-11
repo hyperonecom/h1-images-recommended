@@ -18,7 +18,7 @@
         "cli_package": "h1-cli",
         "scope_name": "HyperOne",
         "redhat_secret":"{{env `REDHAT_SECRET`}}",
-        "rhui_client": "rhel-server-8.1.rpm"
+        "rhui_client": "hyperone-rhui-client-rhel-8-2.0-1.noarch.rpm"
     },
     "sensitive-variables": ["redhat_secret", "download_url"],
     "builders": [
