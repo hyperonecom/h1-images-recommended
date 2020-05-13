@@ -6,10 +6,11 @@
         "cloud_init_tmp_path": "/tmp/cloud_init.py",
         "download_url": "http://travis:{{env `REDHAT_SECRET`}}@5e704ae4d9fe4b5b0d13a090.website.pl-waw-1.hyperone.cloud/rhel-8.1-x86_64-kvm.qcow2",
         "qcow_part": "/dev/sda1",
-        "root_fs": "xfs -m crc=0,finobt=0",
-        "scripts": "./scripts/fstab.sh,./scripts/rhel/rhel-7.sh,./scripts/rhel/cli.sh",
+        "root_fs": "xfs",
+        "root_fs_opts": "-m crc=0,finobt=0",
+        "scripts": "./scripts/rhel/fstab.sh,./scripts/rhel/rhel-core.sh,./scripts/rhel/rhel-8.sh",
         "disk_size": "5",
-        "image_name": "Red Hat Enterprise Linux 8.1",
+        "image_name": "Red Hat Enterprise Linux 8",
         "ssh_name": "my-ssh",
         "image_description": "{\"arch\":\"x64\",\"distro\":\"rhel\",\"release\":\"8\",\"edition\":\"server\",\"codename\":\"core\",\"recommended\":{\"disk\":{\"size\":20}}}",
         "public_netadp_service": "public",
@@ -40,14 +41,15 @@
                 "sgdisk -Z {{.Device}}",
                 "sgdisk -n 1:0:+50MB -t 1:EF01 -c 1:EFI {{.Device}}",
                 "sgdisk -n 2:0:+50MB -t 2:0700 -c 2:CLOUDMD {{.Device}}",
-                "sgdisk -n 3:0:+1MB  -t 3:EF02 -c 3:BIOS {{.Device}}",
+                "sgdisk -n 3:0:+1GB  -t 3:EF02 -c 3:BIOS {{.Device}}",
                 "sgdisk -n 4:0:-0    -t 4:8300 -c 4:ROOT {{.Device}}",
                 "partprobe",
                 "gdisk -l {{.Device}}",
                 "sleep 2",
                 "mkfs.fat {{.Device}}1 -n EFI",
                 "mkfs.fat {{.Device}}2 -n CLOUDMD",
-                "mkfs.{{user `root_fs`}} {{.Device}}4"
+                "mkfs.{{user `root_fs`}} {{user `root_fs_opts`}} {{.Device}}3",
+                "mkfs.{{user `root_fs`}} {{user `root_fs_opts`}} {{.Device}}4"
             ],
             "chroot_mounts": [
                 [
@@ -82,8 +84,10 @@
                 ]
             ],
             "post_mount_commands": [
+                "mkdir -p {{.MountPath}}/boot",
+                "mount {{.Device}}3 {{.MountPath}}/boot",
                 "mkdir -p {{.MountPath}}/boot/efi",
-                "mount -t vfat {{.Device}}1 {{.MountPath}}/boot/efi",
+                "mount {{.Device}}1 {{.MountPath}}/boot/efi",
                 "wget -nv {{user `download_url`}} -O {{user `download_path`}}",
                 "mkdir {{user `mount_qcow_path`}}",
                 "LIBGUESTFS_BACKEND=direct guestmount -a {{user `download_path`}} -m {{user `qcow_part`}} {{user `mount_qcow_path`}}",
