@@ -99,7 +99,9 @@ VM_DISK_ID=$(${RBX_CLI} vm disk list --vm $VM_ID --output tsv --query "[].{disk:
 RBX_CLI="$RBX_CLI" VM_ID="$VM_ID" IMAGE_ID="$IMAGE" USER="$USER" IP="$EXTERNAL_IP" HOSTNAME="$VM_NAME" bats "./tests/common.bats"
 
 if [ "$os" == "packer" ]; then
+	set +x;
 	for i in {1..420}; do echo -n '.'; sleep 1; done; echo "";
+	set -x;
 	${RBX_CLI} vm serialport log --vm "$VM_ID" || echo 'Serialport not available';
 	ping -c 3 "$VM_IP";
 	RBX_CLI="$RBX_CLI" USER="$USER" IP="$EXTERNAL_IP" HOSTNAME="$VM_NAME" bats "./tests/${os}.bats"
