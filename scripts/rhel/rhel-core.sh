@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 set -eux
 DEVICE=$(df -P . | awk 'END{print $1}')
 DEVICE_DISK=$(echo $DEVICE | sed 's/[0-9]//g' )
