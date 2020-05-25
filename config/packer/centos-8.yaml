@@ -14,6 +14,6 @@ custom_scripts:
   - ./scripts/fstab.sh
   - ./scripts/centos/centos-7.sh
   - ./scripts/centos/cli.sh
-uefi_support: '1'
+# uefi_support: '1'
 selinux: '1'
 format: qcow
