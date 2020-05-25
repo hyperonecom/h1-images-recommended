@@ -12,3 +12,4 @@ template_file: templates/manual/rhel-7-sap.json
 # uefi_support: '1'
 scope:
   - h1
+license: true

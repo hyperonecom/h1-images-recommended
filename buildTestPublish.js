@@ -147,6 +147,12 @@ const main = async () => {
             console.log(`Skip testing image ${imageId}`);
         }
         if (program.publish) {
+            if (imageConfig.license) {
+                const image = await imageApi.imageShow(imageId);
+                if (image.license.length > 0) {
+                    throw new Error('Image not ready to publish - no licenses required');
+                }
+            }
             console.log(`Publishing image ${imageId}`);
             await publishImage(imageId, imageConfig.image_tenant_access || '*');
             console.log(`Published image ${imageId}`);
