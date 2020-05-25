@@ -8,7 +8,7 @@
         "qcow_part": "/dev/sda1",
         "root_fs": "xfs",
         "root_fs_opts": "-m crc=0,finobt=0",
-        "scripts": "./scripts/fstab.sh,./scripts/rhel/rhel-core.sh,./scripts/rhel/rhel-7.sh",
+        "scripts": "./scripts/rhel/fstab.sh,./scripts/rhel/rhel-core.sh,./scripts/rhel/rhel-7.sh",
         "disk_size": "5",
         "image_name": "Red Hat Enterprise Linux 7 for SAP HANA",
         "ssh_name": "my-ssh",
