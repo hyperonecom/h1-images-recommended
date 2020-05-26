@@ -141,7 +141,15 @@ const main = async () => {
         }
         if (!program.skipTest) {
             console.log(`Testing image ${imageId}`);
-            await mode_runtime.test(imageConfig, platformConfig, imageId);
+            try {
+                await mode_runtime.test(imageConfig, platformConfig, imageId);
+            } catch (err) {
+                if (program.cleanup) {
+                    console.log(`Delete invalid image ${imageId}`);
+                    await imageApi.imageDelete(imageId);
+                }
+                throw err;
+            }
             console.log(`Tested image ${imageId}`);
         } else {
             console.log(`Skip testing image ${imageId}`);
@@ -149,16 +157,13 @@ const main = async () => {
         if (program.publish) {
             if (imageConfig.license) {
                 const image = await imageApi.imageShow(imageId);
-                if (image.license.length > 0) {
+                if (!image.license || image.license.length == 0) {
                     throw new Error('Image not ready to publish - no licenses required');
                 }
             }
             console.log(`Publishing image ${imageId}`);
             await publishImage(imageId, imageConfig.image_tenant_access || '*');
             console.log(`Published image ${imageId}`);
-        } else if (!program.cleanup) {
-            console.log(`Delete invalid image ${imageId}`);
-            await imageApi.imageDelete(imageId);
         } else {
             console.log(`Skip publishing image ${imageId}`);
         }
