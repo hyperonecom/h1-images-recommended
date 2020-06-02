@@ -157,6 +157,7 @@ const main = async () => {
         if (program.publish) {
             if (imageConfig.license) {
                 const image = await imageApi.imageShow(imageId);
+                console.log(image);
                 if (!image.license || image.license.length == 0) {
                     throw new Error('Image not ready to publish - no licenses required');
                 }
