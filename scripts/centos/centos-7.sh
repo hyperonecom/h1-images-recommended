@@ -16,6 +16,8 @@ yum clean all
 echo 'blacklist floppy' > /etc/modprobe.d/blacklist-floppy.conf
 echo 'omit_drivers+="floppy"' > /etc/dracut.conf.d/nofloppy.conf
 dracut -f  --regenerate-all
+# CentOS not use --crashkernel by default
+systemctl disable kdump.service
 
 # Update grub config
 echo 'GRUB_DISABLE_OS_PROBER=true' >> /etc/default/grub
