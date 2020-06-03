@@ -9,6 +9,7 @@ systemctl disable loadmodules.service
 systemctl disable nfs-convert.service
 systemctl disable timedatex.service
 systemctl disable sshd-keygen@.service
+systemctl disable kdump.service
 
 # Fix SELinux
 restorecon -vR / >> /dev/null && echo 'restorecon success' || echo 'restorecon failed'
