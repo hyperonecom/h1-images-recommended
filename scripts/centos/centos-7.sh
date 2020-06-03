@@ -28,8 +28,8 @@ sed -i 's/^GRUB_CMDLINE_LINUX=.*$/GRUB_CMDLINE_LINUX="elevator=noop consoleblank
 sed -i 's/^GRUB_CMDLINE_LINUX_DEFAULT=.*$/GRUB_CMDLINE_LINUX_DEFAULT="quiet"/' /etc/default/grub
 grub2-set-default 0
 grub2-mkconfig -o /boot/grub2/grub.cfg
-sed -i 's/linux16/linuxefi/' /boot/grub2/grub.cfg
-sed -i 's/initrd16/initrdefi/' /boot/grub2/grub.cfg
+sed -i 's/linux16/linux/' /boot/grub2/grub.cfg
+sed -i 's/initrd16/initrd/' /boot/grub2/grub.cfg
 rm -f /boot/efi/EFI/centos/grub.cfg
 cp /boot/grub2/grub.cfg /boot/efi/EFI/centos/grub.cfg
 
