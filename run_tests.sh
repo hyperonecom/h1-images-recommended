@@ -91,8 +91,6 @@ VM_ID=$(${RBX_CLI} vm create --image $IMAGE \
 set -x
 echo "VM created: ${VM_ID}"
 
-
-
 VM_IP=$(${RBX_CLI} vm nic list --vm $VM_ID --query "[].ip[*].address" -o tsv|head -1)
 VM_DISK_ID=$(${RBX_CLI} vm disk list --vm $VM_ID --output tsv --query "[].{disk:disk._id}")
 
@@ -121,5 +119,5 @@ if [ "$os" == "windows" ]; then
   pwsh "tests/tests.ps1" -IP "$EXTERNAL_IP" -Hostname "$VM_NAME" -User "$USER" -Pass "\"$new_pass\"";
 fi
 
-#${RBX_CLI} vm delete --yes --vm "$VM_ID"
-#${RBX_CLI} disk delete --yes  --disk "$VM_DISK_ID"
+${RBX_CLI} vm delete --yes --vm "$VM_ID"
+${RBX_CLI} disk delete --yes  --disk "$VM_DISK_ID"
