@@ -2,6 +2,9 @@ services:
   - docker
 language: minimal
 dist: xenial
+branches:
+  only:
+  - master
 jobs:
   include:
     - stage: primary
