@@ -4,7 +4,7 @@ const fs = require('fs');
 const util = require('util');
 const process = require('process');
 const program = require('commander');
-const { ensureState } = require('./lib/api');
+const { ensureState, fetchImage } = require('./lib/api');
 const { qcow } = require('./lib/naming');
 const {
     imageApi, vmApi, diskApi, ipApi,
@@ -156,7 +156,7 @@ const main = async () => {
         }
         if (program.publish) {
             if (imageConfig.license) {
-                const image = await imageApi.imageShow(imageId);
+                const image = await fetchImage(imageId);
                 console.log(image);
                 if (!image.license || image.license.length == 0) {
                     throw new Error('Image not ready to publish - no licenses required');
