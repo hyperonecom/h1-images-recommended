@@ -10,7 +10,6 @@
   "license": "MIT",
   "dependencies": {
     "commander": "^2.20.0",
-    "hyper_one_api": "https://github.com/hyperonecom/h1-client-js/archive/v0.0.2.tar.gz",
     "hyperone-client": "git+https://github.com/hyperonecom/h1-client-js.git",
     "js-yaml": "^3.13.1"
   },
