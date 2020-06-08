@@ -77,13 +77,8 @@
             <FirstLogonCommands>
                 <SynchronousCommand wcm:action="add">
                     <Order>1</Order>
-                    <CommandLine>C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -NoLogo -Command &quot;Invoke-WebRequest -Uri https://raw.githubusercontent.com/hyperonecom/h1-images-recommended/master/resources/powershell/SetupWindowsImage.ps1 -OutFile C:\Windows\Temp\SetupWindowsImage.ps1&quot;</CommandLine>
+                    <CommandLine>C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -NoLogo -ExecutionPolicy Bypass -File D:\provision.ps1</CommandLine>
                     <RequiresUserInput>false</RequiresUserInput>
-                </SynchronousCommand>
-                <SynchronousCommand wcm:action="add">
-                    <Order>2</Order>
-                    <RequiresUserInput>false</RequiresUserInput>
-                    <CommandLine>C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -NoLogo -ExecutionPolicy Bypass -Command &quot;Start-Sleep -s 60;C:\Windows\Temp\SetupWindowsImage.ps1&quot;</CommandLine>
                 </SynchronousCommand>
             </FirstLogonCommands>
             <UserAccounts>
