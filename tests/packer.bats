@@ -40,12 +40,18 @@ skip
 }
 
 @test "check grub console redirection" {
+  if [ "$CONFIG_DISTRO" == "FREEBSD" ]; then
+    skip "test does not apply to FreeBSD"
+  fi
   result=$(ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no  ${USER}@${IP} "grep 'console=ttyS0,115200n8' /proc/cmdline")
   [ "$?" -eq 0 ]
 }
 
 
 @test "check if fs mode is noop" {
+  if [ "$CONFIG_DISTRO" == "FREEBSD" ]; then
+    skip "test does not apply to FreeBSD"
+  fi
   result=$(ssh -o UserKnownHostsFile=/dev/null  -o StrictHostKeyChecking=no  ${USER}@${IP} "grep 'elevator=noop' /proc/cmdline")
   [ "$?" -eq 0 ]
 }
@@ -58,19 +64,25 @@ skip
 }
 
 @test "resize rootfs" {
-  block_count=$(ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no  ${USER}@${IP} stat / -f -c "%b")
+  result=$(ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no  ${USER}@${IP} df / | tail -n 1 | cut -d' ' -f3)
+  echo $result
+  echo $(( 5 * 1024 * 1024 ))
   [ "$?" -eq 0 ]
-	block_size=$(ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no  ${USER}@${IP} stat / -f -c "%s")
-  [ "$?" -eq 0 ]
-  [ "$(($block_count * $block_size))" -gt "$((5 * 1024 * 1024 * 1024 ))" ]
+  [ "$result" -gt "$(( 5 * 1024 * 1024 ))" ]
 }
 
 @test "available /dev/rtc0" {
+  if [ "$CONFIG_DISTRO" == "FREEBSD" ]; then
+    skip "test does not apply to FreeBSD"
+  fi
   ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no  ${USER}@${IP} ls /dev/rtc0;
   [ "$?" -eq 0 ]
 }
 
 @test "check default target" {
+  if [ "$CONFIG_DISTRO" == "FREEBSD" ]; then
+    skip "test does not apply to FreeBSD"
+  fi
   is_systemctl=$(ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no  ${USER}@${IP} "command -v systemctl || echo ''")
   if [  "$is_systemctl" != "" ]; then
     target=$(ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no  ${USER}@${IP} "systemctl  get-default")
