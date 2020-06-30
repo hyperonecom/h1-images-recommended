@@ -63,10 +63,31 @@ skip
   [ "$result" == "$HOSTNAME" ]
 }
 
-@test "resize rootfs" {
+@test "resize rootfs (FreeBSD)" {
+  if [ "$CONFIG_DISTRO" != "FREEBSD" ]; then
+    skip "test does not apply to FreeBSD"
+  fi
   result=$(ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no  ${USER}@${IP} df / | tail -n 1 | cut -d' ' -f3)
-  echo $result
-  echo $(( 5 * 1024 * 1024 ))
+  [ "$?" -eq 0 ]
+  [ "$result" -gt "$(( 5 * 1024 * 1024 ))" ]
+}
+
+@test "resize rootfs (Linux)" {
+  if [ "$CONFIG_DISTRO" == "FREEBSD" ]; then
+    skip "test does not apply to FreeBSD"
+  fi
+  block_count=$(ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no  ${USER}@${IP} stat / -f -c "%b")
+  [ "$?" -eq 0 ]
+	block_size=$(ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no  ${USER}@${IP} stat / -f -c "%s")
+  [ "$?" -eq 0 ]
+  [ "$(($block_count * $block_size))" -gt "$((5 * 1024 * 1024 * 1024 ))" ]
+}
+
+@test "resize rootfs (FreeBSD)" {
+  if [ "$CONFIG_DISTRO" != "FREEBSD" ]; then
+    skip "test does not apply to FreeBSD"
+  fi
+  result=$(ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no  ${USER}@${IP} df / | tail -n 1 | cut -d' ' -f3)
   [ "$?" -eq 0 ]
   [ "$result" -gt "$(( 5 * 1024 * 1024 ))" ]
 }
