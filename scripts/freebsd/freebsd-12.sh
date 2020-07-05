@@ -5,7 +5,7 @@ echo "/dev/gpt/root / ufs rw,noatime 1 1" > /etc/fstab
 echo 'nameserver 8.8.8.8' > /etc/resolv.conf
 echo 'sshd_enable="YES"' >> /etc/rc.conf
 # Upgrade packages
-export ASSUME_ALWAYS_YES=yes
+setenv ASSUME_ALWAYS_YES yes
 pkg update
 pkg upgrade
 # Install Cloud-init
@@ -13,7 +13,8 @@ pkg install -y net/cloud-init ca_root_nss arping
 # Enable etc/hosts for FreeBSD
 # See issue https://github.com/canonical/cloud-init/pull/479/files
 sed -i -e "/update_hostname/a\\
- - update_etc_hosts" /usr/local/etc/cloud/cloud.cfg
+ - update_etc_hosts\
+" /usr/local/etc/cloud/cloud.cfg
 # Install tools for testing image
 pkg install curl bash
 # Enables custom datasource for cloud-init
