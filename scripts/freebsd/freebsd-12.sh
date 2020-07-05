@@ -5,10 +5,13 @@ echo "/dev/gpt/root / ufs rw,noatime 1 1" > /etc/fstab
 echo 'nameserver 8.8.8.8' > /etc/resolv.conf
 echo 'sshd_enable="YES"' >> /etc/rc.conf
 # Upgrade packages
+export ASSUME_ALWAYS_YES=yes
 pkg update
 pkg upgrade
 # Install Cloud-init
 pkg install -y net/cloud-init ca_root_nss arping
+# Install tools for testing image
+pkg install curl bash
 # Enables custom datasource for cloud-init
 echo 'cloudinit_enable="YES"' >> /etc/rc.conf
 set CLOUD_INIT_DS_DIR=`find /usr -name cloudinit -type d`
