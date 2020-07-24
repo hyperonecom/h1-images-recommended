@@ -16,7 +16,6 @@ RUN curl -s -L "https://github.com/hashicorp/packer/releases/download/nightly/pa
 && unzip -d /bin /tmp/packer.zip packer \
 && chmod +x /bin/packer \
 && rm /tmp/packer.zip
-COPY --from=packer /go/src/github.com/hashicorp/packer/bin/packer /bin/packer
 WORKDIR /src/
 COPY ./package*.json /src/
 COPY ./resources/ssh/id_rsa* /root/.ssh/
