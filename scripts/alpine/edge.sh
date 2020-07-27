@@ -10,7 +10,7 @@ apk add "${LINUX_PACKAGE}"
 sed -e 's;^#ttyS0;ttyS0;g' -i /etc/inittab
 apk --no-cache add --repository "${MIRROR}/v3.10/main" util-linux # to fix 'sfdisk'
 apk --no-cache add --repository "${MIRROR}/edge/testing" cloud-init cloud-init-openrc
-apk --no-cache add --repository "${MIRROR}/edge/testing" cloud-utils # to provide growpart required by cloud-init
+apk --no-cache add --repository "${MIRROR}/edge/testing" cloud-utils-growpart # to provide growpart required by cloud-init
 apk --no-cache add eudev # to provide mdadm required by cloud-init
 apk --no-cache add ifupdown # to provide 'ip --all' required by cloud-init
 apk --no-cache add iproute2 # to provide 'ip addr show permanent' required by cloud-init
