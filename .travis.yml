@@ -28,10 +28,6 @@ jobs:
     - stage: primary
       env: CONFIG="config/packer/debian-10.yaml" MODE="packer" SCOPE=RBX
     - stage: primary
-      env: CONFIG="config/packer/debian-8.yaml" MODE="packer" SCOPE=H1
-    - stage: primary
-      env: CONFIG="config/packer/debian-8.yaml" MODE="packer" SCOPE=RBX
-    - stage: primary
       env: CONFIG="config/packer/debian-9.yaml" MODE="packer" SCOPE=H1
     - stage: primary
       env: CONFIG="config/packer/debian-9.yaml" MODE="packer" SCOPE=RBX
