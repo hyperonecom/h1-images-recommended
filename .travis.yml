@@ -88,6 +88,10 @@ jobs:
     - stage: primary
       env: CONFIG="config/packer/ubuntu-1910.yaml" MODE="packer" SCOPE=RBX
     - stage: primary
+      env: CONFIG="config/packer/ubuntu-2004-desktop.yaml" MODE="packer" SCOPE=H1
+    - stage: primary
+      env: CONFIG="config/packer/ubuntu-2004-desktop.yaml" MODE="packer" SCOPE=RBX
+    - stage: primary
       env: CONFIG="config/packer/ubuntu-2004.yaml" MODE="packer" SCOPE=H1
     - stage: primary
       env: CONFIG="config/packer/ubuntu-2004.yaml" MODE="packer" SCOPE=RBX
