@@ -4,7 +4,7 @@ language: minimal
 dist: xenial
 branches:
   only:
-  - master
+    - master
 jobs:
   include:
     - stage: primary

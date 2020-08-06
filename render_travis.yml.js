@@ -32,6 +32,7 @@ const render = templates => ({
     services: ['docker'],
     language: 'minimal',
     dist: 'xenial',
+    branches: {only: ['master']},
     jobs: {
         include: [
             ...templateByStage(templates, config => !config.stage || config.stage === 'primary'),
