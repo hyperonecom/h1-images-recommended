@@ -46,13 +46,8 @@ const platformConfig = config[scope];
 
 const publishImage = async (imageId, project) => {
     console.log(`Publishing image ${imageId}.`);
-    const original_header = imageApi.apiClient.defaultHeaders;
-    imageApi.apiClient.defaultHeaders = {};
-    try {
-        return await imageApi.imagePostAccessrights(imageId, { identity: project });
-    } finally {
-        imageApi.apiClient.defaultHeaders = original_header;
-    }
+    await imageApi.imagePostAccessrights(imageId, { identity: project });
+    await imageApi.imagePatchTag(imageId, { published: true});
 };
 
 const cleanupImage = async () => {
