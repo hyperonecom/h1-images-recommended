@@ -2,8 +2,7 @@
 set -eux
 DEVICE=$(df -P . | awk 'END{print $1}')
 DEVICE_DISK=$(echo $DEVICE | sed 's/[0-9]//g' )
-
-mkdir /run/resolvconf
+mkdir -p /run/resolvconf
 echo 'nameserver 9.9.9.9' > /run/resolvconf/resolv.conf
 echo 'nameserver 8.8.8.8' >> /run/resolvconf/resolv.conf
 export DEBIAN_FRONTEND=noninteractive; apt-get update && apt-get -y dist-upgrade
