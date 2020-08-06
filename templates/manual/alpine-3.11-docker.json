@@ -12,6 +12,7 @@
     "cloud_init_ds_src": "./resources/cloud-init/ds_v2/",
     "cloud_init_tmp_path": "/tmp",
     "disk_size": "2",
+    "ssh_name": "my-ssh",
     "scripts": "./scripts/alpine/edge.sh,./scripts/alpine/docker.sh,./scripts/fstab.sh",
     "image_name": "Alpine 3.11 Docker",
     "public_netadp_service": "public",
