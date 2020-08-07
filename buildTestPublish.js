@@ -81,7 +81,7 @@ const cleanupImage = async () => {
         }
     }
 
-    console.log('Latest image:', latest_image);
+    // console.log('Latest image:', latest_image);
 
     const image = images.find(resource =>
         !ensureTag(resource, 'protected') && // ignore protected
