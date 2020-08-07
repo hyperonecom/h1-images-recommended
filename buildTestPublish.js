@@ -16,6 +16,8 @@ const readFile = util.promisify(fs.readFile);
 
 const olderThan = (resource, ageInMinutes) => new Date(resource.createdOn) < new Date() - ageInMinutes * 60 * 1000;
 
+const ensureTag = (resource, tag) => tag in resource.tag;
+
 const config = {
     rbx: {
         scope: 'rbx',
@@ -45,26 +47,32 @@ const config = {
 const platformConfig = config[scope];
 
 const publishImage = async (imageId, project) => {
-    console.log(`Publishing image ${imageId}.`);
+    console.log(`Publishing image: ${imageId}`);
     await imageApi.imagePostAccessrights(imageId, { identity: project });
-    await imageApi.imagePatchTag(imageId, { published: true});
+    await imageApi.imagePatchTag(imageId, { published: 'true' });
 };
 
 const cleanupImage = async () => {
     console.log('Fetching available images');
     const images = await imageApi.imageList();
     console.log(`Found ${images.length} images`);
-    const keep_images = {};
+    // identify for each image name latest image
+    const latest_image = {};
     images.sort((a, b) => new Date(b.createdOn) - new Date(a.createdOn));
     for (const image of images) {
-        if (!keep_images[image.name] && (image.accessRights.includes('*') || image.name.includes('image-builder'))) {
-            keep_images[image.name] = image;
+        if (!latest_image[image.name] && image.accessRights.includes('*')) {
+            latest_image[image.name] = image;
         }
     }
-    const image = images.find(x => x.state === 'Online' && keep_images[x.name] && keep_images[x.name]._id !== x._id && olderThan(x, 90));
+    const image = images.find(resource =>
+        !ensureTag(resource, 'protected') && // ignore protected
+        olderThan(resource, 90) && // ignore fresh
+        ensureState(resource, ['Online']) && // manage only 'Online'
+        latest_image[resource.name] && latest_image[resource.name].id !== resource.id // keep latest
+    );
     if (image) {
-        console.log(`Deleting image '${image.name}' (ID: ${image._id}).`);
-        await imageApi.imageDelete(image._id);
+        console.log(`Deleting image '${image.name}' (ID: ${image.id}).`);
+        await imageApi.imageDelete(image.id);
         await cleanupImage();
     }
 };
@@ -73,11 +81,16 @@ const cleanupVm = async () => {
     console.log('Fetching available VMs');
     const vms = await vmApi.vmList();
     console.log(`Found ${vms.length} VMs`);
-    const vm = vms.find(vm => olderThan(vm, 90) && ensureState(vm, ['Running']) && !vm.name.includes('windows'));
+    const vm = vms.find(resource =>
+        !ensureTag(resource, 'protected') && // ignore protected
+        olderThan(resource, 90) && // ignore fresh
+        !vm.name.includes('windows') && // ignore windows
+        ensureState(resource, ['Running']) // manage only 'Running' eg. ignore 'Unknown'
+    );
     if (vm) {
-        console.log(`Deleting VM ${vm._id}`);
-        await vmApi.vmActionTurnoff(vm._id);
-        await vmApi.vmDelete(vm._id, {});
+        console.log(`Deleting VM ${vm.id}`);
+        await vmApi.vmActionTurnoff(vm.id);
+        await vmApi.vmDelete(vm.id, {});
         await cleanupVm();
     }
 };
@@ -86,22 +99,28 @@ const cleanupDisk = async () => {
     console.log('Fetching available disks.');
     const disks = await diskApi.diskList();
     console.log(`Found ${disks.length} disks`);
-    const disk = disks.find(disk => ensureState(disk, ['Detached']));
+    const disk = disks.find(resource =>
+        olderThan(resource, 15) && // ignore fresh to avoid race
+        ensureState(resource, ['Detached']) // manage only 'Detached' eg. ignore 'Unknown' and 'Attached'
+    );
     if (disk) {
-        console.log(`Deleting disk ${disk._id}`);
-        await diskApi.diskDelete(disk._id);
+        console.log(`Deleting disk ${disk.id}`);
+        await diskApi.diskDelete(disk.id);
         await cleanupDisk();
     }
 };
 
 const cleanupIp = async () => {
-    console.log('Fetching available ip.');
+    console.log('Fetching available IP.');
     const ips = await ipApi.ipList();
-    console.log(`Found ${ips.length} ips`);
-    const ip = ips.find(ip => ensureState(ip, ['Unallocated']));
+    console.log(`Found ${ips.length} IPs`);
+    const ip = ips.find(resource =>
+        olderThan(resource, 15) && // ignore fresh to avoid race
+        ensureState(resource, ['Unallocated']) // manage only 'Detached' eg. ignore 'Unknown' and 'Attached'
+    );
     if (ip) {
-        console.log(`Deleting ip ${ip._id}`);
-        await ipApi.ipDelete(ip._id);
+        console.log(`Deleting IP ${ip.id}`);
+        await ipApi.ipDelete(ip.id);
         await cleanupIp();
     }
 };
@@ -129,46 +148,45 @@ const main = async () => {
         let imageId;
         if (!program.image) {
             imageId = await mode_runtime.build(imageConfig, platformConfig);
-            console.log(`Builded image ${imageId}`);
+            console.log(`Builded image: ${imageId}`);
         } else {
             imageId = program.image;
-            console.log(`Choose image ${imageId}`);
+            console.log(`Choose image: ${imageId}`);
         }
         if (!program.skipTest) {
-            console.log(`Testing image ${imageId}`);
+            console.log(`Testing image: ${imageId}`);
             try {
                 await mode_runtime.test(imageConfig, platformConfig, imageId);
             } catch (err) {
                 if (program.cleanup) {
-                    console.log(`Delete invalid image ${imageId}`);
+                    console.log(`Delete invalid image: ${imageId}`);
                     await imageApi.imageDelete(imageId);
                 }
                 throw err;
             }
-            console.log(`Tested image ${imageId}`);
+            console.log(`Tested image: ${imageId}`);
         } else {
-            console.log(`Skip testing image ${imageId}`);
+            console.log(`Skip testing image: ${imageId}`);
         }
         if (program.publish) {
             if (imageConfig.license) {
                 const image = await fetchImage(imageId);
-                console.log(image);
                 if (!image.license || image.license.length == 0) {
                     throw new Error('Image not ready to publish - no licenses required');
                 }
             }
-            console.log(`Publishing image ${imageId}`);
+            console.log(`Publishing image: ${imageId}`);
             await publishImage(imageId, imageConfig.image_tenant_access || '*');
-            console.log(`Published image ${imageId}`);
+            console.log(`Published image: ${imageId}`);
         } else {
-            console.log(`Skip publishing image ${imageId}`);
+            console.log(`Skip publishing image: ${imageId}`);
         }
     } finally {
         if (program.cleanup) {
-            await cleanupImage();
-            await cleanupVm();
-            await cleanupDisk();
-            await cleanupIp();
+            await cleanupImage(); // clean up all images
+            await cleanupVm(); // delete VM first to make disk and ip free
+            await cleanupDisk(); // delete detached disks
+            await cleanupIp(); // delete detached IP address
         }
     }
 };
