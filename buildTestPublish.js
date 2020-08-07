@@ -64,8 +64,8 @@ const cleanupVm = async () => {
     );
     if (vm) {
         console.log(`Deleting VM ${vm.id}`);
-        await vmApi.vmActionTurnoff(vm.id);
-        await vmApi.vmDelete(vm.id, {});
+        await vmApi.vmActionTurnoff(vm._id);
+        await vmApi.vmDelete(vm._id, {});
         await cleanupVm();
     }
 };
@@ -89,8 +89,8 @@ const cleanupImage = async () => {
         latest_image[resource.name] && latest_image[resource.name].id !== resource.id // keep latest
     );
     if (image) {
-        console.log(`Deleting image '${image.name}' (ID: ${image.id}).`);
-        await imageApi.imageDelete(image.id);
+        console.log(`Deleting image '${image.name}' (ID: ${image._id}).`);
+        await imageApi.imageDelete(image._id);
         await cleanupImage();
     }
 };
@@ -104,8 +104,8 @@ const cleanupDisk = async () => {
         ensureState(resource, ['Detached']) // manage only 'Detached' eg. ignore 'Unknown' and 'Attached'
     );
     if (disk) {
-        console.log(`Deleting disk ${disk.id}`);
-        await diskApi.diskDelete(disk.id);
+        console.log(`Deleting disk ${disk._id}`);
+        await diskApi.diskDelete(disk._id);
         await cleanupDisk();
     }
 };
@@ -119,8 +119,8 @@ const cleanupIp = async () => {
         ensureState(resource, ['Unallocated']) // manage only 'Detached' eg. ignore 'Unknown' and 'Attached'
     );
     if (ip) {
-        console.log(`Deleting IP ${ip.id}`);
-        await ipApi.ipDelete(ip.id);
+        console.log(`Deleting IP ${ip._id}`);
+        await ipApi.ipDelete(ip._id);
         await cleanupIp();
     }
 };
