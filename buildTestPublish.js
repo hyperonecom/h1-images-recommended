@@ -52,6 +52,24 @@ const publishImage = async (imageId, project) => {
     await imageApi.imagePatchTag(imageId, { published: 'true' });
 };
 
+const cleanupVm = async () => {
+    console.log('Fetching available VMs');
+    const vms = await vmApi.vmList();
+    console.log(`Found ${vms.length} VMs`);
+    const vm = vms.find(resource =>
+        !ensureTag(resource, 'protected') && // ignore protected
+        olderThan(resource, 40) && // ignore fresh
+        !resource.name.includes('windows') && // ignore windows
+        ensureState(resource, ['Running']) // manage only 'Running' eg. ignore 'Unknown'
+    );
+    if (vm) {
+        console.log(`Deleting VM ${vm.id}`);
+        await vmApi.vmActionTurnoff(vm.id);
+        await vmApi.vmDelete(vm.id, {});
+        await cleanupVm();
+    }
+};
+
 const cleanupImage = async () => {
     console.log('Fetching available images');
     const images = await imageApi.imageList();
@@ -66,7 +84,7 @@ const cleanupImage = async () => {
     }
     const image = images.find(resource =>
         !ensureTag(resource, 'protected') && // ignore protected
-        olderThan(resource, 90) && // ignore fresh
+        olderThan(resource, 40) && // ignore fresh
         ensureState(resource, ['Online']) && // manage only 'Online'
         latest_image[resource.name] && latest_image[resource.name].id !== resource.id // keep latest
     );
@@ -74,24 +92,6 @@ const cleanupImage = async () => {
         console.log(`Deleting image '${image.name}' (ID: ${image.id}).`);
         await imageApi.imageDelete(image.id);
         await cleanupImage();
-    }
-};
-
-const cleanupVm = async () => {
-    console.log('Fetching available VMs');
-    const vms = await vmApi.vmList();
-    console.log(`Found ${vms.length} VMs`);
-    const vm = vms.find(resource =>
-        !ensureTag(resource, 'protected') && // ignore protected
-        olderThan(resource, 90) && // ignore fresh
-        !resource.name.includes('windows') && // ignore windows
-        ensureState(resource, ['Running']) // manage only 'Running' eg. ignore 'Unknown'
-    );
-    if (vm) {
-        console.log(`Deleting VM ${vm.id}`);
-        await vmApi.vmActionTurnoff(vm.id);
-        await vmApi.vmDelete(vm.id, {});
-        await cleanupVm();
     }
 };
 
