@@ -3,12 +3,10 @@
         "source_image": "image-builder-fedora",
         "download_path": "/home/guru/image-{{timestamp}}.qcow",
         "mount_qcow_path": "/home/guru/qcow-{{timestamp}}",
-        "cloud_init_tmp_path": "/tmp/cloud_init.py",
         "download_url": "http://cdimage.debian.org/images/cloud/OpenStack/current-10/debian-10-openstack-amd64.qcow2",
         "qcow_part": "/dev/sda1",
         "root_fs": "ext4",
         "scripts": "./scripts/fstab.sh,./scripts/debian/debian-10-buster.sh,./scripts/debian/cli.sh,./scripts/debian/docker.sh",
-        "cloud_init_ds_src": "./resources/cloud-init/ds/DataSourceRbxCloud.py",
         "disk_size": "5",
         "image_name": "Debian GNU/Linux (with Docker)",
         "ssh_name": "my-ssh",
@@ -77,7 +75,7 @@
             "post_mount_commands": [
                 "mkdir -p {{.MountPath}}/boot/efi",
                 "mount -t vfat {{.Device}}1 {{.MountPath}}/boot/efi",
-                "seq 1 5 | while read line; do wget -nv {{user `download_url`}} -O {{user `download_path`}} && break || sleep 15; done;",
+                "wget -nv {{user `download_url`}} -O {{user `download_path`}}",
                 "mkdir {{user `mount_qcow_path`}}",
                 "LIBGUESTFS_BACKEND=direct guestmount -a {{user `download_path`}} -m {{user `qcow_part`}} {{user `mount_qcow_path`}}",
                 "setenforce 0",
@@ -97,19 +95,6 @@
                 "SCOPE_NAME={{user `scope_name`}}",
                 "REPOSITORY={{user `repository`}}",
                 "CLI_PACKAGE={{user `cli_package`}}"
-            ]
-        },
-        {
-            "type": "file",
-            "source": "{{user `cloud_init_ds_src`}}",
-            "destination": "{{user `cloud_init_tmp_path`}}"
-        },
-        {
-            "type": "shell",
-            "inline": [
-                "CLOUD_INIT_DS_DIR=$(find /usr -name cloudinit -type d)",
-                "echo Found cloud-init in path: ${CLOUD_INIT_DS_DIR}",
-                "mv {{user `cloud_init_tmp_path`}} ${CLOUD_INIT_DS_DIR}/sources/DataSourceRbxCloud.py"
             ]
         }
     ]

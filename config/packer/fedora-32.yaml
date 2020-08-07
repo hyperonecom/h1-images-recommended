@@ -15,6 +15,6 @@ custom_scripts:
   - ./scripts/fstab.sh
   - ./scripts/fedora/fedora-31.sh
   # - ./scripts/fedora/cli_dnf.sh
-uefi_support: '1'
+uefi_support: true
 selinux: '1'
 format: qcow

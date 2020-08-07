@@ -9,12 +9,11 @@ download_url: >-
   http://cloud-images.ubuntu.com/daily/server/bionic/current/bionic-server-cloudimg-amd64.img
 disk_size: '5'
 qcow_part: /dev/sda1
-cloud_init_ds_src: ./resources/cloud-init/ds_v2/DataSourceRbxCloud.py
-cloud_init_install: true
+cloud_init_install: false
 custom_scripts:
   - ./scripts/fstab.sh
   - ./scripts/ubuntu/ubuntu-1710.sh
   - ./scripts/ubuntu/ubuntu-1804-desktop.sh
   - ./scripts/ubuntu/cli.sh
-uefi_support: '1'
+uefi_support: true
 format: qcow

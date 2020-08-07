@@ -1,7 +1,6 @@
 'use strict';
 const yaml = require('js-yaml');
 const fs = require('fs');
-const util = require('util');
 const process = require('process');
 const program = require('commander');
 const { ensureState, fetchImage } = require('./lib/api');
@@ -11,8 +10,6 @@ const {
 } = require('./lib/api');
 
 const scope = (process.env.SCOPE || 'h1').toLowerCase();
-
-const readFile = util.promisify(fs.readFile);
 
 const olderThan = (resource, ageInMinutes) => new Date(resource.createdOn) < new Date() - ageInMinutes * 60 * 1000;
 
@@ -63,7 +60,7 @@ const cleanupVm = async () => {
         ensureState(resource, ['Running']) // manage only 'Running' eg. ignore 'Unknown'
     );
     if (vm) {
-        console.log(`Deleting VM ${vm.id}`);
+        console.log(`Deleting VM ${vm._id}`);
         await vmApi.vmActionTurnoff(vm._id);
         await vmApi.vmDelete(vm._id, {});
         await cleanupVm();
@@ -140,7 +137,7 @@ const main = async () => {
     }
     try {
         const input_file = program.config;
-        const content = await readFile(input_file);
+        const content = await fs.promises.readFile(input_file);
         const imageConfig = yaml.safeLoad(content);
         const mode = program.mode || imageConfig.mode || 'packer';
         const mode_runtime = require(`./lib/build_modes/${mode}.js`);
