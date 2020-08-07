@@ -87,7 +87,7 @@ const cleanupImage = async () => {
         !ensureTag(resource, 'protected') && // ignore protected
         olderThan(resource, 40) && // ignore fresh
         ensureState(resource, ['Online']) && // manage only 'Online'
-        latest_image[resource.name] && latest_image[resource.name].id !== resource.id // keep latest
+        latest_image[resource.name] && latest_image[resource.name]._id !== resource._id // keep latest
     );
     if (image) {
         console.log(`Deleting image '${image.name}' (ID: ${image._id}).`);
