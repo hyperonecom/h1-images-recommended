@@ -84,7 +84,7 @@ const cleanupVm = async () => {
     const vm = vms.find(resource =>
         !ensureTag(resource, 'protected') && // ignore protected
         olderThan(resource, 90) && // ignore fresh
-        !vm.name.includes('windows') && // ignore windows
+        !resource.name.includes('windows') && // ignore windows
         ensureState(resource, ['Running']) // manage only 'Running' eg. ignore 'Unknown'
     );
     if (vm) {
