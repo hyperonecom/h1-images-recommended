@@ -75,10 +75,14 @@ const cleanupImage = async () => {
     const latest_image = {};
     images.sort((a, b) => new Date(b.createdOn) - new Date(a.createdOn));
     for (const image of images) {
+        // find latest published image
         if (!latest_image[image.name] && image.accessRights.includes('*')) {
             latest_image[image.name] = image;
         }
     }
+
+    console.log('Latest image:', latest_image);
+
     const image = images.find(resource =>
         !ensureTag(resource, 'protected') && // ignore protected
         olderThan(resource, 40) && // ignore fresh
