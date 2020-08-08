@@ -86,7 +86,8 @@ const render_templates = config => {
                 image_description: '{{user `image_description`}}',
                 public_netadp_service: '{{user `public_netadp_service`}}',
                 pre_mount_commands: [
-                    'yum install -y mtools libguestfs-tools wget pv',
+                    'yum install -y epel-release.noarch',
+                    'yum install -y --setopt=skip_missing_names_on_install=False mtools libguestfs-tools wget pv',
                     'modprobe kvm',
                     'dracut -fv',
                     'sgdisk -Z {{.Device}}',
