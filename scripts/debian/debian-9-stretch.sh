@@ -4,9 +4,7 @@ df -P .
 DEVICE=$(df -P . | awk 'END{print $1}')
 DEVICE_DISK=$(echo $DEVICE | sed 's/[0-9]//g' )
 export DEBIAN_FRONTEND=noninteractive; 
-mkdir -p /run/resolvconf
-echo 'nameserver 9.9.9.9' > /run/resolvconf/resolv.conf
-echo 'nameserver 8.8.8.8' >> /run/resolvconf/resolv.conf
+
 apt-get update && apt-get -y dist-upgrade
 apt-get -y install debconf-utils vim resolvconf arping curl
 echo "grub-pc grub-pc/install_devices string ${DEVICE_DISK}" | debconf-set-selections

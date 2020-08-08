@@ -3,11 +3,6 @@ set -eux
 DEVICE=$(df -P . | awk 'END{print $1}')
 DEVICE_DISK=$(echo $DEVICE | sed 's/[0-9]//g' )
 
-# Setup DNS for chroot
-mkdir -p /run/resolvconf
-echo 'nameserver 9.9.9.9' > /run/resolvconf/resolv.conf
-echo 'nameserver 8.8.8.8' >> /run/resolvconf/resolv.conf
-
 # Access RHUI
 . /etc/os-release
 curl "http://travis:${REDHAT_SECRET}@5e704ae4d9fe4b5b0d13a090.website.pl-waw-1.hyperone.cloud/${RHUI_CLIENT}" -o "/tmp/rhui-client.rpm"

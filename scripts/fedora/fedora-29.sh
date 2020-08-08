@@ -4,8 +4,6 @@ DEVICE=$(df -P . | awk 'END{print $1}')
 DEVICE_DISK=$(echo $DEVICE | sed 's/[0-9]//g' )
 fixfiles onboot
 fixfiles -F -f relabel
-echo 'nameserver 9.9.9.9' > /etc/resolv.conf
-echo 'nameserver 8.8.8.8' >> /etc/resolv.conf
 yum -y update
 yum -y install vim curl redhat-lsb-core 
 yum clean all

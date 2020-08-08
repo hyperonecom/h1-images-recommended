@@ -12,6 +12,7 @@ qcow_part: /dev/sda1
 cloud_init_ds_src: ./resources/cloud-init/ds_v2/DataSourceRbxCloud.py
 cloud_init_install: true
 custom_scripts:
+  - ./scripts/resolv.sh
   - ./scripts/fstab.sh
   - ./scripts/fedora/fedora-31.sh
   - ./scripts/fedora/cli_dnf.sh

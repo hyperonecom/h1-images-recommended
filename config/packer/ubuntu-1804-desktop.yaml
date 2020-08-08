@@ -14,6 +14,7 @@ vm_gen1_test_service:
   h1: a1.medium
   rbx: medium
 custom_scripts:
+  - ./scripts/resolv.sh
   - ./scripts/fstab.sh
   - ./scripts/ubuntu/ubuntu-1710.sh
   - ./scripts/ubuntu/ubuntu-1804-desktop.sh

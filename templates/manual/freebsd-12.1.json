@@ -2,7 +2,7 @@
   "variables": {
     "source_image": "freebsd",
     "disk_size": "5",
-    "scripts": "./scripts/freebsd/freebsd-12.sh",
+    "scripts": "./scripts/resolv.sh,./scripts/freebsd/freebsd-12.sh",
     "image_name": "FreeBSD 12.1",
     "public_netadp_service": "public",
     "vm_type": "a1.small",

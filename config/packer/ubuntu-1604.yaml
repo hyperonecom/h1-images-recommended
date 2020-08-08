@@ -11,6 +11,7 @@ disk_size: '5'
 qcow_part: /dev/sda1
 cloud_init_install: false
 custom_scripts:
+  - ./scripts/resolv.sh
   - ./scripts/fstab.sh
   - ./scripts/ubuntu/ubuntu-1604.sh
   - ./scripts/ubuntu/cli.sh

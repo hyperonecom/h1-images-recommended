@@ -2,7 +2,6 @@
 # Configure /etc/fstab for pivot_root successfully
 echo "/dev/gpt/root / ufs rw,noatime 1 1" > /etc/fstab
 # Setup 
-echo 'nameserver 8.8.8.8' > /etc/resolv.conf
 echo 'sshd_enable="YES"' >> /etc/rc.conf
 # Upgrade packages
 setenv ASSUME_ALWAYS_YES yes

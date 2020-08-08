@@ -3,9 +3,6 @@ set -eux
 DEVICE=$(df -P . | awk 'END{print $1}')
 DEVICE_DISK=$(echo $DEVICE | sed 's/[0-9]//g' )
 
-echo 'nameserver 9.9.9.9' > /etc/resolv.conf
-echo 'nameserver 8.8.8.8' >> /etc/resolv.conf
-
 yum -y update
 yum -y install vim curl redhat-lsb-core gdisk
 # CentOS 8 have arping preinstalled

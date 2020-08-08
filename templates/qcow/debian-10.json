@@ -6,7 +6,7 @@
         "download_url": "http://cdimage.debian.org/images/cloud/OpenStack/current-10/debian-10-openstack-amd64.qcow2",
         "qcow_part": "/dev/sda1",
         "root_fs": "ext4",
-        "scripts": "./scripts/fstab.sh,./scripts/debian/debian-10-buster.sh,./scripts/debian/cli.sh",
+        "scripts": "./scripts/resolv.sh,./scripts/fstab.sh,./scripts/debian/debian-10-buster.sh,./scripts/debian/cli.sh",
         "cloud_init_tmp_path": "/tmp/cloud_init.py",
         "cloud_init_ds_src": "./resources/cloud-init/ds_v2/DataSourceRbxCloud.py",
         "disk_size": "5",

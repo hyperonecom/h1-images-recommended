@@ -2,8 +2,6 @@
 set -eux
 DEVICE=$(df -P . | awk 'END{print $1}')
 DEVICE_DISK=$(echo $DEVICE | sed 's/[0-9]//g' )
-echo 'nameserver 9.9.9.9' > /etc/resolv.conf
-echo 'nameserver 8.8.8.8' > /etc/resolv.conf
 echo "${MIRROR}/${REL}/main" > /etc/apk/repositories
 echo "${MIRROR}/${REL}/community" >> /etc/apk/repositories
 apk add "${LINUX_PACKAGE}"
