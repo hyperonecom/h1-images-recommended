@@ -9,6 +9,9 @@ download_url: 'https://cloud-images.ubuntu.com/releases/focal/release/ubuntu-20.
 disk_size: '5'
 qcow_part: /dev/sda1
 cloud_init_install: false
+vm_gen1_test_service:
+  h1: a1.medium
+  rbx: medium
 custom_scripts:
   - ./scripts/fstab.sh
   - ./scripts/ubuntu/ubuntu-1710.sh

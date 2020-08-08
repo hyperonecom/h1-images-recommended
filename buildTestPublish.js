@@ -148,7 +148,7 @@ const main = async () => {
         imageConfig.template_file = imageConfig.template_file || `templates/qcow/${qcow(imageConfig)}`;
         let imageId;
         if (!program.image) {
-            imageId = await mode_runtime.build(imageConfig, platformConfig);
+            imageId = await mode_runtime.build(imageConfig, platformConfig, scope);
             console.log(`Builded image: ${imageId}`);
         } else {
             imageId = program.image;
@@ -157,7 +157,7 @@ const main = async () => {
         if (!program.skipTest) {
             console.log(`Testing image: ${imageId}`);
             try {
-                await mode_runtime.test(imageConfig, platformConfig, imageId);
+                await mode_runtime.test(imageConfig, platformConfig, imageId, scope);
             } catch (err) {
                 if (program.cleanup) {
                     console.log(`Delete invalid image: ${imageId}`);
