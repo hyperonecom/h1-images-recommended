@@ -34,7 +34,7 @@ const render_templates = config => {
         'mount -t vfat {{.Device}}1 {{.MountPath}}/boot/efi',
         'wget -nv {{user `download_url`}} -O {{user `download_path`}}',
         'mkdir {{user `mount_qcow_path`}}',
-        'LIBGUESTFS_BACKEND=direct guestmount -a {{user `download_path`}} -m {{user `qcow_part`}} {{user `mount_qcow_path`}}',
+        'LIBGUESTFS_BACKEND=direct guestmount -a {{user `download_path`}} -m {{user `qcow_part`}} --ro {{user `mount_qcow_path`}}',
         'setenforce 0',
     ];
     if (config.selinux === '1') {
@@ -87,7 +87,7 @@ const render_templates = config => {
                 public_netadp_service: '{{user `public_netadp_service`}}',
                 pre_mount_commands: [
                     'yum install -y epel-release.noarch',
-                    'yum install -y --setopt=skip_missing_names_on_install=False mtools libguestfs-tools wget pv',
+                    'yum install -y --setopt=skip_missing_names_on_install=False mtools libguestfs-tools libguestfs-xfs wget pv',
                     'modprobe kvm',
                     'dracut -fv',
                     'sgdisk -Z {{.Device}}',
