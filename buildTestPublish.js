@@ -15,6 +15,18 @@ const olderThan = (resource, ageInMinutes) => new Date(resource.createdOn) < new
 
 const ensureTag = (resource, tag) => tag in resource.tag;
 
+const shuffle = (arr) => {
+    for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+};
+
+const delay = (time) => new Promise(resolve =>
+    setTimeout(resolve, time || Math.random() * 5 * 1000)
+);
+
 const config = {
     rbx: {
         scope: 'rbx',
@@ -50,10 +62,11 @@ const publishImage = async (imageId, project) => {
 };
 
 const cleanupVm = async () => {
+    await delay();
     console.log('Fetching available VMs');
     const vms = await vmApi.vmList();
     console.log(`Found ${vms.length} VMs`);
-    const vm = vms.find(resource =>
+    const vm = shuffle(vms).find(resource =>
         !ensureTag(resource, 'protected') && // ignore protected
         olderThan(resource, 40) && // ignore fresh
         !resource.name.includes('windows') && // ignore windows
@@ -68,6 +81,7 @@ const cleanupVm = async () => {
 };
 
 const cleanupImage = async () => {
+    await delay();
     console.log('Fetching available images');
     const images = await imageApi.imageList();
     console.log(`Found ${images.length} images`);
@@ -83,7 +97,7 @@ const cleanupImage = async () => {
 
     // console.log('Latest image:', latest_image);
 
-    const image = images.find(resource =>
+    const image = shuffle(images).find(resource =>
         !ensureTag(resource, 'protected') && // ignore protected
         olderThan(resource, 40) && // ignore fresh
         ensureState(resource, ['Online']) && // manage only 'Online'
@@ -97,10 +111,11 @@ const cleanupImage = async () => {
 };
 
 const cleanupDisk = async () => {
+    await delay();
     console.log('Fetching available disks.');
     const disks = await diskApi.diskList();
     console.log(`Found ${disks.length} disks`);
-    const disk = disks.find(resource =>
+    const disk = shuffle(disks).find(resource =>
         olderThan(resource, 15) && // ignore fresh to avoid race
         ensureState(resource, ['Detached']) // manage only 'Detached' eg. ignore 'Unknown' and 'Attached'
     );
@@ -112,10 +127,11 @@ const cleanupDisk = async () => {
 };
 
 const cleanupIp = async () => {
+    await delay();
     console.log('Fetching available IP.');
     const ips = await ipApi.ipList();
     console.log(`Found ${ips.length} IPs`);
-    const ip = ips.find(resource =>
+    const ip = shuffle(ips).find(resource =>
         olderThan(resource, 15) && // ignore fresh to avoid race
         ensureState(resource, ['Unallocated']) // manage only 'Detached' eg. ignore 'Unknown' and 'Attached'
     );
