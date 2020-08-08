@@ -53,7 +53,4 @@ wget -O "${CLOUD_INIT_DS_DIR}/sources/DataSourceRbxCloud.py" https://raw.githubu
 echo 'datasource_list: [ RbxCloud ]' > /etc/cloud/cloud.cfg.d/90_dpkg.cfg
 # Remove /etc/host to manage by cloud-init
 rm -f /etc/hosts
-
-# Fix SELinux
-fixfiles onboot
 restorecon -vR / >> /dev/null && echo 'restorecon success' || echo 'restorecon failed'

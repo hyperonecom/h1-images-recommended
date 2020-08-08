@@ -33,6 +33,9 @@
             "image_description": "{{user `image_description`}}",
             "public_netadp_service": "{{user `public_netadp_service`}}",
             "pre_mount_commands": [
+                "yum install -y mtools libguestfs-tools wget pv",
+                "modprobe kvm",
+                "dracut -fv",
                 "sgdisk -Z {{.Device}}",
                 "sgdisk -n 1:0:+50MB -t 1:EF01 -c 1:EFI {{.Device}}",
                 "sgdisk -n 2:0:+50MB -t 2:0700 -c 2:CLOUDMD {{.Device}}",

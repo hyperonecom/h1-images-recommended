@@ -32,5 +32,4 @@ sed -i 's/^ForwardToConsole=.*$/ForwardToConsole=no/' /etc/systemd/journald.conf
 echo 'datasource_list: [ RbxCloud ]' > /etc/cloud/cloud.cfg.d/90_dpkg.cfg
 rm -f /etc/hosts
 yum install -y network-scripts
-fixfiles onboot
-fixfiles -F -f relabel
+restorecon -vR / >> /dev/null && echo 'restorecon success' || echo 'restorecon failed'

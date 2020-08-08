@@ -2,8 +2,6 @@
 set -eux
 DEVICE=$(df -P . | awk 'END{print $1}')
 DEVICE_DISK=$(echo $DEVICE | sed 's/[0-9]//g' )
-fixfiles onboot
-fixfiles -F -f relabel
 
 echo 'nameserver 9.9.9.9' > /etc/resolv.conf
 echo 'nameserver 8.8.8.8' >> /etc/resolv.conf
@@ -38,3 +36,4 @@ rm -f /etc/sysconfig/network-scripts/ifcfg-eth0
 sed -i 's/^ForwardToConsole=.*$/ForwardToConsole=no/' /etc/systemd/journald.conf
 echo 'datasource_list: [ RbxCloud ]' > /etc/cloud/cloud.cfg.d/90_dpkg.cfg
 rm -f /etc/hosts
+restorecon -vR / >> /dev/null && echo 'restorecon success' || echo 'restorecon failed'

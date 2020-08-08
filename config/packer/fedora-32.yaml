@@ -14,7 +14,9 @@ cloud_init_install: true
 custom_scripts:
   - ./scripts/fstab.sh
   - ./scripts/fedora/fedora-31.sh
-  # - ./scripts/fedora/cli_dnf.sh
+  - ./scripts/fedora/cli_dnf.sh
+  - ./scripts/relabel.sh
+source_image: 'fedora:31'
 uefi_support: true
 selinux: '1'
 format: qcow
