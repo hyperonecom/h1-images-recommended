@@ -16,7 +16,7 @@ apk --no-cache add iproute2 # to provide 'ip addr show permanent' required by cl
 apk --no-cache add openssh-server # to provide ssh connectivity
 apk --no-cache add openssh-sftp-server # for Packer-provisionability
 apk --no-cache add sudo # to provide root access (users managed by cloud-init)
-apk --no-cache add curl # to provide InfluxDB metrics
+apk --no-cache add bash curl # to provide InfluxDB metrics
 apk --no-cache add haveged # to provide entropy required by boot
 # setup cloudinit
 sed '/after localmount/a    after haveged' -i /etc/init.d/cloud-init-local;
