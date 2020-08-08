@@ -9,8 +9,7 @@ echo "${MIRROR}/${REL}/community" >> /etc/apk/repositories
 apk add "${LINUX_PACKAGE}"
 sed -e 's;^#ttyS0;ttyS0;g' -i /etc/inittab
 apk --no-cache add util-linux # to fix 'sfdisk'
-apk --no-cache add --repository "${MIRROR}/edge/testing" cloud-init cloud-init-openrc
-apk --no-cache add --repository "${MIRROR}/edge/community" cloud-utils-growpart # to provide growpart required by cloud-init
+apk --no-cache add --repository "${MIRROR}/edge/testing" --repository "${MIRROR}/edge/community" cloud-init cloud-init-openrc cloud-utils-growpart
 apk --no-cache add eudev # to provide mdadm required by cloud-init
 apk --no-cache add ifupdown # to provide 'ip --all' required by cloud-init
 apk --no-cache add iproute2 # to provide 'ip addr show permanent' required by cloud-init
