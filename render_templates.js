@@ -86,7 +86,7 @@ const render_templates = config => {
                 image_description: '{{user `image_description`}}',
                 public_netadp_service: '{{user `public_netadp_service`}}',
                 pre_mount_commands: [
-                    'yum install -y epel-release.noarch',
+                    'yum install -y epel-release.noarch || echo "No applicable"',
                     'yum install -y --setopt=skip_missing_names_on_install=False mtools libguestfs-tools libguestfs-xfs wget pv',
                     'modprobe kvm',
                     'dracut -fv',
@@ -107,10 +107,6 @@ const render_templates = config => {
             },
         ],
         provisioners: [
-            {
-                type: 'shell',
-                scripts: './scripts/fstab.sh',
-            },
             {
                 type: 'shell',
                 scripts: '{{user `scripts`}}',
