@@ -9,7 +9,7 @@
         "root_fs": "xfs",
         "root_fs_opts": "-m crc=0,finobt=0",
         "scripts": "./scripts/resolv.sh,./scripts/rhel/fstab.sh,./scripts/rhel/rhel-core.sh,./scripts/rhel/rhel-8.sh,./scripts/rhel/cli_dnf.sh,./scripts/check_df.sh",
-        "disk_size": "5",
+        "disk_size": "10",
         "image_name": "Red Hat Enterprise Linux 8",
         "ssh_name": "my-ssh",
         "image_description": "{\"arch\":\"x64\",\"distro\":\"rhel\",\"release\":\"8\",\"edition\":\"server\",\"codename\":\"core\",\"recommended\":{\"disk\":{\"size\":20}}}",
