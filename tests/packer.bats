@@ -1,7 +1,7 @@
 #!/usr/bin/env bats
 
 @test "ssh using key" {
-  result="$(ssh -o StrictHostKeyChecking=no  ${USER}@${IP} whoami)"
+  result="$(ssh -o StrictHostKeyChecking=no ${USER}@${IP} whoami)"
   [ "$?" -eq 0 ]
 }
 
@@ -10,14 +10,14 @@ skip
 }
 
 @test "check /etc/hosts" {
-  result=$(ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no  ${USER}@${IP} "sudo grep $HOSTNAME /etc/hosts |cut -f1 ")
+  result=$(ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no ${USER}@${IP} "sudo grep $HOSTNAME /etc/hosts |cut -f1 ")
   [ "$?" -eq 0 ]
   [[ "$result" =~ "127.0" ]]
 }
 
 @test "check grub consoleblank" {
   skip
-  result=$(ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no  ${USER}@${IP} "grep 'consoleblank=0' /proc/cmdline")
+  result=$(ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no ${USER}@${IP} "grep 'consoleblank=0' /proc/cmdline")
   [ "$?" -eq 0 ]
 }
 
@@ -43,7 +43,7 @@ skip
   if [ "$CONFIG_DISTRO" == "FREEBSD" ]; then
     skip "test does not apply to FreeBSD"
   fi
-  result=$(ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no  ${USER}@${IP} "grep 'console=ttyS0,115200n8' /proc/cmdline")
+  result=$(ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no ${USER}@${IP} "grep 'console=ttyS0,115200n8' /proc/cmdline")
   [ "$?" -eq 0 ]
 }
 
@@ -52,13 +52,20 @@ skip
   if [ "$CONFIG_DISTRO" == "FREEBSD" ]; then
     skip "test does not apply to FreeBSD"
   fi
-  result=$(ssh -o UserKnownHostsFile=/dev/null  -o StrictHostKeyChecking=no  ${USER}@${IP} "grep 'elevator=noop' /proc/cmdline")
+  result=$(ssh -o UserKnownHostsFile=/dev/null  -o StrictHostKeyChecking=no ${USER}@${IP} "grep 'elevator=noop' /proc/cmdline")
   [ "$?" -eq 0 ]
 }
 
+@test "validate DNS resolving" {
+  if [ "$CONFIG_DISTRO" == "FREEBSD" ]; then
+    skip "test does not apply to FreeBSD"
+  fi
+  result=$(ssh -o UserKnownHostsFile=/dev/null  -o StrictHostKeyChecking=no ${USER}@${IP} getent hosts one.one.one.one | grep -E '(1111|1\.1\.1\.1)')
+  [ "$?" -eq 0 ]
+}
 
 @test "check hostname" {
-  result=$(ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no  ${USER}@${IP} hostname)
+  result=$(ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no ${USER}@${IP} hostname)
   [ "$?" -eq 0 ]
   [ "$result" == "$HOSTNAME" ]
 }
@@ -67,7 +74,7 @@ skip
   if [ "$CONFIG_DISTRO" != "FREEBSD" ]; then
     skip "test does not apply to FreeBSD"
   fi
-  result=$(ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no  ${USER}@${IP} df / | tail -n 1 | cut -d' ' -f3)
+  result=$(ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no ${USER}@${IP} df / | tail -n 1 | cut -d' ' -f3)
   [ "$?" -eq 0 ]
   [ "$result" -gt "$(( 5 * 1024 * 1024 ))" ]
 }
@@ -76,9 +83,9 @@ skip
   if [ "$CONFIG_DISTRO" == "FREEBSD" ]; then
     skip "test does not apply to FreeBSD"
   fi
-  block_count=$(ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no  ${USER}@${IP} stat / -f -c "%b")
+  block_count=$(ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no ${USER}@${IP} stat / -f -c "%b")
   [ "$?" -eq 0 ]
-	block_size=$(ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no  ${USER}@${IP} stat / -f -c "%s")
+	block_size=$(ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no ${USER}@${IP} stat / -f -c "%s")
   [ "$?" -eq 0 ]
   [ "$(($block_count * $block_size))" -gt "$((5 * 1024 * 1024 * 1024 ))" ]
 }
@@ -87,7 +94,7 @@ skip
   if [ "$CONFIG_DISTRO" != "FREEBSD" ]; then
     skip "test does not apply to FreeBSD"
   fi
-  result=$(ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no  ${USER}@${IP} df / | tail -n 1 | cut -d' ' -f3)
+  result=$(ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no ${USER}@${IP} df / | tail -n 1 | cut -d' ' -f3)
   [ "$?" -eq 0 ]
   [ "$result" -gt "$(( 5 * 1024 * 1024 ))" ]
 }
@@ -96,7 +103,7 @@ skip
   if [ "$CONFIG_DISTRO" == "FREEBSD" ]; then
     skip "test does not apply to FreeBSD"
   fi
-  ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no  ${USER}@${IP} ls /dev/rtc0;
+  ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no ${USER}@${IP} ls /dev/rtc0;
   [ "$?" -eq 0 ]
 }
 
@@ -104,10 +111,10 @@ skip
   if [ "$CONFIG_DISTRO" == "FREEBSD" ]; then
     skip "test does not apply to FreeBSD"
   fi
-  is_systemctl=$(ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no  ${USER}@${IP} "command -v systemctl || echo ''")
+  is_systemctl=$(ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no ${USER}@${IP} "command -v systemctl || echo ''")
   if [  "$is_systemctl" != "" ]; then
-    target=$(ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no  ${USER}@${IP} "systemctl  get-default")
-    is_desktop=$(ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no  ${USER}@${IP} "dpkg -l|grep ubuntu-desktop || echo ''")
+    target=$(ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no ${USER}@${IP} "systemctl  get-default")
+    is_desktop=$(ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no ${USER}@${IP} "dpkg -l|grep ubuntu-desktop || echo ''")
     if [ "$is_desktop" != "" ]; then
        [ "$target" == "graphical.target" ]
     else
