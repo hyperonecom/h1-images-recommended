@@ -17,6 +17,7 @@ custom_scripts:
   - ./scripts/fedora/fedora-29.sh
   - ./scripts/fedora/cli_yum.sh
   - ./scripts/relabel.sh
+  - ./scripts/check_df.sh
 source_image: 'fedora:30'
 uefi_support: true
 selinux: '1'

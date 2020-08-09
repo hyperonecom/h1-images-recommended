@@ -13,7 +13,7 @@
     "cloud_init_tmp_path": "/tmp",
     "disk_size": "2",
     "ssh_name": "my-ssh",
-    "scripts": "./scripts/resolv.sh,./scripts/alpine/edge.sh,./scripts/fstab.sh",
+    "scripts": "./scripts/resolv.sh,./scripts/alpine/edge.sh,./scripts/fstab.sh,./scripts/check_df.sh",
     "image_name": "Alpine 3.11 Server",
     "public_netadp_service": "public",
     "vm_type": "a1.small",

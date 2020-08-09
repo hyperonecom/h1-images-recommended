@@ -16,5 +16,6 @@ custom_scripts:
   - ./scripts/fstab.sh
   - ./scripts/debian/debian-9-stretch.sh
   - ./scripts/debian/cli.sh
+  - ./scripts/check_df.sh
 uefi_support: true
 format: qcow

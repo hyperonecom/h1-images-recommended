@@ -6,7 +6,7 @@
         "download_url": "http://cloud.centos.org/centos/7/images/CentOS-7-x86_64-GenericCloud.qcow2",
         "qcow_part": "/dev/sda1",
         "root_fs": "ext4",
-        "scripts": "./scripts/resolv.sh,./scripts/fstab.sh,./scripts/centos/centos-7.sh,./scripts/centos/cli.sh,./scripts/relabel.sh",
+        "scripts": "./scripts/resolv.sh,./scripts/fstab.sh,./scripts/centos/centos-7.sh,./scripts/centos/cli.sh,./scripts/relabel.sh,./scripts/check_df.sh",
         "cloud_init_tmp_path": "/tmp/cloud_init.py",
         "cloud_init_ds_src": "./resources/cloud-init/ds_v2/DataSourceRbxCloud.py",
         "disk_size": "5",

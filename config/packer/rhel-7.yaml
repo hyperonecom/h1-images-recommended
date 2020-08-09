@@ -5,7 +5,7 @@ codename: 'stable'
 pname: RHEL 7
 arch: x64
 version: '7'
-disk_size: '5'
+disk_size: '10'
 cloud_init_install: true
 vm_builder_service: 'rhel.build'
 template_file: templates/manual/rhel-7.json

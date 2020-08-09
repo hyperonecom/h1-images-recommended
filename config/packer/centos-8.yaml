@@ -16,6 +16,7 @@ custom_scripts:
   - ./scripts/centos/centos-7.sh
   - ./scripts/centos/cli.sh
   - ./scripts/relabel.sh
+  - ./scripts/check_df.sh
 uefi_support: true
 source_image: 'centos:7'
 selinux: '1'
