@@ -19,6 +19,6 @@ custom_scripts:
   - ./scripts/relabel.sh
   - ./scripts/check_df.sh
 source_image: 'fedora:31'
-uefi_support: true
+uefi_support: false
 selinux: '1'
 format: qcow
