@@ -8,7 +8,7 @@
         "root_fs": "ext4",
         "scripts": "./scripts/resolv.sh,./scripts/fstab.sh,./scripts/debian/debian-9-stretch.sh,./scripts/debian/cli.sh,./scripts/check_df.sh",
         "cloud_init_tmp_path": "/tmp/cloud_init.py",
-        "cloud_init_ds_src": "./resources/cloud-init/ds_v2/DataSourceRbxCloud.py",
+        "cloud_init_ds_src": "./resources/cloud-init/ds/DataSourceRbxCloud.py",
         "disk_size": "5",
         "image_name": "Debian GNU/Linux 9 (stretch)",
         "ssh_name": "my-ssh",
