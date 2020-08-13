@@ -2,7 +2,6 @@
 set -eux
 DEVICE=$(df -P . | awk 'END{print $1}')
 DEVICE_DISK=$(echo $DEVICE | sed 's/[0-9]//g' )
-fixfiles onboot
 fixfiles -F -f relabel
 yum -y update
 yum -y install vim curl redhat-lsb-core 
