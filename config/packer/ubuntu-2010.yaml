@@ -1,0 +1,19 @@
+name: ubuntu-2010-focal
+codename: groovy gorilla
+pname: Ubuntu 20.10 (groovy gorilla)
+distro: ubuntu
+edition: server
+arch: x64
+version: '20.10'
+download_url: 'http://cloud-images.ubuntu.com/daily/server/groovy/current/groovy-server-cloudimg-amd64.img'
+disk_size: '5'
+qcow_part: /dev/sda1
+cloud_init_install: false
+custom_scripts:
+  - ./scripts/resolv.sh
+  - ./scripts/fstab.sh
+  - ./scripts/ubuntu/ubuntu-1710.sh
+  # - ./scripts/ubuntu/cli.sh
+  - ./scripts/check_df.sh
+uefi_support: true
+format: qcow
