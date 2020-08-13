@@ -18,7 +18,7 @@ custom_scripts:
   - ./scripts/fedora/cli_dnf.sh
   - ./scripts/relabel.sh
   - ./scripts/check_df.sh
-source_image: 'fedora:31'
+source_image: 'fedora:32'
 uefi_support: false
 selinux: '1'
 format: qcow
