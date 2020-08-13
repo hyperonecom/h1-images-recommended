@@ -60,7 +60,7 @@ skip
   if [ "$CONFIG_DISTRO" == "FREEBSD" ]; then
     skip "test does not apply to FreeBSD"
   fi
-  result=$(ssh -o UserKnownHostsFile=/dev/null  -o StrictHostKeyChecking=no ${USER}@${IP} getent hosts one.one.one.one | grep -E '(1111|1\.1\.1\.1)')
+  result=$(ssh -o UserKnownHostsFile=/dev/null  -o StrictHostKeyChecking=no ${USER}@${IP} getent ahostsv4 one.one.one.one | grep -e '1\.1\.1\.1')
   [ "$?" -eq 0 ]
 }
 
