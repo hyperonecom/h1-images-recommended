@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 set -e
 
+end_time=$(date +"%s")
+duration=`expr ${end_time} - %%REQUEST_TIME%%`;
+
 curl -XPOST "http://%%INFLUXDB_HOST%%/write?db=recommended_image" \
     -u "%%INFLUXDB_USER%%:%%INFLUXDB_PASSWORD%%" \
     --data-binary "startup_time,vm_type=%%VM_TYPE%%,scope=%%SCOPE%%,image=%%IMAGE_ID%%,image_name=%%IMAGE_NAME%% duration=${duration} ${end_time}000000000"
 
 echo $(date) >> /userdata
-
-end_time=$(date +"%s")
-duration=`expr ${end_time} - %%REQUEST_TIME%%`;
