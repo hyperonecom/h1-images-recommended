@@ -9,6 +9,7 @@ disk_size: '10'
 cloud_init_install: true
 vm_builder_service: 'rhel.build'
 template_file: templates/manual/rhel-7.json
+source_image: rhel:7
 # uefi_support: true
 scope:
   - h1

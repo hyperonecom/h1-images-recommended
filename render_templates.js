@@ -49,7 +49,7 @@ const render_templates = config => {
 
     return {
         variables: {
-            source_image: config.source_image || 'image-builder-fedora',
+            source_image: config.source_image || 'fedora:32',
             download_path: '/home/guru/image-{{timestamp}}.qcow',
             mount_qcow_path: '/home/guru/qcow-{{timestamp}}',
             download_url: config.download_url,

@@ -1,6 +1,6 @@
 {
     "variables": {
-        "source_image": "image-builder-fedora",
+        "source_image": "fedora:32",
         "download_path": "/home/guru/image-{{timestamp}}.qcow",
         "mount_qcow_path": "/home/guru/qcow-{{timestamp}}",
         "download_url": "http://cdimage.debian.org/images/cloud/OpenStack/current-10/debian-10-openstack-amd64.qcow2",

@@ -18,6 +18,6 @@ custom_scripts:
   - ./scripts/relabel.sh
   - ./scripts/check_df.sh
 uefi_support: true
-source_image: 'centos:7'
+source_image: 'centos:8'
 selinux: '1'
 format: qcow

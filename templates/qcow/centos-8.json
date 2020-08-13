@@ -1,6 +1,6 @@
 {
     "variables": {
-        "source_image": "centos:7",
+        "source_image": "centos:8",
         "download_path": "/home/guru/image-{{timestamp}}.qcow",
         "mount_qcow_path": "/home/guru/qcow-{{timestamp}}",
         "download_url": "https://cloud.centos.org/centos/8/x86_64/images/CentOS-8-ec2-8.1.1911-20200113.3.x86_64.qcow2",

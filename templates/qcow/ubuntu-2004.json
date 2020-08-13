@@ -1,6 +1,6 @@
 {
     "variables": {
-        "source_image": "fedora:31",
+        "source_image": "fedora:32",
         "download_path": "/home/guru/image-{{timestamp}}.qcow",
         "mount_qcow_path": "/home/guru/qcow-{{timestamp}}",
         "download_url": "https://cloud-images.ubuntu.com/releases/focal/release/ubuntu-20.04-server-cloudimg-amd64.img",
