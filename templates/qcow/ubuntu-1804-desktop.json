@@ -1,6 +1,6 @@
 {
     "variables": {
-        "source_image": "image-builder-fedora",
+        "source_image": "fedora:31",
         "download_path": "/home/guru/image-{{timestamp}}.qcow",
         "mount_qcow_path": "/home/guru/qcow-{{timestamp}}",
         "download_url": "http://cloud-images.ubuntu.com/daily/server/bionic/current/bionic-server-cloudimg-amd64.img",
