@@ -83,6 +83,10 @@ jobs:
       env: CONFIG="config/packer/ubuntu-2004.yaml" MODE="packer" SCOPE=H1
     - stage: primary
       env: CONFIG="config/packer/ubuntu-2004.yaml" MODE="packer" SCOPE=RBX
+    - stage: primary
+      env: CONFIG="config/packer/ubuntu-2010.yaml" MODE="packer" SCOPE=H1
+    - stage: primary
+      env: CONFIG="config/packer/ubuntu-2010.yaml" MODE="packer" SCOPE=RBX
 script:
   - ./buildTravis.sh
 before_install:
