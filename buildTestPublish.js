@@ -68,8 +68,8 @@ const cleanupVm = async () => {
     console.log(`Found ${vms.length} VMs`);
     const vm = shuffle(vms).find(resource =>
         !ensureTag(resource, 'protected') && // ignore protected
-        olderThan(resource, 40) && // ignore fresh
-        !resource.name.includes('windows') && // ignore windows
+        olderThan(resource, 40) && // ignore fresh (40 min grace period)
+        (!resource.name.includes('windows') || olderThan(resource, 6 * 60)) && // extend fresh grace period for windows
         ensureState(resource, ['Running']) // manage only 'Running' eg. ignore 'Unknown'
     );
     if (vm) {
