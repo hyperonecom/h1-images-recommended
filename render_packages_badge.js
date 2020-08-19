@@ -42,9 +42,11 @@ const repos = [
     'ubuntu_20_10',
 ];
 
-const latest = (pkg) => `[![latest packaged version(s)](https://repology.org/badge/latest-versions/${pkg}.svg?header=)](https://repology.org/project/${pkg}/versions)`;
+const latest = (pkg) => `[![latest packaged version(s) of ${pkg}](https://repology.org/badge/latest-versions/${pkg}.svg?header=)](https://repology.org/project/${pkg}/versions)`;
 
-const badge = (repo, pkg) => `[![${repo} package](https://repology.org/badge/version-for-repo/${repo}/${pkg}.svg?header=)](https://repology.org/project/${pkg}/versions)`;
+const badge = (repo, pkg) => `[![${repo} package of ${pkg}](https://repology.org/badge/version-for-repo/${repo}/${pkg}.svg?header=)](https://repology.org/project/${pkg}/versions)`;
+
+const toRow = (cells) => `${cells.map(x => `| ${x} `).join('')} |`;
 
 const main = async () => {
     const content = ['# Packages versions for distros\n'];
@@ -64,10 +66,10 @@ const main = async () => {
         ]);
     }
 
-    content.push(header.join(' | '));
-    content.push(header.map(() => '---').join(' | '));
+    content.push(toRow(header));
+    content.push(toRow(header.map(() => '---')));
     for (const row of rows) {
-        content.push(row.join(' | '));
+        content.push(toRow(row));
     }
     await fs.promises.writeFile('./packages.md', content.join('\n'));
 };
