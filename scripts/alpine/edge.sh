@@ -4,7 +4,7 @@ DEVICE=$(df -P . | awk 'END{print $1}')
 DEVICE_DISK=$(echo $DEVICE | sed 's/[0-9]//g' )
 echo "${MIRROR}/${REL}/main" > /etc/apk/repositories
 echo "${MIRROR}/${REL}/community" >> /etc/apk/repositories
-apk add "${LINUX_PACKAGE}"
+apk add "linux-virt"
 sed -e 's;^#ttyS0;ttyS0;g' -i /etc/inittab
 apk --no-cache add util-linux # to fix 'sfdisk'
 # depends on 'ifupdown' to provide 'ip --all' required by cloud-init

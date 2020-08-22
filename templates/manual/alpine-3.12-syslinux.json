@@ -17,7 +17,6 @@
     "image_name": "Alpine 3.12 Server",
     "public_netadp_service": "public",
     "vm_type": "a1.small",
-    "linux_package": "linux-virt",
     "image_description": "{\"arch\":\"x64\",\"distro\":\"alpine\",\"release\":\"3.12\",\"edition\":\"server\",\"codename\":\"stable\",\"recommended\":{\"disk\":{\"size\":5}}}"
   },
   "builders": [
@@ -64,7 +63,6 @@
       "environment_vars": [
         "REL={{user `rel`}}",
         "MIRROR={{user `mirror`}}",
-        "LINUX_PACKAGE={{user `linux_package`}}",
         "MODULES={{user `modules`}}",
         "DEVICE={{.Device}}"
       ]
