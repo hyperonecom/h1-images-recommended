@@ -46,7 +46,7 @@ rc-update -q add cloud-init-local boot
 rc-update -q add cloud-init default
 rm -f /etc/hosts
 # CLI installation
-apk add --repository "http://dl-cdn.alpinelinux.org/alpine/edge/testing" h1-cli
+apk add --repository "${MIRROR}/edge/testing" h1-cli
 # Time synchronization
 apk add chrony
 echo 'refclock PHC /dev/ptp0 poll 3 dpoll -2 offset 0' >> /etc/chrony/chrony.conf
