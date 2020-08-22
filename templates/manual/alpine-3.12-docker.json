@@ -6,7 +6,7 @@
     "root_fs": "ext4",
     "features": "ata base ide scsi usb virtio ext4",
     "rel": "v3.12",
-    "mirror": "https://dl-cdn.alpinelinux.org/alpine",
+    "mirror": "http://dl-cdn.alpinelinux.org/alpine",
     "cloud_init_ds_dir": "/usr/lib/python3.8/site-packages/cloudinit/",
     "cloud_init_ds_src": "./resources/cloud-init/ds_v2/",
     "cloud_init_tmp_path": "/tmp",
