@@ -53,7 +53,7 @@ echo 'refclock PHC /dev/ptp0 poll 3 dpoll -2 offset 0' >> /etc/chrony/chrony.con
 sudo rc-update -q add chronyd default
 # UEFI installation
 sed 's@default_kernel_opts=.*@default_kernel_opts="elevator=noop consoleblank=0 console=tty0 console=ttyS0,115200n8"@' -i /etc/update-extlinux.conf
-sed "s@modules=.*@modules=\"${MODULES}\"@" -i /etc/update-extlinux.conf
+sed "s@modules=.*@modules=\"sd-mod,usb-storage,ext4\"@" -i /etc/update-extlinux.conf
 sed "s@root=.*@root=/dev/sda4@" -i /etc/update-extlinux.conf
 sed 's@serial_baud=.*@serial_baud=115200@' -i /etc/update-extlinux.conf
 cat /etc/update-extlinux.conf;
