@@ -7,9 +7,6 @@
     "features": "ata base ide scsi usb virtio ext4",
     "rel": "v3.12",
     "mirror": "http://dl-cdn.alpinelinux.org/alpine",
-    "cloud_init_ds_dir": "/usr/lib/python3.8/site-packages/cloudinit/",
-    "cloud_init_ds_src": "./resources/cloud-init/ds_v2/",
-    "cloud_init_tmp_path": "/tmp",
     "disk_size": "2",
     "ssh_name": "my-ssh",
     "scripts": "./scripts/resolv.sh,./scripts/alpine/edge.sh,./scripts/fstab.sh,./scripts/check_df.sh",
@@ -62,17 +59,6 @@
       "environment_vars": [
         "REL={{user `rel`}}",
         "MIRROR={{user `mirror`}}"
-      ]
-    },
-    {
-      "type": "file",
-      "source": "{{user `cloud_init_ds_src`}}/DataSourceRbxCloud.py",
-      "destination": "{{user `cloud_init_tmp_path`}}/DataSourceRbxCloud.py"
-    },
-    {
-      "type": "shell",
-      "inline": [
-        "mv {{user `cloud_init_tmp_path`}}/DataSourceRbxCloud.py {{user `cloud_init_ds_dir`}}/sources/DataSourceRbxCloud.py"
       ]
     }
   ]
