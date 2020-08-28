@@ -1,6 +1,6 @@
 {
   "variables": {
-    "source_image": "fedora:30",
+    "source_image": "fedora:32",
     "efi_fs": "vfat",
     "cloud_fs": "vfat",
     "root_fs": "ext4",
@@ -70,15 +70,9 @@
       "destination": "{{user `cloud_init_tmp_path`}}/DataSourceRbxCloud.py"
     },
     {
-      "type": "file",
-      "source": "{{user `cloud_init_ds_src`}}/cc_growpart.py",
-      "destination": "{{user `cloud_init_tmp_path`}}/cc_growpart.py"
-    },
-    {
       "type": "shell",
       "inline": [
-        "mv {{user `cloud_init_tmp_path`}}/DataSourceRbxCloud.py {{user `cloud_init_ds_dir`}}/sources/DataSourceRbxCloud.py",
-        "mv {{user `cloud_init_tmp_path`}}/cc_growpart.py {{user `cloud_init_ds_dir`}}/config/cc_growpart.py"
+        "mv {{user `cloud_init_tmp_path`}}/DataSourceRbxCloud.py {{user `cloud_init_ds_dir`}}/sources/DataSourceRbxCloud.py"
       ]
     }
   ]

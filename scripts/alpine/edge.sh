@@ -19,6 +19,7 @@ apk --no-cache add openssh-sftp-server # for Packer-provisionability
 apk --no-cache add sudo # to provide root access (users managed by cloud-init)
 apk --no-cache add bash curl # to provide InfluxDB metrics
 apk --no-cache add haveged # to provide entropy required by boot
+apk --no-cache add eudev # to provide /dev/block for growpart of cloud-init
 # setup cloudinit
 sed '/after localmount/a    after haveged' -i /etc/init.d/cloud-init-local;
 echo 'datasource_list: [ RbxCloud ]' > /etc/cloud/cloud.cfg.d/90_dpkg.cfg
@@ -44,6 +45,7 @@ rc-update -q add cloud-config default
 rc-update -q add cloud-final default
 rc-update -q add cloud-init-local boot
 rc-update -q add cloud-init default
+setup-udev -n # setup eudev
 rm -f /etc/hosts
 # CLI installation
 apk add --repository "${MIRROR}/edge/testing" h1-cli
