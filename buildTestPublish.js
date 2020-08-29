@@ -112,7 +112,7 @@ const cleanupDisk = async () => {
     const disks = await diskApi.diskList();
     console.log(`Found ${disks.length} disks`);
     const disk = disks.find(resource =>
-        olderThan(resource, 15) && // ignore fresh to avoid race
+        olderThan(resource, 30) && // ignore fresh to avoid race
         ensureState(resource, ['Detached']) // manage only 'Detached' eg. ignore 'Unknown' and 'Attached'
     );
     if (disk) {
@@ -127,7 +127,7 @@ const cleanupIp = async () => {
     const ips = await ipApi.ipList();
     console.log(`Found ${ips.length} IPs`);
     const ip = ips.find(resource =>
-        olderThan(resource, 30) && // ignore fresh to avoid race
+        olderThan(resource, 5) && // ignore fresh to avoid race
         ensureState(resource, ['Unallocated']) // manage only 'Detached' eg. ignore 'Unknown' and 'Attached'
     );
     if (ip) {
