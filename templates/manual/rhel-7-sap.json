@@ -1,6 +1,6 @@
 {
     "variables": {
-        "source_image": "image-builder-fedora",
+        "source_image": "rhel:7",
         "download_path": "/home/guru/image-{{timestamp}}.qcow",
         "mount_qcow_path": "/home/guru/qcow-{{timestamp}}",
         "cloud_init_tmp_path": "/tmp/cloud_init.py",
