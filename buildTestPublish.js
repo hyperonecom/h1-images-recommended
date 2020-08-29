@@ -15,17 +15,18 @@ const olderThan = (resource, ageInMinutes) => new Date(resource.createdOn) < new
 
 const ensureTag = (resource, tag) => tag in resource.tag;
 
-const shuffle = (arr) => {
-    for (let i = arr.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [arr[i], arr[j]] = [arr[j], arr[i]];
-    }
-    return arr;
-};
-
 const delay = (time) => new Promise(resolve =>
     setTimeout(resolve, time || Math.random() * 5 * 1000)
 );
+
+const safeDeleteFail = async err => {
+    // ignore if already deleted
+    if (err.status == 404) return;
+    // ignore if already processing
+    if (err.response && err.response.text && err.response.text.includes('rocessing')) return;
+    await delay();
+    throw err;
+};
 
 const config = {
     rbx: {
@@ -62,11 +63,10 @@ const publishImage = async (imageId, project) => {
 };
 
 const cleanupVm = async () => {
-    await delay();
     console.log('Fetching available VMs');
     const vms = await vmApi.vmList();
     console.log(`Found ${vms.length} VMs`);
-    const vm = shuffle(vms).find(resource =>
+    const vm = vms.find(resource =>
         !ensureTag(resource, 'protected') && // ignore protected
         olderThan(resource, 40) && // ignore fresh (40 min grace period)
         (!resource.name.includes('windows') || olderThan(resource, 6 * 60)) && // extend fresh grace period for windows
@@ -74,14 +74,13 @@ const cleanupVm = async () => {
     );
     if (vm) {
         console.log(`Deleting VM ${vm._id}`);
-        await vmApi.vmActionTurnoff(vm._id);
-        await vmApi.vmDelete(vm._id, {});
+        await vmApi.vmActionTurnoff(vm._id).catch(safeDeleteFail);
+        await vmApi.vmDelete(vm._id, {}).catch(safeDeleteFail);
         await cleanupVm();
     }
 };
 
 const cleanupImage = async () => {
-    await delay();
     console.log('Fetching available images');
     const images = await imageApi.imageList();
     console.log(`Found ${images.length} images`);
@@ -95,9 +94,7 @@ const cleanupImage = async () => {
         }
     }
 
-    // console.log('Latest image:', latest_image);
-
-    const image = shuffle(images).find(resource =>
+    const image = images.find(resource =>
         !ensureTag(resource, 'protected') && // ignore protected
         olderThan(resource, 40) && // ignore fresh
         ensureState(resource, ['Online']) && // manage only 'Online'
@@ -105,39 +102,37 @@ const cleanupImage = async () => {
     );
     if (image) {
         console.log(`Deleting image '${image.name}' (ID: ${image._id}).`);
-        await imageApi.imageDelete(image._id);
+        await imageApi.imageDelete(image._id).catch(safeDeleteFail);
         await cleanupImage();
     }
 };
 
 const cleanupDisk = async () => {
-    await delay();
     console.log('Fetching available disks.');
     const disks = await diskApi.diskList();
     console.log(`Found ${disks.length} disks`);
-    const disk = shuffle(disks).find(resource =>
+    const disk = disks.find(resource =>
         olderThan(resource, 15) && // ignore fresh to avoid race
         ensureState(resource, ['Detached']) // manage only 'Detached' eg. ignore 'Unknown' and 'Attached'
     );
     if (disk) {
         console.log(`Deleting disk ${disk._id}`);
-        await diskApi.diskDelete(disk._id);
+        await diskApi.diskDelete(disk._id).catch(safeDeleteFail);
         await cleanupDisk();
     }
 };
 
 const cleanupIp = async () => {
-    await delay();
     console.log('Fetching available IP.');
     const ips = await ipApi.ipList();
     console.log(`Found ${ips.length} IPs`);
-    const ip = shuffle(ips).find(resource =>
+    const ip = ips.find(resource =>
         olderThan(resource, 15) && // ignore fresh to avoid race
         ensureState(resource, ['Unallocated']) // manage only 'Detached' eg. ignore 'Unknown' and 'Attached'
     );
     if (ip) {
         console.log(`Deleting IP ${ip._id}`);
-        await ipApi.ipDelete(ip._id);
+        await ipApi.ipDelete(ip._id).catch(safeDeleteFail);
         await cleanupIp();
     }
 };
@@ -177,7 +172,7 @@ const main = async () => {
             } catch (err) {
                 if (program.cleanup) {
                     console.log(`Delete invalid image: ${imageId}`);
-                    await imageApi.imageDelete(imageId);
+                    await imageApi.imageDelete(imageId).catch(safeDeleteFail);
                 }
                 throw err;
             }
