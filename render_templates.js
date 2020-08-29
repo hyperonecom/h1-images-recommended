@@ -86,8 +86,8 @@ const render_templates = config => {
                 image_description: '{{user `image_description`}}',
                 public_netadp_service: '{{user `public_netadp_service`}}',
                 pre_mount_commands: [
-                    'yum install -y epel-release.noarch || echo "No applicable"',
-                    'yum install -y --setopt=skip_missing_names_on_install=False mtools libguestfs-tools libguestfs-xfs wget pv',
+                    "[ ! -e '/etc/rpm/macros.dist' ] || sudo yum install -y \"https://dl.fedoraproject.org/pub/epel/epel-release-latest-$(awk '/rhel/ {print $2}' /etc/rpm/macros.dist).noarch.rpm\"",
+                    'yum install -y --setopt=skip_missing_names_on_install=False mtools libguestfs-tools dosfstools libguestfs-xfs wget pv',
                     'modprobe kvm',
                     'dracut -fv',
                     'sgdisk -Z {{.Device}}',
