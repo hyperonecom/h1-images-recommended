@@ -127,7 +127,7 @@ const cleanupIp = async () => {
     const ips = await ipApi.ipList();
     console.log(`Found ${ips.length} IPs`);
     const ip = ips.find(resource =>
-        olderThan(resource, 15) && // ignore fresh to avoid race
+        olderThan(resource, 30) && // ignore fresh to avoid race
         ensureState(resource, ['Unallocated']) // manage only 'Detached' eg. ignore 'Unknown' and 'Attached'
     );
     if (ip) {
