@@ -4,6 +4,7 @@
     "efi_fs": "vfat",
     "cloud_fs": "vfat",
     "root_fs": "ext4",
+    "root_fs_opts": "-E lazy_itable_init=1",
     "features": "ata base ide scsi usb virtio ext4",
     "rel": "v3.12",
     "mirror": "http://dl-cdn.alpinelinux.org/alpine",
@@ -42,7 +43,7 @@
         "sleep 2",
         "mkfs.fat {{.Device}}1 -n EFI",
         "mkfs.fat {{.Device}}2 -n CLOUDMD",
-        "mkfs.{{user `root_fs`}} -O ^64bit {{.Device}}4"
+        "mkfs.{{user `root_fs`}} {{user `root_fs_opts`}} {{.Device}}4"
       ],
       "post_mount_commands": [
         "curl -s {{user `mirror`}}/{{user `rel`}}/main/$(uname -m)/$(curl {{user `mirror`}}/{{user `rel`}}/main/$(uname -m)/ -s | sed -n -E 's/.*(apk-tools-static.*apk).*/\\1/p') | tar xz",

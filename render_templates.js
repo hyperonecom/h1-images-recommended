@@ -55,6 +55,7 @@ const render_templates = config => {
             download_url: config.download_url,
             qcow_part: config.qcow_part,
             root_fs: config.root_fs || 'ext4',
+            root_fs_opts: '-E lazy_itable_init=1',
             scripts: config.custom_scripts.join(','),
             ...config.cloud_init_install ? {
                 cloud_init_tmp_path: '/tmp/cloud_init.py',
@@ -99,7 +100,7 @@ const render_templates = config => {
                     'sleep 2',
                     'mkfs.fat {{.Device}}1 -n EFI',
                     'mkfs.fat {{.Device}}2 -n CLOUDMD',
-                    'mkfs.{{user `root_fs`}} {{.Device}}4',
+                    'mkfs.{{user `root_fs`}} {{user `root_fs_opts`}} {{.Device}}4',
                 ],
                 chroot_mounts,
                 post_mount_commands,

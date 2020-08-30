@@ -6,6 +6,7 @@
         "download_url": "https://ftp.icm.edu.pl/pub/Linux/fedora/linux/releases/32/Cloud/x86_64/images/Fedora-Cloud-Base-32-1.6.x86_64.qcow2",
         "qcow_part": "/dev/sda1",
         "root_fs": "ext4",
+        "root_fs_opts": "-E lazy_itable_init=1",
         "scripts": "./scripts/resolv.sh,./scripts/fstab.sh,./scripts/fedora/fedora-31.sh,./scripts/fedora/cli_dnf.sh,./scripts/relabel.sh,./scripts/check_df.sh",
         "cloud_init_tmp_path": "/tmp/cloud_init.py",
         "cloud_init_ds_src": "./resources/cloud-init/ds_v2/DataSourceRbxCloud.py",
@@ -48,7 +49,7 @@
                 "sleep 2",
                 "mkfs.fat {{.Device}}1 -n EFI",
                 "mkfs.fat {{.Device}}2 -n CLOUDMD",
-                "mkfs.{{user `root_fs`}} {{.Device}}4"
+                "mkfs.{{user `root_fs`}} {{user `root_fs_opts`}} {{.Device}}4"
             ],
             "chroot_mounts": [
                 [
