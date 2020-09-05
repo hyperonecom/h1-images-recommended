@@ -43,7 +43,6 @@
         "sleep 2",
         "mkfs.fat {{.Device}}1 -n EFI",
         "mkfs.fat {{.Device}}2 -n CLOUDMD",
-        "mkfs.{{user `root_fs`}} {{.Device}}4",
         "mkfs.{{user `root_fs`}} {{user `root_fs_opts`}} {{.Device}}4"
       ],
       "post_mount_commands": [
