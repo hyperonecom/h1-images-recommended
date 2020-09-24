@@ -47,7 +47,6 @@
                 "sgdisk -n 3:0:+1MB  -t 3:EF02 -c 3:BIOS {{.Device}}",
                 "sgdisk -n 4:0:+1GB  -t 4:EA00 -c 4:BOOT {{.Device}}",
                 "sgdisk -n 5:0:-0    -t 5:8300 -c 5:ROOT {{.Device}} -A 5:set:2",
-                "partprobe",
                 "gdisk -l {{.Device}}",
                 "sleep 2",
                 "mkfs.fat {{.Device}}1 -n EFI",
