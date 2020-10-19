@@ -18,7 +18,6 @@ update-grub
 echo 'blacklist floppy' > /etc/modprobe.d/blacklist-floppy.conf
 update-initramfs -u -k all
 systemctl set-default multi-user
-echo 'interface ignore wildcard' >> /etc/ntp.conf
 (echo 'source-directory interfaces.d'; echo 'source interfaces.d/*.cfg') > /etc/network/interfaces
 sed -i 's/^ForwardToConsole=.*$/ForwardToConsole=no/' /etc/systemd/journald.conf
 echo 'datasource_list: [ RbxCloud ]' > /etc/cloud/cloud.cfg.d/90_dpkg.cfg
