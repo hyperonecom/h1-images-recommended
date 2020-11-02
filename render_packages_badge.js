@@ -34,6 +34,7 @@ const repos = [
     'fedora_30',
     'fedora_31',
     'fedora_32',
+    'fedora_33',
     'fedora_rawhide',
     'freebsd',
     'ubuntu_16_04',
