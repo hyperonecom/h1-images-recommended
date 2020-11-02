@@ -5,19 +5,19 @@ on:
 
 jobs:
   config:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
     steps:
       - uses: actions/checkout@v2
-      - name: Set up Node 14.x
+      - name: Set up Node 12.x
         uses: actions/setup-node@v1
         with:
-          node-version: "14.x"
+          node-version: "12.x"
       - name: Install
         run: npm ci
       - id: set-matrix
-        run: nodejs render_matrix.js
+        run: node render_matrix.js
   build:
     needs: config
     runs-on: self-hosted
