@@ -1,0 +1,59 @@
+name: Build
+
+on:
+  push:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix: 
+        config: 
+          - config/packer/alpine-3.12-docker.yaml
+          # - config/packer/alpine-3.12.yaml
+          # - config/packer/centos-7.yaml
+          # - config/packer/centos-8.yaml
+          # - config/packer/debian-10.yaml
+          # - config/packer/debian-9.yaml
+          # - config/packer/debian-docker.yaml
+          # - config/packer/fedora-31.yaml
+          # - config/packer/fedora-32.yaml
+          # - config/packer/freebsd-12.1.yaml
+          # - config/packer/rhel-7-sap-hana.yaml
+          # - config/packer/rhel-7-sap.yaml
+          # - config/packer/rhel-7.yaml
+          # - config/packer/rhel-8.yaml
+          # - config/packer/ubuntu-1604-desktop.yaml
+          # - config/packer/ubuntu-1604.yaml
+          # - config/packer/ubuntu-1804-desktop.yaml
+          # - config/packer/ubuntu-1804.yaml
+          # - config/packer/ubuntu-2004-desktop.yaml
+          # - config/packer/ubuntu-2004.yaml
+          # - config/packer/ubuntu-2010-desktop.yaml
+          # - config/packer/ubuntu-2010.yaml
+        scope:
+          - h1
+          # - rbx
+    steps:
+      - uses: actions/checkout@v2
+      - name: Save private SSH key
+        run: echo $PRIVATE_KEY > ./resources/secrets/id_rsa
+        env:
+          PRIVATE_KEY: "${{ secret.PRIVATE_KEY }}" 
+      - name: Build Docker image
+        run: docker build . -t recommended-images-${{github.sha}}
+      - name: Build Platform image
+        run: >
+          docker run --rm -it -e H1_TOKEN -e RBX_TOKEN -e SCOPE -e INFLUXDB_HOST -e INFLUXDB_PASSWORD -e INFLUXDB_USER -e REDHAT_SECRET \
+          recommended-images-${{github.sha}} \
+          nodejs buildTestPublish.js --config "${{ matrix.config }}" --mode "packer" --cleanup --publish
+        env:
+          SCOPE: '${{matrix.scope}}'
+          H1_TOKEN: '${{secret.H1_TOKEN}}'
+          # RBX_TOKEN: 'x'
+          # INFLUXDB_HOST: ''
+          # INFLUXDB_PASSWORD: '' 
+          # INFLUXDB_USER: ''
+          # REDHAT_SECRET: ''
+
+        
