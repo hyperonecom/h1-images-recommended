@@ -4,36 +4,25 @@ on:
   push:
 
 jobs:
-  test:
+  config:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Node 14.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: "14.x"
+      - name: Install
+        run: npm ci
+      - id: set-matrix
+        run: nodejs render_matrix.js
+  build:
+    needs: config
     runs-on: self-hosted
     strategy:
-      matrix: 
-        config: 
-          - config/packer/alpine-3.12-docker.yaml
-          # - config/packer/alpine-3.12.yaml
-          # - config/packer/centos-7.yaml
-          # - config/packer/centos-8.yaml
-          # - config/packer/debian-10.yaml
-          # - config/packer/debian-9.yaml
-          # - config/packer/debian-docker.yaml
-          # - config/packer/fedora-31.yaml
-          # - config/packer/fedora-32.yaml
-          # - config/packer/freebsd-12.1.yaml
-          # - config/packer/rhel-7-sap-hana.yaml
-          # - config/packer/rhel-7-sap.yaml
-          # - config/packer/rhel-7.yaml
-          # - config/packer/rhel-8.yaml
-          # - config/packer/ubuntu-1604-desktop.yaml
-          # - config/packer/ubuntu-1604.yaml
-          # - config/packer/ubuntu-1804-desktop.yaml
-          # - config/packer/ubuntu-1804.yaml
-          # - config/packer/ubuntu-2004-desktop.yaml
-          # - config/packer/ubuntu-2004.yaml
-          # - config/packer/ubuntu-2010-desktop.yaml
-          # - config/packer/ubuntu-2010.yaml
-        scope:
-          - h1
-          # - rbx
+      matrix: ${{fromJson(needs.config.outputs.matrix)}}
     steps:
       - uses: actions/checkout@v2
       - name: Save private SSH key
@@ -50,10 +39,8 @@ jobs:
         env:
           SCOPE: '${{matrix.scope}}'
           H1_TOKEN: '${{secrets.H1_TOKEN}}'
-          # RBX_TOKEN: 'x'
-          # INFLUXDB_HOST: ''
-          # INFLUXDB_PASSWORD: '' 
-          # INFLUXDB_USER: ''
-          # REDHAT_SECRET: ''
-
-        
+          RBX_TOKEN: '${{secrets.RBX_TOKEN}}'
+          INFLUXDB_HOST: '${{secrets.INFLUXDB_HOST}}'
+          INFLUXDB_PASSWORD: '${{secrets.INFLUXDB_PASSWORD}}' 
+          INFLUXDB_USER: '${{secrets.INFLUXDB_USER}}'
+          # REDHAT_SECRET: '${{secrets.H1_TOKEN}}'
