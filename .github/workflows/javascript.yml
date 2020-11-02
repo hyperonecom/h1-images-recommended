@@ -17,7 +17,7 @@ jobs:
       - name: Install
         run: npm ci
       - id: set-matrix
-        run: node render_matrix.js
+        run: node render_matrix.js --github
   build:
     needs: config
     runs-on: self-hosted
