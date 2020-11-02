@@ -44,7 +44,7 @@ jobs:
         run: docker build . -t recommended-images-${{github.sha}}
       - name: Build Platform image
         run: >
-          docker run --rm -it -e H1_TOKEN -e RBX_TOKEN -e SCOPE -e INFLUXDB_HOST -e INFLUXDB_PASSWORD -e INFLUXDB_USER -e REDHAT_SECRET \
+          docker run --rm -e H1_TOKEN -e RBX_TOKEN -e SCOPE -e INFLUXDB_HOST -e INFLUXDB_PASSWORD -e INFLUXDB_USER -e REDHAT_SECRET \
           recommended-images-${{github.sha}} \
           nodejs buildTestPublish.js --config "${{ matrix.config }}" --mode "packer" --cleanup --publish
         env:
