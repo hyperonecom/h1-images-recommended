@@ -22,9 +22,10 @@ jobs:
         run: npm ci
       - id: set-matrix
         run: node render_matrix.js --github
-  build:
+  packer:
     needs: config
     runs-on: self-hosted
+    timeout-minutes: 90
     strategy:
       fail-fast: false
       max-parallel: 2
@@ -36,7 +37,7 @@ jobs:
         env:
           PRIVATE_KEY: "${{ secrets.PRIVATE_KEY }}" 
       - name: Build Docker image
-        run: docker build . -t recommended-images:${{github.sha}}
+        run: docker build -t recommended-images:${{github.sha}} .
       - name: Build Platform image
         run: |
           docker run --rm -e H1_TOKEN -e RBX_TOKEN -e SCOPE -e INFLUXDB_HOST -e INFLUXDB_PASSWORD -e INFLUXDB_USER -e REDHAT_SECRET \
@@ -49,4 +50,42 @@ jobs:
           INFLUXDB_HOST: '${{secrets.INFLUXDB_HOST}}'
           INFLUXDB_PASSWORD: '${{secrets.INFLUXDB_PASSWORD}}' 
           INFLUXDB_USER: '${{secrets.INFLUXDB_USER}}'
+          # REDHAT_SECRET: '${{secrets.H1_TOKEN}}'
+  windows:
+    runs-on: self-hosted
+    strategy:
+      fail-fast: false
+      max-parallel: 2
+      matrix:
+        scope:
+          - h1
+        config:
+          - ./config/windows/windows-server-2016-dc-bios.yaml
+          - ./config/windows/windows-server-2016-dc-core-bios.yaml
+          - ./config/windows/windows-server-2016-std-bios.yaml
+          - ./config/windows/windows-server-2016-std-core-bios.yaml
+          - ./config/windows/windows-server-2019-dc-bios.yaml
+          - ./config/windows/windows-server-2019-dc-core-bios.yaml
+          - ./config/windows/windows-server-2019-std-bios.yaml
+          - ./config/windows/windows-server-2019-std-core-bios.yaml
+    steps:
+      - uses: actions/checkout@v2
+      - name: Save private SSH key
+        run: echo $PRIVATE_KEY > ./resources/secrets/id_rsa
+        env:
+          PRIVATE_KEY: "${{ secrets.PRIVATE_KEY }}" 
+      - name: Build Docker image
+        run: docker build -f Dockerfile.windows  -t recommended-images-windows:${{github.sha}} .
+      - name: Build Platform image
+        run: |
+          docker run --rm -e H1_TOKEN -e SCOPE \
+          recommended-images-windows:${{github.sha}} \
+          nodejs buildTestPublish.js --config "${{ matrix.config }}" --mode "windows" --cleanup --publish
+        env:
+          SCOPE: '${{matrix.scope}}'
+          H1_TOKEN: '${{secrets.H1_TOKEN}}'
+          # RBX_TOKEN: '${{secrets.RBX_TOKEN}}'
+          # INFLUXDB_HOST: '${{secrets.INFLUXDB_HOST}}'
+          # INFLUXDB_PASSWORD: '${{secrets.INFLUXDB_PASSWORD}}' 
+          # INFLUXDB_USER: '${{secrets.INFLUXDB_USER}}'
           # REDHAT_SECRET: '${{secrets.H1_TOKEN}}'

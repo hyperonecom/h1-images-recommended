@@ -1,6 +1,6 @@
 # h1-recommended-images
 
-[![Build Status](https://www.travis-ci.com/hyperonecom/h1-images-recommended.svg?branch=master)](https://www.travis-ci.com/hyperonecom/h1-images-recommended)
+![Build](https://github.com/hyperonecom/h1-images-recommended/workflows/Build/badge.svg?event=schedule)
 
 Scripts and templates to build recommended images for the HyperOne platform and compatible with it.
 
@@ -56,8 +56,7 @@ packer build templates/qcow/fedora-29.json
 
 ## Utils scripts
 
-* ```render_templates.js``` - regenerate ```templates/*``` based on ```config/*```
-* ```render_travis.yml.js``` - regenerate ```.travis.yml``` based on ```templates/*```
+* ```.github/render_matrix.js``` - regenerate build matrix for GitHub Actions
 * ```run_tests.sh``` - performs basic tests of the correct operation of the image
 * ```buildTestPublish.js``` - build & test & publish image
 
@@ -90,6 +89,7 @@ To prepare new ISO use any software for editing iso and place proper Autounatten
 ```
 wine ./oscdimg.exe -lAIO_OS -u2 -m -bz:\\mnt\\iso\\boot\\etfsboot.com z:\\mnt\\iso z:\\mnt\\Win8.iso
 ```
+
 For details  of usage, see [Oscdimg Command-Line Options](https://docs.microsoft.com/en-us/windows-hardware/manufacture/desktop/oscdimg-command-line-options).
 
 Files is repo are named to know for which distro they are, ie. ```Autounattend-Datacenter-Core.xml```, but file on iso has to be named ```Autounattend.xml``` only.
