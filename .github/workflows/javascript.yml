@@ -39,7 +39,7 @@ jobs:
       - name: Save private SSH key
         run: echo $PRIVATE_KEY > ./resources/secrets/id_rsa
         env:
-          PRIVATE_KEY: "${{ secret.PRIVATE_KEY }}" 
+          PRIVATE_KEY: "${{ secrets.PRIVATE_KEY }}" 
       - name: Build Docker image
         run: docker build . -t recommended-images-${{github.sha}}
       - name: Build Platform image
@@ -49,7 +49,7 @@ jobs:
           nodejs buildTestPublish.js --config "${{ matrix.config }}" --mode "packer" --cleanup --publish
         env:
           SCOPE: '${{matrix.scope}}'
-          H1_TOKEN: '${{secret.H1_TOKEN}}'
+          H1_TOKEN: '${{secrets.H1_TOKEN}}'
           # RBX_TOKEN: 'x'
           # INFLUXDB_HOST: ''
           # INFLUXDB_PASSWORD: '' 
