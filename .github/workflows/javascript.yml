@@ -38,7 +38,7 @@ jobs:
           echo "$PRIVATE_KEY" | openssl base64 -d > ./resources/secrets/id_rsa;
           rm ./resources/ssh/id_rsa*;
           cp ./resources/secrets/* ./resources/ssh/;
-          md5sum ./resources/secrets/ssh/*
+          md5sum ./resources/ssh/*
         env:
           PRIVATE_KEY: "${{ secrets.PRIVATE_KEY }}" 
       - name: Build Docker image
