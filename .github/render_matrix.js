@@ -31,7 +31,7 @@ const main = async () => {
     const templates = {};
 
     for (const template of files.filter(x => x.endsWith('.yaml'))) {
-        if(!x.includes('alpine-3.12-docker.yaml')) continue;
+        if(!template.includes('alpine-3.12-docker.yaml')) continue;
         templates[`./config/packer/${template}`] = yaml.safeLoad(await readFile(join(path, template)));
     }
     if (process.argv.includes('--github')) {
