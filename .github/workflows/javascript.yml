@@ -33,7 +33,9 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Save private SSH key
-        run: echo $PRIVATE_KEY | openssl base64 -d > ./resources/secrets/id_rsa
+        run: |
+          echo "$PRIVATE_KEY" | openssl base64 -d > ./resources/secrets/id_rsa;
+          md5sum ./resources/secrets/id_rsa
         env:
           PRIVATE_KEY: "${{ secrets.PRIVATE_KEY }}" 
       - name: Build Docker image
