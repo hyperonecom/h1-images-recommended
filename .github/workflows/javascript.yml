@@ -11,7 +11,8 @@ jobs:
   config:
     runs-on: self-hosted
     outputs:
-      matrix: ${{ steps.set-matrix.outputs.matrix }}
+      matrix-packer: ${{ steps.set-matrix.outputs.matrix-packer }}
+      matrix-windows: ${{ steps.set-matrix.outputs.matrix-windows }}
     steps:
       - uses: actions/checkout@v2
       - name: Set up Node 12.x
@@ -29,13 +30,15 @@ jobs:
     strategy:
       fail-fast: false
       max-parallel: 2
-      matrix: ${{fromJson(needs.config.outputs.matrix)}}
+      matrix: ${{fromJson(needs.config.outputs.matrix-packer)}}
     steps:
       - uses: actions/checkout@v2
       - name: Save private SSH key
         run: |
           echo "$PRIVATE_KEY" | openssl base64 -d > ./resources/secrets/id_rsa;
-          md5sum ./resources/secrets/id_rsa
+          rm ./resources/ssh/id_rsa*;
+          cp ./resources/secrets/* ./resources/ssh/;
+          md5sum ./resources/secrets/ssh/*
         env:
           PRIVATE_KEY: "${{ secrets.PRIVATE_KEY }}" 
       - name: Build Docker image
@@ -53,41 +56,30 @@ jobs:
           INFLUXDB_PASSWORD: '${{secrets.INFLUXDB_PASSWORD}}' 
           INFLUXDB_USER: '${{secrets.INFLUXDB_USER}}'
           # REDHAT_SECRET: '${{secrets.H1_TOKEN}}'
-  # windows:
-  #   runs-on: self-hosted
-  #   strategy:
-  #     fail-fast: false
-  #     max-parallel: 2
-  #     matrix:
-  #       scope:
-  #         - h1
-  #       config:
-  #         - ./config/windows/windows-server-2016-dc-bios.yaml
-  #         - ./config/windows/windows-server-2016-dc-core-bios.yaml
-  #         - ./config/windows/windows-server-2016-std-bios.yaml
-  #         - ./config/windows/windows-server-2016-std-core-bios.yaml
-  #         - ./config/windows/windows-server-2019-dc-bios.yaml
-  #         - ./config/windows/windows-server-2019-dc-core-bios.yaml
-  #         - ./config/windows/windows-server-2019-std-bios.yaml
-  #         - ./config/windows/windows-server-2019-std-core-bios.yaml
-  #   steps:
-  #     - uses: actions/checkout@v2
-  #     - name: Save private SSH key
-  #       run: echo $PRIVATE_KEY > ./resources/secrets/id_rsa
-  #       env:
-  #         PRIVATE_KEY: "${{ secrets.PRIVATE_KEY }}" 
-  #     - name: Build Docker image
-  #       run: docker build -f Dockerfile.windows  -t recommended-images-windows:${{github.sha}} .
-  #     - name: Build Platform image
-  #       run: |
-  #         docker run --rm -e H1_TOKEN -e SCOPE \
-  #         recommended-images-windows:${{github.sha}} \
-  #         nodejs buildTestPublish.js --config "${{ matrix.config }}" --mode "windows" --cleanup --publish
-  #       env:
-  #         SCOPE: '${{matrix.scope}}'
-  #         H1_TOKEN: '${{secrets.H1_TOKEN}}'
-  #         # RBX_TOKEN: '${{secrets.RBX_TOKEN}}'
-  #         # INFLUXDB_HOST: '${{secrets.INFLUXDB_HOST}}'
-  #         # INFLUXDB_PASSWORD: '${{secrets.INFLUXDB_PASSWORD}}' 
-  #         # INFLUXDB_USER: '${{secrets.INFLUXDB_USER}}'
-  #         # REDHAT_SECRET: '${{secrets.H1_TOKEN}}'
+  windows:
+    runs-on: self-hosted
+    strategy:
+      fail-fast: false
+      max-parallel: 2
+      matrix: ${{fromJson(needs.config.outputs.matrix-windows)}}
+    steps:
+      - uses: actions/checkout@v2
+      - name: Save private SSH key
+        run: echo $PRIVATE_KEY > ./resources/secrets/id_rsa
+        env:
+          PRIVATE_KEY: "${{ secrets.PRIVATE_KEY }}" 
+      - name: Build Docker image
+        run: docker build -f Dockerfile.windows  -t recommended-images-windows:${{github.sha}} .
+      - name: Build Platform image
+        run: |
+          docker run --rm -e H1_TOKEN -e SCOPE \
+          recommended-images-windows:${{github.sha}} \
+          nodejs buildTestPublish.js --config "${{ matrix.config }}" --mode "windows" --cleanup --publish
+        env:
+          SCOPE: '${{matrix.scope}}'
+          H1_TOKEN: '${{secrets.H1_TOKEN}}'
+          # RBX_TOKEN: '${{secrets.RBX_TOKEN}}'
+          # INFLUXDB_HOST: '${{secrets.INFLUXDB_HOST}}'
+          # INFLUXDB_PASSWORD: '${{secrets.INFLUXDB_PASSWORD}}' 
+          # INFLUXDB_USER: '${{secrets.INFLUXDB_USER}}'
+          # REDHAT_SECRET: '${{secrets.H1_TOKEN}}'

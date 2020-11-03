@@ -5,7 +5,6 @@ const readDir = fs.promises.readdir;
 const readFile = fs.promises.readFile;
 const yaml = require('js-yaml');
 
-const path = join(__dirname, './../config/packer');
 const scope_list = ['h1', 'rbx'];
 
 const render = (templates) => {
@@ -26,7 +25,8 @@ const render = (templates) => {
     };
 };
 
-const main = async () => {
+const renderMatrix = async (name) => {
+    const path = join(__dirname, './../config', name);
     const files = await readDir(path);
     const templates = {};
 
@@ -35,10 +35,14 @@ const main = async () => {
         templates[`./config/packer/${template}`] = yaml.safeLoad(await readFile(join(path, template)));
     }
     if (process.argv.includes('--github')) {
-        console.log(`::set-output name=matrix::${JSON.stringify(render(templates))}`);
+        console.log(`::set-output name=matrix-${name}::${JSON.stringify(render(templates))}`);
     } else {
         console.log(JSON.stringify(render(templates), null, 4));
     }
+}
+const main = async () => {
+    await renderMatrix('packer');
+    await renderMatrix('windows');
 };
 
 main().then(console.log).catch(err => {
