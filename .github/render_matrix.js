@@ -31,7 +31,6 @@ const renderMatrix = async (name) => {
     const templates = {};
 
     for (const template of files.filter(x => x.endsWith('.yaml'))) {
-        if(!template.includes('alpine-3.12-docker.yaml')) continue;
         templates[`./config/packer/${template}`] = yaml.safeLoad(await readFile(join(path, template)));
     }
     if (process.argv.includes('--github')) {
