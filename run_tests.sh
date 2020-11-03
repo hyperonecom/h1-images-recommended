@@ -101,7 +101,7 @@ function cleanup () {
 function delay () {
   set +x;
 
-  for i in {1..$1}; do
+  seq 1 $1 | while read i; do
     echo "Delay $i / $1 seconds";
     sleep 1; 
   done;
