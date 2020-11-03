@@ -160,7 +160,7 @@ const main = async () => {
         imageConfig.template_file = imageConfig.template_file || `templates/qcow/${qcow(imageConfig)}`;
         let imageId;
 
-        await core.group('Build image', (async () => {
+        await core.group('Build image', async () => {
             if (program.image) {
                 imageId = program.image;
                 console.log(`Choose image: ${imageId}`);
@@ -168,9 +168,9 @@ const main = async () => {
             }
             imageId = await mode_runtime.build(imageConfig, platformConfig, scope);
             console.log(`Builded image: ${imageId}`);
-        })());
+        });
 
-        await core.group(`Test image ${imageId}`, (async () => {
+        await core.group(`Test image ${imageId}`, async () => {
             if (program.skipTest) {
                 console.log('Skip testing image');
                 return;
@@ -184,9 +184,9 @@ const main = async () => {
                 }
                 throw err;
             }
-        })());
+        });
 
-        await core.group(`Publish image ${imageId}`, (async () => {
+        await core.group(`Publish image ${imageId}`, async () => {
             if (!program.publish) {
                 console.log(`Skip publishing image: ${imageId}`);
                 return;
@@ -198,17 +198,17 @@ const main = async () => {
                 }
             }
             await publishImage(imageId, imageConfig.image_tenant_access || '*');
-        })());
+        });
 
     } finally {
-        await core.group('Cleanup', (async () => {
+        await core.group('Cleanup', async () => {
             if (program.cleanup) {
                 await cleanupImage(); // clean up all images
                 await cleanupVm(); // delete VM first to make disk and ip free
                 await cleanupDisk(); // delete detached disks
                 await cleanupIp(); // delete detached IP address
             }
-        })());
+        });
     }
 };
 
