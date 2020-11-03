@@ -98,22 +98,30 @@ function cleanup () {
   ${RBX_CLI} vm delete --yes --vm "$VM_ID"
   ${RBX_CLI} disk delete --yes  --disk "$VM_DISK_ID"
 }
+function delay () {
+  set +x;
+
+  for i in {1..$1}; do
+    echo "Delay $i / $1 seconds";
+    sleep 1; 
+  done;
+  set -x;
+
+}
 
 trap cleanup EXIT
 
 RBX_CLI="$RBX_CLI" VM_ID="$VM_ID" IMAGE_ID="$IMAGE" USER="$USER" IP="$EXTERNAL_IP" HOSTNAME="$VM_NAME" bats "./tests/common.bats"
 
 if [ "$os" == "packer" ]; then
-	set +x;
-	for i in {1..300}; do echo '.'; sleep 1; done; echo "";
-	set -x;
+  delay 300;
 	${RBX_CLI} vm serialport log --vm "$VM_ID" || echo 'Serialport not available';
 	ping -c 3 "$VM_IP";
 	RBX_CLI="$RBX_CLI" USER="$USER" IP="$EXTERNAL_IP" HOSTNAME="$VM_NAME" bats "./tests/${os}.bats"
 fi
 
 if [ "$os" == "windows" ]; then
-	for i in {1..120}; do echo -n '.'; sleep 1; done; echo "";
+  delay 120;
 	${RBX_CLI} vm serialport log --vm "$VM_ID";
 	${RBX_CLI} ip associate --ip $EXTERNAL_IP --private-ip $INTERNAL_IP;
 	#changePassword
