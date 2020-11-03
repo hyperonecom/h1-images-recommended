@@ -18,4 +18,6 @@ image_recommended_vm_type: m2.large
 base_image: 5a3cdc85d919342e40231bf6
 test_set: 'windows'
 mode: 'windows'
+scope:
+  - h1
 license: true
