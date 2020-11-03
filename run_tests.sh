@@ -105,7 +105,7 @@ RBX_CLI="$RBX_CLI" VM_ID="$VM_ID" IMAGE_ID="$IMAGE" USER="$USER" IP="$EXTERNAL_I
 
 if [ "$os" == "packer" ]; then
 	set +x;
-	for i in {1..420}; do echo -n '.'; sleep 1; done; echo "";
+	for i in {1..300}; do echo '.'; sleep 1; done; echo "";
 	set -x;
 	${RBX_CLI} vm serialport log --vm "$VM_ID" || echo 'Serialport not available';
 	ping -c 3 "$VM_IP";
