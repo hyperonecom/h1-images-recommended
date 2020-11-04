@@ -12,13 +12,9 @@ echo 'omit_drivers += "floppy"' > /etc/dracut.conf.d/nofloppy.conf
 dnf -y install grub2-efi-x64 shim-x64
 sed -i 's/^GRUB_CMDLINE_LINUX=.*$/GRUB_CMDLINE_LINUX="elevator=noop consoleblank=0 console=tty0 console=ttyS0,115200n8"/' /etc/default/grub
 sed -i 's/^GRUB_CMDLINE_LINUX_DEFAULT=.*$/GRUB_CMDLINE_LINUX_DEFAULT="quiet"/' /etc/default/grub
-# regenerate grub2 BLS configuration file
-# see https://access.redhat.com/solutions/3766391 for details
+# update grub2 BLS configuration file
 [ -d "/boot/loader/entries/" ] && (
-    echo 'GRUB_DISABLE_OS_PROBER=true' >> /etc/default/grub
-    grep '' /boot/loader/entries/ -R
-    # rm /boot/loader/entries/*;
-    sed -i 's/root=(.+?) /root=UUID=363c4427-544d-4944-bb8c-5d711d10112e /gp' /boot/loader/entries/*
+    sed -r -i "s/root=.+? /root=UUID=$ROOT_UUID /" /boot/loader/entries/*
 );
 grub2-mkconfig -o /boot/grub2/grub.cfg
 grub2-set-default 0
