@@ -57,6 +57,7 @@ jobs:
           INFLUXDB_USER: '${{secrets.INFLUXDB_USER}}'
           # REDHAT_SECRET: '${{secrets.H1_TOKEN}}'
   windows:
+    needs: config
     runs-on: self-hosted
     strategy:
       fail-fast: false
