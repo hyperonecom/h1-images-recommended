@@ -31,7 +31,7 @@ const renderMatrix = async (name) => {
     const templates = {};
 
     for (const template of files.filter(x => x.endsWith('.yaml'))) {
-        templates[`./config/packer/${template}`] = yaml.safeLoad(await readFile(join(path, template)));
+        templates[`./config/${name}/${template}`] = yaml.safeLoad(await readFile(join(path, template)));
     }
     if (process.argv.includes('--github')) {
         console.log(`::set-output name=matrix-${name}::${JSON.stringify(render(templates))}`);
