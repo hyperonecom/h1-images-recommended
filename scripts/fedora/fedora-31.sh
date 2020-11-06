@@ -14,7 +14,7 @@ sed -i 's/^GRUB_CMDLINE_LINUX=.*$/GRUB_CMDLINE_LINUX="elevator=noop consoleblank
 sed -i 's/^GRUB_CMDLINE_LINUX_DEFAULT=.*$/GRUB_CMDLINE_LINUX_DEFAULT="quiet"/' /etc/default/grub
 # update grub2 BLS configuration file
 [ -d "/boot/loader/entries/" ] && (
-    sed -r -i "s/root=.+? /root=UUID=$ROOT_UUID /" /boot/loader/entries/*
+    sed -r -i "s/root=.+? /root=UUID=$ROOT_UUID elevator=noop consoleblank=0 console=tty0 console=ttyS0,115200n8 /" /boot/loader/entries/*
 );
 grub2-mkconfig -o /boot/grub2/grub.cfg
 grub2-set-default 0
