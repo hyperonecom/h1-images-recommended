@@ -5,7 +5,7 @@ DEVICE_DISK=$(echo $DEVICE | sed 's/[0-9]//g' )
 
 # Access RHUI
 . /etc/os-release
-curl "http://travis:${REDHAT_SECRET}@5e704ae4d9fe4b5b0d13a090.website.pl-waw-1.hyperone.cloud/${RHUI_CLIENT}" -o "/tmp/rhui-client.rpm"
+curl "http://${REDHAT_SECRET}@5e704ae4d9fe4b5b0d13a090.website.pl-waw-1.hyperone.cloud/${RHUI_CLIENT}" -o "/tmp/rhui-client.rpm"
 rpm -i "/tmp/rhui-client.rpm";
 
 # Install GRUB
