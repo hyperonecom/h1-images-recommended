@@ -51,6 +51,22 @@ VM_NAME=$(echo "image-${IMAGE}-test" | tr -cd 'a-zA-Z0-9\-_ ' )
 IMAGE_NAME=$(${RBX_CLI} image show --image ${IMAGE} -o tsv --query '[].{name:name}' | sed -e 's/[^a-zA-Z0-9\-]/_/g' -e 's/__*/_/g' -e 's/_$//g' )
 IMAGE_ID=$(${RBX_CLI} image show --image ${IMAGE} -o tsv --query '[].{id:id}')
 
+function cleanup () {
+  ${RBX_CLI} vm delete --yes --vm "$VM_ID"
+  ${RBX_CLI} disk delete --yes  --disk "$VM_DISK_ID"
+}
+
+function delay () {
+  set +x;
+
+  seq 1 $1 | while read i; do
+    echo "Delay $i / $1 seconds";
+    sleep 1; 
+  done;
+  set -x;
+
+}
+
 set +x
 PASSWORD=$(openssl rand -hex 15)
 set -x
@@ -94,19 +110,22 @@ echo "VM created: ${VM_ID}"
 VM_IP=$(${RBX_CLI} vm nic list --vm $VM_ID --query "[].ip[*].address" -o tsv|head -1)
 VM_DISK_ID=$(${RBX_CLI} vm disk list --vm $VM_ID --output tsv --query "[].{disk:disk._id}")
 
+trap cleanup EXIT
+
+[ -f "/.dockerenv"] && docker run --network host --privileged debian ip -s -s neigh flush all || echo "Failed to flush ARP cache of host";
+ip -s -s neigh flush all || echo 'Failed to flush local ARP table'
+
 RBX_CLI="$RBX_CLI" VM_ID="$VM_ID" IMAGE_ID="$IMAGE" USER="$USER" IP="$EXTERNAL_IP" HOSTNAME="$VM_NAME" bats "./tests/common.bats"
 
 if [ "$os" == "packer" ]; then
-	set +x;
-	for i in {1..420}; do echo -n '.'; sleep 1; done; echo "";
-	set -x;
+  delay 300;
 	${RBX_CLI} vm serialport log --vm "$VM_ID" || echo 'Serialport not available';
 	ping -c 3 "$VM_IP";
 	RBX_CLI="$RBX_CLI" USER="$USER" IP="$EXTERNAL_IP" HOSTNAME="$VM_NAME" bats "./tests/${os}.bats"
 fi
 
 if [ "$os" == "windows" ]; then
-	for i in {1..120}; do echo -n '.'; sleep 1; done; echo "";
+  delay 120;
 	${RBX_CLI} vm serialport log --vm "$VM_ID";
 	${RBX_CLI} ip associate --ip $EXTERNAL_IP --private-ip $INTERNAL_IP;
 	#changePassword
@@ -118,6 +137,3 @@ if [ "$os" == "windows" ]; then
   echo "Pass: $new_pass";
   pwsh "tests/tests.ps1" -IP "$EXTERNAL_IP" -Hostname "$VM_NAME" -User "$USER" -Pass "\"$new_pass\"";
 fi
-
-${RBX_CLI} vm delete --yes --vm "$VM_ID"
-${RBX_CLI} disk delete --yes  --disk "$VM_DISK_ID"

@@ -2,15 +2,20 @@
 set -eux
 DEVICE=$(df -P . | awk 'END{print $1}')
 DEVICE_DISK=$(echo $DEVICE | sed 's/[0-9]//g' )
-dnf -y update
+ROOT_UUID=$(blkid -s UUID -o value $DEVICE)
+# dnf -y update
 dnf -y install vim curl redhat-lsb-core nano
 dnf clean all
 echo 'blacklist floppy' > /etc/modprobe.d/blacklist-floppy.conf
-echo 'omit_drivers+="floppy"' > /etc/dracut.conf.d/nofloppy.conf
+echo 'omit_drivers += "floppy"' > /etc/dracut.conf.d/nofloppy.conf
 # Install Grub
 dnf -y install grub2-efi-x64 shim-x64
 sed -i 's/^GRUB_CMDLINE_LINUX=.*$/GRUB_CMDLINE_LINUX="elevator=noop consoleblank=0 console=tty0 console=ttyS0,115200n8"/' /etc/default/grub
 sed -i 's/^GRUB_CMDLINE_LINUX_DEFAULT=.*$/GRUB_CMDLINE_LINUX_DEFAULT="quiet"/' /etc/default/grub
+# update grub2 BLS configuration file
+[ -d "/boot/loader/entries/" ] && (
+    sed -r -i "s/root=.+? /root=UUID=$ROOT_UUID elevator=noop consoleblank=0 console=tty0 console=ttyS0,115200n8 /" /boot/loader/entries/*
+);
 grub2-mkconfig -o /boot/grub2/grub.cfg
 grub2-set-default 0
 grub2-install "${DEVICE_DISK}"; # legacy BIOS install

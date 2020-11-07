@@ -8,6 +8,7 @@ const { qcow } = require('./lib/naming');
 const {
     imageApi, vmApi, diskApi, ipApi,
 } = require('./lib/api');
+const core = require('@actions/core')
 
 const scope = (process.env.SCOPE || 'h1').toLowerCase();
 
@@ -158,15 +159,22 @@ const main = async () => {
         const mode_runtime = require(`./lib/build_modes/${mode}.js`);
         imageConfig.template_file = imageConfig.template_file || `templates/qcow/${qcow(imageConfig)}`;
         let imageId;
-        if (!program.image) {
+
+        await core.group('Build image', async () => {
+            if (program.image) {
+                imageId = program.image;
+                console.log(`Choose image: ${imageId}`);
+                return;
+            }
             imageId = await mode_runtime.build(imageConfig, platformConfig, scope);
             console.log(`Builded image: ${imageId}`);
-        } else {
-            imageId = program.image;
-            console.log(`Choose image: ${imageId}`);
-        }
-        if (!program.skipTest) {
-            console.log(`Testing image: ${imageId}`);
+        });
+
+        await core.group(`Test image ${imageId}`, async () => {
+            if (program.skipTest) {
+                console.log('Skip testing image');
+                return;
+            }
             try {
                 await mode_runtime.test(imageConfig, platformConfig, imageId, scope);
             } catch (err) {
@@ -176,30 +184,31 @@ const main = async () => {
                 }
                 throw err;
             }
-            console.log(`Tested image: ${imageId}`);
-        } else {
-            console.log(`Skip testing image: ${imageId}`);
-        }
-        if (program.publish) {
+        });
+
+        await core.group(`Publish image ${imageId}`, async () => {
+            if (!program.publish) {
+                console.log(`Skip publishing image: ${imageId}`);
+                return;
+            }
             if (imageConfig.license) {
                 const image = await fetchImage(imageId);
                 if (!image.license || image.license.length == 0) {
                     throw new Error('Image not ready to publish - no licenses required');
                 }
             }
-            console.log(`Publishing image: ${imageId}`);
             await publishImage(imageId, imageConfig.image_tenant_access || '*');
-            console.log(`Published image: ${imageId}`);
-        } else {
-            console.log(`Skip publishing image: ${imageId}`);
-        }
+        });
+
     } finally {
-        if (program.cleanup) {
-            await cleanupImage(); // clean up all images
-            await cleanupVm(); // delete VM first to make disk and ip free
-            await cleanupDisk(); // delete detached disks
-            await cleanupIp(); // delete detached IP address
-        }
+        await core.group('Cleanup', async () => {
+            if (program.cleanup) {
+                await cleanupImage(); // clean up all images
+                await cleanupVm(); // delete VM first to make disk and ip free
+                await cleanupDisk(); // delete detached disks
+                await cleanupIp(); // delete detached IP address
+            }
+        });
     }
 };
 
