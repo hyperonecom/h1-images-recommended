@@ -30,7 +30,7 @@ const renderMatrix = async (name) => {
     const files = await readDir(path);
     const templates = {};
 
-    for (const template of files.filter(x => x.endsWith('.yaml'))) {
+    for (const template of files.reverse().filter(x => x.endsWith('.yaml'))) {
         templates[`./config/${name}/${template}`] = yaml.safeLoad(await readFile(join(path, template)));
     }
     if (process.argv.includes('--github')) {
