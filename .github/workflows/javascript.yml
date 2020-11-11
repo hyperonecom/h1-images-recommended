@@ -58,6 +58,7 @@ jobs:
           REDHAT_SECRET: '${{secrets.REDHAT_SECRET}}'
   windows:
     needs: config
+    timeout-minutes: 720
     runs-on: self-hosted
     strategy:
       fail-fast: false
