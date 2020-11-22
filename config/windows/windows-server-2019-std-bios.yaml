@@ -21,3 +21,4 @@ mode: 'windows'
 scope:
   - h1
 license: true
+priority: 100
