@@ -113,6 +113,14 @@ skip
   [ "$?" -eq 0 ]
 }
 
+@test "available /dev/ptp0" {
+  if [ "$CONFIG_DISTRO" == "FREEBSD" ]; then
+    skip "test does not apply to FreeBSD"
+  fi
+  ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no ${USER}@${IP} ls /dev/ptp0;
+  [ "$?" -eq 0 ]
+}
+
 @test "check default target" {
   if [ "$CONFIG_DISTRO" == "FREEBSD" ]; then
     skip "test does not apply to FreeBSD"
