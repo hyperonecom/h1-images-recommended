@@ -9,7 +9,7 @@ const yaml = require('js-yaml');
 
 const GITHUB_OUTPUT = process.argv.includes('--github');
 const DIFF_MODE = process.argv.includes('--diff');
-const FAMILIES = ['alpine', 'centos', 'debian', 'rhel', 'ubuntu', 'freebsd', 'windows'];
+const FAMILIES = ['alpine', 'centos', 'debian', 'rhel', 'ubuntu', 'fedora', 'freebsd', 'windows'];
 
 const hasChanged = async (paths) => {
     try {
