@@ -8,7 +8,7 @@
         "root_fs": "ext4",
         "root_fs_opts": "-E lazy_itable_init=1",
         "scripts": "./scripts/resolv.sh,./scripts/fstab.sh,./scripts/ubuntu/ubuntu-1710.sh,./scripts/ubuntu/ubuntu-1804-desktop.sh,./scripts/ubuntu/cli.sh,./scripts/check_df.sh",
-        "disk_size": "5",
+        "disk_size": "15",
         "image_name": "Ubuntu 18.04 Desktop (bionic beaver)",
         "ssh_name": "my-ssh",
         "image_description": "{\"arch\":\"x64\",\"distro\":\"ubuntu\",\"release\":\"18.04\",\"edition\":\"desktop\",\"codename\":\"bionic beaver\",\"recommended\":{\"disk\":{\"size\":20}}}",
