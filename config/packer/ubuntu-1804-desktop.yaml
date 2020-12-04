@@ -9,6 +9,7 @@ download_url: >-
   http://cloud-images.ubuntu.com/daily/server/bionic/current/bionic-server-cloudimg-amd64.img
 # Recommended Minimum System Requirements: 25 GB of hard-drive space
 disk_size: '15'
+test_disk_size: '15'
 qcow_part: /dev/sda1
 cloud_init_install: false
 vm_gen1_test_service:
