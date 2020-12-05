@@ -18,6 +18,7 @@ custom_scripts:
   - ./scripts/ubuntu/ubuntu-1710.sh
   - ./scripts/ubuntu/ubuntu-1904-desktop.sh
   - ./scripts/ubuntu/cli.sh
+  - ./scripts/apt_clean.sh
   - ./scripts/check_df.sh
 uefi_support: true
 format: qcow
