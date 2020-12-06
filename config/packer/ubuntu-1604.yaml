@@ -15,6 +15,7 @@ custom_scripts:
   - ./scripts/fstab.sh
   - ./scripts/ubuntu/ubuntu-1604.sh
   - ./scripts/ubuntu/cli.sh
+  - ./scripts/apt_clean.sh
   - ./scripts/check_df.sh
 uefi_support: true
 format: qcow
