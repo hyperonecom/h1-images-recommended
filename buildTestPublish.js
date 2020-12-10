@@ -3,31 +3,13 @@ const yaml = require('js-yaml');
 const fs = require('fs');
 const process = require('process');
 const program = require('commander');
-const { ensureState, fetchImage } = require('./lib/api');
 const { qcow } = require('./lib/naming');
 const {
-    imageApi, vmApi, diskApi, ipApi,
+    imageApi, safeDeleteFail, fetchImage,
 } = require('./lib/api');
-const core = require('@actions/core')
+const core = require('@actions/core');
 
 const scope = (process.env.SCOPE || 'h1').toLowerCase();
-
-const olderThan = (resource, ageInMinutes) => new Date(resource.createdOn) < new Date() - ageInMinutes * 60 * 1000;
-
-const ensureTag = (resource, tag) => tag in resource.tag;
-
-const delay = (time) => new Promise(resolve =>
-    setTimeout(resolve, time || Math.random() * 5 * 1000)
-);
-
-const safeDeleteFail = async err => {
-    // ignore if already deleted
-    if (err.status == 404) return;
-    // ignore if already processing
-    if (err.response && err.response.text && err.response.text.includes('rocessing')) return;
-    await delay();
-    throw err;
-};
 
 const config = {
     rbx: {
@@ -63,81 +45,6 @@ const publishImage = async (imageId, project) => {
     await imageApi.imagePatchTag(imageId, { published: 'true' });
 };
 
-const cleanupVm = async () => {
-    console.log('Fetching available VMs');
-    const vms = await vmApi.vmList();
-    console.log(`Found ${vms.length} VMs`);
-    const vm = vms.find(resource =>
-        !ensureTag(resource, 'protected') && // ignore protected
-        olderThan(resource, 40) && // ignore fresh (40 min grace period)
-        (!resource.name.includes('windows') || olderThan(resource, 6 * 60)) && // extend fresh grace period for windows
-        ensureState(resource, ['Running']) // manage only 'Running' eg. ignore 'Unknown'
-    );
-    if (vm) {
-        console.log(`Deleting VM ${vm._id}`);
-        await vmApi.vmActionTurnoff(vm._id).catch(safeDeleteFail);
-        await vmApi.vmDelete(vm._id, {}).catch(safeDeleteFail);
-        await cleanupVm();
-    }
-};
-
-const cleanupImage = async () => {
-    console.log('Fetching available images');
-    const images = await imageApi.imageList();
-    console.log(`Found ${images.length} images`);
-    // identify for each image name latest image
-    const latest_image = {};
-    images.sort((a, b) => new Date(b.createdOn) - new Date(a.createdOn));
-    for (const image of images) {
-        // find latest published image
-        if (!latest_image[image.name] && image.accessRights.includes('*')) {
-            latest_image[image.name] = image;
-        }
-    }
-
-    const image = images.find(resource =>
-        !ensureTag(resource, 'protected') && // ignore protected
-        olderThan(resource, 40) && // ignore fresh
-        ensureState(resource, ['Online']) && // manage only 'Online'
-        latest_image[resource.name] && latest_image[resource.name]._id !== resource._id // keep latest
-    );
-    if (image) {
-        console.log(`Deleting image '${image.name}' (ID: ${image._id}).`);
-        await imageApi.imageDelete(image._id).catch(safeDeleteFail);
-        await cleanupImage();
-    }
-};
-
-const cleanupDisk = async () => {
-    console.log('Fetching available disks.');
-    const disks = await diskApi.diskList();
-    console.log(`Found ${disks.length} disks`);
-    const disk = disks.find(resource =>
-        olderThan(resource, 30) && // ignore fresh to avoid race
-        ensureState(resource, ['Detached']) // manage only 'Detached' eg. ignore 'Unknown' and 'Attached'
-    );
-    if (disk) {
-        console.log(`Deleting disk ${disk._id}`);
-        await diskApi.diskDelete(disk._id).catch(safeDeleteFail);
-        await cleanupDisk();
-    }
-};
-
-const cleanupIp = async () => {
-    console.log('Fetching available IP.');
-    const ips = await ipApi.ipList();
-    console.log(`Found ${ips.length} IPs`);
-    const ip = ips.find(resource =>
-        olderThan(resource, 5) && // ignore fresh to avoid race
-        ensureState(resource, ['Unallocated']) // manage only 'Detached' eg. ignore 'Unknown' and 'Attached'
-    );
-    if (ip) {
-        console.log(`Deleting IP ${ip._id}`);
-        await ipApi.ipDelete(ip._id).catch(safeDeleteFail);
-        await cleanupIp();
-    }
-};
-
 const main = async () => {
     program
         .version('0.1.0')
@@ -148,68 +55,54 @@ const main = async () => {
         .option('--cleanup', 'Perform cleanup of old resources')
         .option('--mode <mode>', 'Mode of build images', /^(packer|windows)$/i)
         .parse(process.argv);
-    if (!program.config) {
-        program.help();
-    }
-    try {
-        const input_file = program.config;
-        const content = await fs.promises.readFile(input_file);
-        const imageConfig = yaml.safeLoad(content);
-        const mode = program.mode || imageConfig.mode || 'packer';
-        const mode_runtime = require(`./lib/build_modes/${mode}.js`);
-        imageConfig.template_file = imageConfig.template_file || `templates/qcow/${qcow(imageConfig)}`;
-        let imageId;
 
-        await core.group('Build image', async () => {
-            if (program.image) {
-                imageId = program.image;
-                console.log(`Choose image: ${imageId}`);
-                return;
-            }
-            imageId = await mode_runtime.build(imageConfig, platformConfig, scope);
-            console.log(`Builded image: ${imageId}`);
-        });
+    const input_file = program.config;
+    const content = await fs.promises.readFile(input_file);
+    const imageConfig = yaml.safeLoad(content);
+    const mode = program.mode || imageConfig.mode || 'packer';
+    const mode_runtime = require(`./lib/build_modes/${mode}.js`);
+    imageConfig.template_file = imageConfig.template_file || `templates/qcow/${qcow(imageConfig)}`;
+    let imageId;
 
-        await core.group(`Test image ${imageId}`, async () => {
-            if (program.skipTest) {
-                console.log('Skip testing image');
-                return;
-            }
-            try {
-                await mode_runtime.test(imageConfig, platformConfig, imageId, scope);
-            } catch (err) {
-                if (program.cleanup) {
-                    console.log(`Delete invalid image: ${imageId}`);
-                    await imageApi.imageDelete(imageId).catch(safeDeleteFail);
-                }
-                throw err;
-            }
-        });
+    await core.group('Build image', async () => {
+        if (program.image) {
+            imageId = program.image;
+            console.log(`Choose image: ${imageId}`);
+            return;
+        }
+        imageId = await mode_runtime.build(imageConfig, platformConfig, scope);
+        console.log(`Builded image: ${imageId}`);
+    });
 
-        await core.group(`Publish image ${imageId}`, async () => {
-            if (!program.publish) {
-                console.log(`Skip publishing image: ${imageId}`);
-                return;
-            }
-            if (imageConfig.license) {
-                const image = await fetchImage(imageId);
-                if (!image.license || image.license.length == 0) {
-                    throw new Error('Image not ready to publish - no licenses required');
-                }
-            }
-            await publishImage(imageId, imageConfig.image_tenant_access || '*');
-        });
-
-    } finally {
-        await core.group('Cleanup', async () => {
+    await core.group(`Test image ${imageId}`, async () => {
+        if (program.skipTest) {
+            console.log('Skip testing image');
+            return;
+        }
+        try {
+            await mode_runtime.test(imageConfig, platformConfig, imageId, scope);
+        } catch (err) {
             if (program.cleanup) {
-                await cleanupImage(); // clean up all images
-                await cleanupVm(); // delete VM first to make disk and ip free
-                await cleanupDisk(); // delete detached disks
-                await cleanupIp(); // delete detached IP address
+                console.log(`Delete invalid image: ${imageId}`);
+                await imageApi.imageDelete(imageId).catch(safeDeleteFail);
             }
-        });
-    }
+            throw err;
+        }
+    });
+
+    await core.group(`Publish image ${imageId}`, async () => {
+        if (!program.publish) {
+            console.log(`Skip publishing image: ${imageId}`);
+            return;
+        }
+        if (imageConfig.license) {
+            const image = await fetchImage(imageId);
+            if (!image.license || image.license.length == 0) {
+                throw new Error('Image not ready to publish - no licenses required');
+            }
+        }
+        await publishImage(imageId, imageConfig.image_tenant_access || '*');
+    });
 };
 
 main().then(console.log).catch(err => {

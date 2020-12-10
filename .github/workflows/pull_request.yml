@@ -59,6 +59,27 @@ jobs:
           INFLUXDB_PASSWORD: '${{secrets.INFLUXDB_PASSWORD}}' 
           INFLUXDB_USER: '${{secrets.INFLUXDB_USER}}'
           REDHAT_SECRET: '${{secrets.REDHAT_SECRET}}'
+  cleanup:
+    runs-on: ubuntu-20.04
+    needs: packer
+    strategy:
+      matrix:
+        scope:
+          - h1
+          - rbx
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Node 12.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: "12.x"
+      - name: Install NodeJS dependencies
+        run: npm install
+      - run: node ./cleanup.js
+        env:
+          SCOPE: '${{matrix.scope}}'
+          H1_TOKEN: '${{secrets.H1_TOKEN}}'
+          RBX_TOKEN: '${{secrets.RBX_TOKEN}}'
   windows:
     needs: config
     timeout-minutes: 720

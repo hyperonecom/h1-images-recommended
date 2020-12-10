@@ -4,7 +4,8 @@
   "description": "A set of Packer templates for building recommended images for the HyperOne platform and compatible with it.",
   "main": "buildTestPublish.js",
   "scripts": {
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "fmt": "eslint . --fix"
   },
   "author": "",
   "license": "MIT",
