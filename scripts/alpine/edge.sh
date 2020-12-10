@@ -54,7 +54,7 @@ apk add --repository "${MIRROR}/edge/testing" h1-cli
 # Time synchronization
 apk add chrony
 echo 'refclock PHC /dev/ptp0 poll 3 dpoll -2 offset 0' >> /etc/chrony/chrony.conf
-sudo rc-update -q add chronyd default
+rc-update -q add chronyd default
 # UEFI installation
 sed 's@default_kernel_opts=.*@default_kernel_opts="elevator=noop consoleblank=0 console=tty0 console=ttyS0,115200n8"@' -i /etc/update-extlinux.conf
 sed "s@modules=.*@modules=\"sd-mod,usb-storage,ext4\"@" -i /etc/update-extlinux.conf
