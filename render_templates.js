@@ -70,6 +70,7 @@ const render_templates = config => {
             repository: 'https://packages.hyperone.cloud',
             cli_package: 'h1-cli',
             scope_name: 'HyperOne',
+            state_timeout: '8m',
         },
         builders: [
             {
@@ -86,6 +87,7 @@ const render_templates = config => {
                 image_name: '{{user `image_name`}}',
                 image_description: '{{user `image_description`}}',
                 public_netadp_service: '{{user `public_netadp_service`}}',
+                state_timeout: '{{user `state_timeout`}}',
                 pre_mount_commands: [
                     "[ ! -e '/etc/rpm/macros.dist' ] || sudo yum install -y \"https://dl.fedoraproject.org/pub/epel/epel-release-latest-$(awk '/rhel/ {print $2}' /etc/rpm/macros.dist).noarch.rpm\"",
                     'yum install -y --setopt=skip_missing_names_on_install=False mtools libguestfs-tools dosfstools libguestfs-xfs wget pv',

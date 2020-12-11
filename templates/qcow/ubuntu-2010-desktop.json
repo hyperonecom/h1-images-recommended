@@ -8,7 +8,10 @@
         "root_fs": "ext4",
         "root_fs_opts": "-E lazy_itable_init=1",
         "scripts": "./scripts/resolv.sh,./scripts/fstab.sh,./scripts/ubuntu/ubuntu-1710.sh,./scripts/ubuntu/ubuntu-1904-desktop.sh,./scripts/apt_clean.sh,./scripts/check_df.sh",
-        "disk_size": "15",
+        "disk_size": {
+            "h1": "15",
+            "rbx": "20"
+        },
         "image_name": "Ubuntu 20.10 Desktop (groovy gorilla)",
         "ssh_name": "my-ssh",
         "image_description": "{\"arch\":\"x64\",\"distro\":\"ubuntu\",\"release\":\"20.10\",\"edition\":\"desktop\",\"codename\":\"groovy gorilla\",\"recommended\":{\"disk\":{\"size\":20}}}",
@@ -16,7 +19,8 @@
         "vm_type": "a1.small",
         "repository": "https://packages.hyperone.cloud",
         "cli_package": "h1-cli",
-        "scope_name": "HyperOne"
+        "scope_name": "HyperOne",
+        "state_timeout": "8m"
     },
     "builders": [
         {
@@ -33,6 +37,7 @@
             "image_name": "{{user `image_name`}}",
             "image_description": "{{user `image_description`}}",
             "public_netadp_service": "{{user `public_netadp_service`}}",
+            "state_timeout": "{{user `state_timeout`}}",
             "pre_mount_commands": [
                 "[ ! -e '/etc/rpm/macros.dist' ] || sudo yum install -y \"https://dl.fedoraproject.org/pub/epel/epel-release-latest-$(awk '/rhel/ {print $2}' /etc/rpm/macros.dist).noarch.rpm\"",
                 "yum install -y --setopt=skip_missing_names_on_install=False mtools libguestfs-tools dosfstools libguestfs-xfs wget pv",
