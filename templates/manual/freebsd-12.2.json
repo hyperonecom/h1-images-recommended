@@ -8,7 +8,8 @@
     "vm_type": "a1.small",
     "ssh_name": "my-ssh",
     "mirror": "http://ftp.pl.freebsd.org/pub/FreeBSD/releases/amd64/12.2-RELEASE",
-    "image_description": "{\"arch\":\"x64\",\"distro\":\"freebsd\",\"release\":\"12.2\",\"edition\":\"server\",\"codename\":\"stable\",\"recommended\":{\"disk\":{\"size\":5}}}"
+    "image_description": "{\"arch\":\"x64\",\"distro\":\"freebsd\",\"release\":\"12.2\",\"edition\":\"server\",\"codename\":\"stable\",\"recommended\":{\"disk\":{\"size\":5}}}",
+    "state_timeout": "8m"
   },
   "builders": [
     {
@@ -26,6 +27,7 @@
       "image_name": "{{user `image_name`}}",
       "image_description": "{{user `image_description`}}",
       "public_netadp_service": "{{user `public_netadp_service`}}",
+      "state_timeout": "{{user `state_timeout`}}",
       "pre_mount_commands": [
         "gpart show",
         "gpart create -s gpt da1",
