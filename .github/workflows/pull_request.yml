@@ -34,6 +34,8 @@ jobs:
       matrix: ${{fromJson(needs.config.outputs.matrix-packer)}}
     steps:
       - uses: actions/checkout@v2
+      - name: apply workaround for IP conflict bug
+        run: sleep $(shuf -i 60-120 -n 1)
       - name: Save private SSH key
         run: |
           echo "$PRIVATE_KEY" | openssl base64 -d > ./resources/secrets/id_rsa;
@@ -45,6 +47,8 @@ jobs:
       - name: Build Docker image
         run: docker build -t recommended-images:${{github.sha}} .
       - name: Build Platform image
+        id: first
+        continue-on-error: true
         run: |
           docker run --rm -e H1_TOKEN -e RBX_TOKEN -e SCOPE -e INFLUXDB_HOST -e INFLUXDB_PASSWORD -e INFLUXDB_USER -e REDHAT_SECRET \
           recommended-images:${{github.sha}} \
@@ -57,6 +61,20 @@ jobs:
           INFLUXDB_PASSWORD: '${{secrets.INFLUXDB_PASSWORD}}' 
           INFLUXDB_USER: '${{secrets.INFLUXDB_USER}}'
           REDHAT_SECRET: '${{secrets.REDHAT_SECRET}}'
+      - name: Retry build Platform image
+        run: |
+          docker run --rm -e H1_TOKEN -e RBX_TOKEN -e SCOPE -e INFLUXDB_HOST -e INFLUXDB_PASSWORD -e INFLUXDB_USER -e REDHAT_SECRET \
+          recommended-images:${{github.sha}} \
+          nodejs buildTestPublish.js --config "${{ matrix.config }}" --mode "packer" --cleanup
+        env:
+          SCOPE: '${{matrix.scope}}'
+          H1_TOKEN: '${{secrets.H1_TOKEN}}'
+          RBX_TOKEN: '${{secrets.RBX_TOKEN}}'
+          INFLUXDB_HOST: '${{secrets.INFLUXDB_HOST}}'
+          INFLUXDB_PASSWORD: '${{secrets.INFLUXDB_PASSWORD}}' 
+          INFLUXDB_USER: '${{secrets.INFLUXDB_USER}}'
+          REDHAT_SECRET: '${{secrets.REDHAT_SECRET}}'
+        if: ${{ steps.first.outcome == 'failure' }}
   windows:
     needs: config
     timeout-minutes: 720
@@ -67,6 +85,8 @@ jobs:
       matrix: ${{fromJson(needs.config.outputs.matrix-windows)}}
     steps:
       - uses: actions/checkout@v2
+      - name: apply workaround for IP conflict bug
+        run: sleep $(shuf -i 60-120 -n 1)
       - name: Save private SSH key
         run: echo $PRIVATE_KEY > ./resources/secrets/id_rsa
         env:

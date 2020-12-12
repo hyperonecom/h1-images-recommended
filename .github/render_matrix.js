@@ -90,7 +90,8 @@ const main = async () => {
                 `./config/*/${family}-*`,
                 `./templates/*/${family}-*`,
                 `./scripts/${family}/*`,
-                `./resources/**`,
+                './.github/**',
+                './resources/**',
             ]);
         }
         if (status) {
