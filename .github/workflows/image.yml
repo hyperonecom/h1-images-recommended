@@ -46,8 +46,6 @@ jobs:
       - uses: actions/checkout@v2
       - name: apply workaround for IP conflict bug
         run: sleep $(shuf -i 60-120 -n 1)
-      - name: "Setup InfluxDB client"
-        run: ./.github/influx_setup.sh
       - name: Save private SSH key
         run: |
           echo "$PRIVATE_KEY" | openssl base64 -d > ./resources/secrets/id_rsa;
@@ -72,12 +70,12 @@ jobs:
           nodejs buildTestPublish.js --config "$CONFIG" --mode "packer" --cleanup ${publish_arg}
         if: ${{ steps.first.outcome == 'failure' }}
       - name: "Report successfully build to InfluxDB"
-        run: ./.github/influx_send.sh
+        run: ./.github/influx.sh
         if: "${{ success() }}"
         env:
           INFLUXDB_VALUE: "1"
       - name: "Report failure build to InfluxDB"
-        run: ./.github/influx_send.sh
+        run: ./.github/influx.sh
         if: "${{ failure() }}"
         env:
           INFLUXDB_VALUE: "0"
