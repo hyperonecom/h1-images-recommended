@@ -92,6 +92,7 @@ const main = async () => {
                 `./scripts/${family}/*`,
                 './.github/**',
                 './resources/**',
+                `./tests/**`
             ]);
         }
         if (status) {
