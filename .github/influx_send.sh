@@ -4,22 +4,22 @@ set -e
 ts=$(date +"%s");
 
 if [[ -z "$SCOPE" ]]; then
-    echo "Missing variable for SCOPE"; 
+    echo "Missing variable for SCOPE";
     exit 1;
 fi;
 
 if [[ -z "$CONFIG" ]]; then
-    echo "Missing variable for CONFIG"; 
+    echo "Missing variable for CONFIG";
     exit 1;
 fi;
 
 if [[ -z "$INFLUXDB_VALUE" ]]; then
-    echo "Missing variable for INFLUXDB_VALUE"; 
+    echo "Missing variable for INFLUXDB_VALUE";
     exit 1;
 fi;
 
 if [[ -z "$INFLUXDB_VALUE" ]]; then
-    echo "Missing variable for INFLUXDB_VALUE"; 
+    echo "Missing variable for INFLUXDB_VALUE";
     exit 1;
 fi;
 
