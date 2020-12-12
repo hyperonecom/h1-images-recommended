@@ -9,6 +9,12 @@
 skip
 }
 
+@test "check sudo works" {
+  result=$(ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no ${USER}@${IP} "sudo id")
+  [ "$?" -eq 0 ]
+  [[ "$result" =~ "root" ]]
+}
+
 @test "check /etc/hosts" {
   result=$(ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no ${USER}@${IP} "sudo grep $HOSTNAME /etc/hosts |cut -f1 ")
   [ "$?" -eq 0 ]

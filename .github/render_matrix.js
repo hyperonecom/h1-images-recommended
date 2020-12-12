@@ -93,6 +93,7 @@ const main = async () => {
                 `./scripts/*.sh`,
                 './.github/**',
                 `./resources/**`,
+                `./tests/**`
             ]);
         }
         if (status) {
