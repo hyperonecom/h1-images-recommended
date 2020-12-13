@@ -23,6 +23,12 @@ if [[ -z "$INFLUXDB_VALUE" ]]; then
     exit 1;
 fi;
 
-tags=$(jq -nr --arg a "${GITHUB_REPOSITORY}" --arg b "${GITHUB_EVENT_NAME}" --arg c "${CONFIG}" --arg d "${SCOPE}" '[$a|@uri,$b|@uri,$c|@uri,$d|@uri] | join(",")')
-values=$(jq -nr --arg a "${GITHUB_SHA}" --arg b "${GITHUB_RUN_NUMBER}" --arg c "${INFLUXDB_VALUE}" '[$a|@uri,$b|@uri,$c|@uri] | join(",")')
-exec curl -XPOST "http://${INFLUXDB_USER}:${INFLUXDB_PASSWORD}@${INFLUXDB_HOST}/write?db=recommended_image&precision=s" --data-raw "build,${tags} ${values} ${ts}"
+function encode(){
+    jq -nr --arg a "${1}" '$a|@uri';
+}
+
+github_repository=$(encode "$GITHUB_REPOSITORY");
+config=$(encode "$CONFIG");
+scope=$(encode "$SCOPE");
+data="build,github_repository=${github_repository},github_event_name=${GITHUB_EVENT_NAME},config=$config,scope=$SCOPE github_sha=$GITHUB_SHA,github_run_number=$GITHUB_RUN_NUMBER,value=$INFLUXDB_VALUE ${ts}"
+exec curl -XPOST "http://${INFLUXDB_USER}:${INFLUXDB_PASSWORD}@${INFLUXDB_HOST}/write?db=recommended_image&precision=s" --data-raw "$data";
