@@ -30,5 +30,5 @@ function encode(){
 github_repository=$(encode "$GITHUB_REPOSITORY");
 config=$(encode "$CONFIG");
 scope=$(encode "$SCOPE");
-data="build,github_repository=${github_repository},github_event_name=${GITHUB_EVENT_NAME},config=$config,scope=$SCOPE github_sha=$GITHUB_SHA,github_run_number=$GITHUB_RUN_NUMBER,value=$INFLUXDB_VALUE ${ts}"
+data="build,github_repository=${github_repository},github_event_name=${GITHUB_EVENT_NAME},config=$config,scope=$SCOPE github_sha=\"$GITHUB_SHA\",github_run_number=\"$GITHUB_RUN_NUMBER\",value=$INFLUXDB_VALUE ${ts}"
 exec curl -XPOST "http://${INFLUXDB_USER}:${INFLUXDB_PASSWORD}@${INFLUXDB_HOST}/write?db=recommended_image&precision=s" --data-raw "$data";
