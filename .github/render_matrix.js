@@ -90,9 +90,8 @@ const main = async () => {
                 `./config/*/${family}-*`,
                 `./templates/*/${family}-*`,
                 `./scripts/${family}/*`,
-                `./scripts/*.sh`,
                 './.github/**',
-                `./resources/**`,
+                './resources/**',
                 `./tests/**`
             ]);
         }
