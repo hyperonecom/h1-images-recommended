@@ -8,7 +8,8 @@ const { qcow } = require('./lib/naming');
 const {
     imageApi, vmApi, diskApi, ipApi,
 } = require('./lib/api');
-const core = require('@actions/core')
+const core = require('@actions/core');
+const arp = require('./lib/arp');
 
 const scope = (process.env.SCOPE || 'h1').toLowerCase();
 
@@ -160,6 +161,7 @@ const main = async () => {
         imageConfig.template_file = imageConfig.template_file || `templates/qcow/${qcow(imageConfig)}`;
         let imageId;
 
+        await core.group('Clean ARP before build', () => arp.clean());
         await core.group('Build image', async () => {
             if (program.image) {
                 imageId = program.image;
@@ -170,6 +172,7 @@ const main = async () => {
             console.log(`Builded image: ${imageId}`);
         });
 
+        await core.group('Clean ARP before test', () => arp.clean());
         await core.group(`Test image ${imageId}`, async () => {
             if (program.skipTest) {
                 console.log('Skip testing image');

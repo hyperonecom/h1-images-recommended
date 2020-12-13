@@ -112,9 +112,6 @@ VM_DISK_ID=$(${RBX_CLI} vm disk list --vm $VM_ID --output tsv --query "[].{disk:
 
 trap cleanup EXIT
 
-[ -f "/.dockerenv"] && docker run --network host --privileged debian ip -s -s neigh flush all || echo "Failed to flush ARP cache of host";
-ip -s -s neigh flush all || echo 'Failed to flush local ARP table'
-
 RBX_CLI="$RBX_CLI" VM_ID="$VM_ID" IMAGE_ID="$IMAGE" USER="$USER" IP="$EXTERNAL_IP" HOSTNAME="$VM_NAME" bats "./tests/common.bats"
 
 if [ "$os" == "packer" ]; then
