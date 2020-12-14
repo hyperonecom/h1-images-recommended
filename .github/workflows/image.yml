@@ -4,7 +4,8 @@ on:
   push:
     branches-ignore:
       - 'master'
-
+  schedule:
+    - cron:  '0 0 * * *'
 jobs:
   config:
     runs-on: self-hosted
@@ -28,6 +29,15 @@ jobs:
     needs: config
     runs-on: self-hosted
     timeout-minutes: 90
+    env:
+      SCOPE: '${{matrix.scope}}'
+      CONFIG: '${{matrix.config}}'
+      H1_TOKEN: '${{secrets.H1_TOKEN}}'
+      RBX_TOKEN: '${{secrets.RBX_TOKEN}}'
+      INFLUXDB_HOST: '${{secrets.INFLUXDB_HOST}}'
+      INFLUXDB_PASSWORD: '${{secrets.INFLUXDB_PASSWORD}}'
+      INFLUXDB_USER: '${{secrets.INFLUXDB_USER}}'
+      REDHAT_SECRET: '${{secrets.REDHAT_SECRET}}'
     strategy:
       fail-fast: false
       max-parallel: 5
@@ -43,38 +53,32 @@ jobs:
           cp ./resources/secrets/* ./resources/ssh/;
           md5sum ./resources/ssh/*
         env:
-          PRIVATE_KEY: "${{ secrets.PRIVATE_KEY }}" 
+          PRIVATE_KEY: "${{ secrets.PRIVATE_KEY }}"
       - name: Build Docker image
         run: docker build -t recommended-images:${{github.sha}} .
       - name: Build Platform image
-        id: first
-        continue-on-error: true
         run: |
+          publish_arg="" && [[ "$GITHUB_EVENT_NAME" =~ "schedule" ]]  && publish_arg="--publish" ;
           docker run --rm -e H1_TOKEN -e RBX_TOKEN -e SCOPE -e INFLUXDB_HOST -e INFLUXDB_PASSWORD -e INFLUXDB_USER -e REDHAT_SECRET \
           recommended-images:${{github.sha}} \
-          nodejs buildTestPublish.js --config "${{ matrix.config }}" --mode "packer" --cleanup
-        env:
-          SCOPE: '${{matrix.scope}}'
-          H1_TOKEN: '${{secrets.H1_TOKEN}}'
-          RBX_TOKEN: '${{secrets.RBX_TOKEN}}'
-          INFLUXDB_HOST: '${{secrets.INFLUXDB_HOST}}'
-          INFLUXDB_PASSWORD: '${{secrets.INFLUXDB_PASSWORD}}' 
-          INFLUXDB_USER: '${{secrets.INFLUXDB_USER}}'
-          REDHAT_SECRET: '${{secrets.REDHAT_SECRET}}'
+          nodejs buildTestPublish.js --config "$CONFIG" --mode "packer" --cleanup ${publish_arg}
       - name: Retry build Platform image
         run: |
+          publish_arg="" && [[ "$GITHUB_EVENT_NAME" =~ "schedule" ]]  && publish_arg="--publish" ;
           docker run --rm -e H1_TOKEN -e RBX_TOKEN -e SCOPE -e INFLUXDB_HOST -e INFLUXDB_PASSWORD -e INFLUXDB_USER -e REDHAT_SECRET \
           recommended-images:${{github.sha}} \
-          nodejs buildTestPublish.js --config "${{ matrix.config }}" --mode "packer" --cleanup
-        env:
-          SCOPE: '${{matrix.scope}}'
-          H1_TOKEN: '${{secrets.H1_TOKEN}}'
-          RBX_TOKEN: '${{secrets.RBX_TOKEN}}'
-          INFLUXDB_HOST: '${{secrets.INFLUXDB_HOST}}'
-          INFLUXDB_PASSWORD: '${{secrets.INFLUXDB_PASSWORD}}' 
-          INFLUXDB_USER: '${{secrets.INFLUXDB_USER}}'
-          REDHAT_SECRET: '${{secrets.REDHAT_SECRET}}'
+          nodejs buildTestPublish.js --config "$CONFIG" --mode "packer" --cleanup ${publish_arg}
         if: ${{ steps.first.outcome == 'failure' }}
+      - name: "Report successfully build to InfluxDB"
+        run: ./.github/influx.sh
+        if: "${{ success() }}"
+        env:
+          INFLUXDB_VALUE: "1"
+      - name: "Report failure build to InfluxDB"
+        run: ./.github/influx.sh
+        if: "${{ failure() }}"
+        env:
+          INFLUXDB_VALUE: "0"
   windows:
     needs: config
     timeout-minutes: 720
@@ -83,6 +87,15 @@ jobs:
       fail-fast: false
       max-parallel: 1
       matrix: ${{fromJson(needs.config.outputs.matrix-windows)}}
+    env:
+      SCOPE: '${{matrix.scope}}'
+      CONFIG: '${{matrix.config}}'
+      H1_TOKEN: '${{secrets.H1_TOKEN}}'
+      RBX_TOKEN: '${{secrets.RBX_TOKEN}}'
+      INFLUXDB_HOST: '${{secrets.INFLUXDB_HOST}}'
+      INFLUXDB_PASSWORD: '${{secrets.INFLUXDB_PASSWORD}}'
+      INFLUXDB_USER: '${{secrets.INFLUXDB_USER}}'
+      REDHAT_SECRET: '${{secrets.REDHAT_SECRET}}'
     steps:
       - uses: actions/checkout@v2
       - name: apply workaround for IP conflict bug
@@ -90,14 +103,12 @@ jobs:
       - name: Save private SSH key
         run: echo $PRIVATE_KEY > ./resources/secrets/id_rsa
         env:
-          PRIVATE_KEY: "${{ secrets.PRIVATE_KEY }}" 
+          PRIVATE_KEY: "${{ secrets.PRIVATE_KEY }}"
       - name: Build Docker image
         run: docker build -f Dockerfile.windows  -t recommended-images-windows:${{github.sha}} .
       - name: Build Platform image
         run: |
+          publish_arg="" && [[ "$GITHUB_EVENT_NAME" =~ "schedule" ]]  && publish_arg="--publish" ;
           docker run --rm -e H1_TOKEN -e SCOPE \
           recommended-images-windows:${{github.sha}} \
-          nodejs buildTestPublish.js --config "${{ matrix.config }}" --mode "windows" --cleanup
-        env:
-          SCOPE: '${{matrix.scope}}'
-          H1_TOKEN: '${{secrets.H1_TOKEN}}'
+          nodejs buildTestPublish.js --config "$CONFIG" --mode "windows" --cleanup ${publish_arg}

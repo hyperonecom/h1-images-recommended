@@ -109,3 +109,9 @@ Build image using service account using following command:
 ```sh
 docker run -e H1_TOKEN="..." h1cr.io/h1-images-recommended-windows:2 nodejs buildTestPublish.js --mode 'windows' --config ./config/windows/windows-server-2016-dc-core.yaml;
 ```
+
+### GitHub worker environment
+
+* docker
+* git
+* jq
