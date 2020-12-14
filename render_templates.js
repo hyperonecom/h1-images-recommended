@@ -9,6 +9,8 @@ const { join } = require('path');
 const yaml = require('js-yaml');
 const { qcow } = require('./lib/naming');
 
+const getter = (config, key) => config[key] && config[key].h1 ? config[key].h1 : config[key];
+
 const render_templates = config => {
     const chroot_mounts = [
         ['proc', 'proc', '/proc'],
@@ -21,12 +23,13 @@ const render_templates = config => {
         // Extra selinuxfs for SELinux & 'fixfiles' command
         chroot_mounts.push(['selinuxfs', 'none', '/sys/fs/selinux']);
     }
+
     const tags = {
-        arch: config.arch,
-        distro: config.distro,
-        release: config.version,
-        edition: config.edition,
-        codename: config.codename,
+        arch: getter(config, 'arch'),
+        distro: getter(config, 'distro'),
+        release: getter(config, 'version'),
+        edition: getter(config, 'edition'),
+        codename: getter(config, 'codename'),
         recommended: { disk: { size: 20 } },
     };
     const post_mount_commands = [
@@ -37,7 +40,7 @@ const render_templates = config => {
         'LIBGUESTFS_BACKEND=direct guestmount -a {{user `download_path`}} -m {{user `qcow_part`}} --ro {{user `mount_qcow_path`}}',
         'setenforce 0',
     ];
-    if (config.selinux === '1') {
+    if (getter(config, 'selinux') === '1') {
         post_mount_commands.push(
             'rsync -aH -X --inplace -W --numeric-ids -A -v {{user `mount_qcow_path`}}/ {{.MountPath}}/ | pv -l -c -n >/dev/null'
         );
@@ -49,20 +52,20 @@ const render_templates = config => {
 
     return {
         variables: {
-            source_image: config.source_image || 'fedora:32',
+            source_image: getter(config, 'source_image') || 'fedora:32',
             download_path: '/home/guru/image-{{timestamp}}.qcow',
             mount_qcow_path: '/home/guru/qcow-{{timestamp}}',
-            download_url: config.download_url,
-            qcow_part: config.qcow_part,
-            root_fs: config.root_fs || 'ext4',
+            download_url: getter(config, 'download_url'),
+            qcow_part: getter(config, 'qcow_part'),
+            root_fs: getter(config, 'root_fs') || 'ext4',
             root_fs_opts: '-E lazy_itable_init=1',
-            scripts: config.custom_scripts.join(','),
-            ...config.cloud_init_install ? {
+            scripts: getter(config, 'custom_scripts').join(','),
+            ...getter(config, 'cloud_init_install') ? {
                 cloud_init_tmp_path: '/tmp/cloud_init.py',
-                cloud_init_ds_src: config.cloud_init_ds_src || './resources/cloud-init/ds_v2/DataSourceRbxCloud.py',
-            }: {},
-            disk_size: config.disk_size || '10',
-            image_name: config.pname,
+                cloud_init_ds_src: getter(config, 'cloud_init_ds_src') || './resources/cloud-init/ds_v2/DataSourceRbxCloud.py',
+            } : {},
+            disk_size: getter(config, 'disk_size') || '10',
+            image_name: getter(config, 'pname'),
             ssh_name: 'my-ssh',
             image_description: JSON.stringify(tags),
             public_netadp_service: 'public',
@@ -78,7 +81,7 @@ const render_templates = config => {
                 disk_size: 10,
                 chroot_disk: true,
                 mount_partition: 4,
-                vm_name: `packer-${config.name}`,
+                vm_name: `packer-${getter(config, 'name')}`,
                 source_image: '{{user `source_image`}}',
                 vm_type: '{{user `vm_type`}}',
                 ssh_keys: '{{user `ssh_name`}}',
@@ -117,7 +120,7 @@ const render_templates = config => {
                     'CLI_PACKAGE={{user `cli_package`}}',
                 ],
             },
-            ...config.cloud_init_install ? [
+            ...getter(config, 'cloud_init_install') ? [
                 {
                     type: 'file',
                     source: '{{user `cloud_init_ds_src`}}',
