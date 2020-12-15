@@ -18,10 +18,10 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: "12.x"
-      - name: Install
-        run: npm ci
       - name: Fetch master branch
         run: git fetch origin master:master
+      - name: Install
+        run: npm ci
       - id: set-matrix
         name: Identify diff
         run: node ./.github/render_matrix.js --github --diff
