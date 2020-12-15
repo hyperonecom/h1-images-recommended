@@ -11,10 +11,6 @@ apk --no-cache add util-linux # to fix 'sfdisk'
 # depends on 'iproute2' to provide 'ip addr show permanent' required by cloud-init
 # depends on 'eudev' to provide mdadm required by cloud-init
 # depends on 'arping' to provide valid version of arping
-apk --no-cache add --repository "${MIRROR}/edge/testing" --repository "${MIRROR}/edge/main" --repository "${MIRROR}/edge/community" \
-    cloud-init \
-    cloud-init-openrc \
-    cloud-utils-growpart;
 apk --no-cache add arping # provide compatible version of arping for cloud-init
 apk --no-cache add openssh-server # to provide ssh connectivity
 apk --no-cache add openssh-sftp-server # for Packer-provisionability
@@ -22,7 +18,10 @@ apk --no-cache add sudo # to provide root access (users managed by cloud-init)
 apk --no-cache add bash curl # to provide InfluxDB metrics
 apk --no-cache add haveged # to provide entropy required by boot
 apk --no-cache add eudev # to provide /dev/block for growpart of cloud-init
-# setup cloudinit
+apk --no-cache add --repository "${MIRROR}/edge/testing" --repository "${MIRROR}/edge/main" --repository "${MIRROR}/edge/community" \
+    cloud-init \
+    cloud-init-openrc \
+    cloud-utils-growpart;
 sed '/after localmount/a    after haveged' -i /etc/init.d/cloud-init-local;
 echo 'datasource_list: [ RbxCloud ]' > /etc/cloud/cloud.cfg.d/90_dpkg.cfg
 rc-update -q add haveged
