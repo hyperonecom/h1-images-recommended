@@ -24,7 +24,10 @@ jobs:
         run: npm ci
       - id: set-matrix
         name: Identify diff
-        run: node ./.github/render_matrix.js --github --diff
+        # Build diff on push (except master)
+        run: |
+          build_arg="" && [[ "$GITHUB_EVENT_NAME" =~ "push" && ! "$GITHUB_REF" =~ .*/master  ]]  && build_arg="--diff";
+          node ./.github/render_matrix.js --github ${build_arg}
   packer:
     needs: config
     runs-on: self-hosted
