@@ -15,7 +15,7 @@
     "public_netadp_service": "public",
     "vm_type": "a1.small",
     "image_description": "{\"arch\":\"x64\",\"distro\":\"alpine\",\"release\":\"3.12\",\"edition\":\"server\",\"codename\":\"stable\",\"recommended\":{\"disk\":{\"size\":5}}}",
-    "state_timeout": "8m"
+    "state_timeout": "10m"
   },
   "builders": [
     {
