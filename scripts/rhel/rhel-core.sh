@@ -48,4 +48,9 @@ wget -O "${CLOUD_INIT_DS_DIR}/sources/DataSourceRbxCloud.py" https://raw.githubu
 echo 'datasource_list: [ RbxCloud ]' > /etc/cloud/cloud.cfg.d/90_dpkg.cfg
 # Remove /etc/host to manage by cloud-init
 rm -f /etc/hosts
+
+# Configure chrony
+yum -y install chrony
+echo 'refclock PHC /dev/ptp0 poll 3 dpoll -2 offset 0' >> /etc/chrony/chrony.conf
+
 restorecon -vR / >> /dev/null && echo 'restorecon success' || echo 'restorecon failed'

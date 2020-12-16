@@ -34,3 +34,7 @@ sed -i 's/^ForwardToConsole=.*$/ForwardToConsole=no/' /etc/systemd/journald.conf
 echo 'datasource_list: [ RbxCloud ]' > /etc/cloud/cloud.cfg.d/90_dpkg.cfg
 rm -f /etc/hosts
 restorecon -vR / >> /dev/null && echo 'restorecon success' || echo 'restorecon failed'
+
+# Configure chrony
+yum -y install chrony
+echo 'refclock PHC /dev/ptp0 poll 3 dpoll -2 offset 0' >> /etc/chrony/chrony.conf
