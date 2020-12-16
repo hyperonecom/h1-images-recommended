@@ -30,7 +30,7 @@ jobs:
   packer:
     needs: config
     runs-on: self-hosted
-    timeout-minutes: 90
+    timeout-minutes: 120
     env:
       SCOPE: '${{matrix.scope}}'
       CONFIG: '${{matrix.config}}'
@@ -60,12 +60,14 @@ jobs:
         run: docker build -t recommended-images:${{github.sha}} .
       - name: Build Platform image
         id: attempt
+        timeout-minutes: 90
         run: |
           publish_arg="" && [[ "$GITHUB_EVENT_NAME" =~ "schedule" ]]  && publish_arg="--publish" ;
           docker run --rm -e CI -e H1_TOKEN -e RBX_TOKEN -e SCOPE -e INFLUXDB_HOST -e INFLUXDB_PASSWORD -e INFLUXDB_USER -e REDHAT_SECRET \
           recommended-images:${{github.sha}} \
           nodejs buildTestPublish.js --config "$CONFIG" --mode "packer" --cleanup ${publish_arg}
       - name: Retry build Platform image
+        timeout-minutes: 90
         run: |
           publish_arg="" && [[ "$GITHUB_EVENT_NAME" =~ "schedule" ]]  && publish_arg="--publish" ;
           docker run --rm -e CI -e H1_TOKEN -e RBX_TOKEN -e SCOPE -e INFLUXDB_HOST -e INFLUXDB_PASSWORD -e INFLUXDB_USER -e REDHAT_SECRET \
