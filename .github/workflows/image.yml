@@ -18,7 +18,7 @@ jobs:
           node-version: "12.x"
       - name: Fetch master branch
         run: git fetch origin master:master
-        if: "{{ success() && github.ref != 'refs/heads/master' }}"
+        if: "${{ success() && github.ref != 'refs/heads/master' }}"
       - name: Install
         run: npm ci
       - id: set-matrix
