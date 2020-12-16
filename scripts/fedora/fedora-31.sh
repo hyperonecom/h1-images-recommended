@@ -34,3 +34,7 @@ echo 'datasource_list: [ RbxCloud ]' > /etc/cloud/cloud.cfg.d/90_dpkg.cfg
 rm -f /etc/hosts
 dnf install -y network-scripts
 restorecon -vR / >> /dev/null && echo 'restorecon success' || echo 'restorecon failed'
+
+# Configure chrony
+dnf -y install install chrony
+echo 'refclock PHC /dev/ptp0 poll 3 dpoll -2 offset 0' >> /etc/chrony/chrony.conf

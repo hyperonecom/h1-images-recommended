@@ -70,6 +70,14 @@ skip
   [ "$?" -eq 0 ]
 }
 
+@test "validate chrony consume ptp" {
+  if [ "$CONFIG_DISTRO" == "FREEBSD" ]; then
+    skip "test does not apply to FreeBSD"
+  fi
+  result=$(ssh -o UserKnownHostsFile=/dev/null  -o StrictHostKeyChecking=no ${USER}@${IP} chronyc sources | grep 'PHC0')
+  [ "$?" -eq 0 ]
+}
+
 @test "check hostname" {
   result=$(ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no ${USER}@${IP} hostname)
   [ "$?" -eq 0 ]
