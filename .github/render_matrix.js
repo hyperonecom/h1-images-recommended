@@ -93,6 +93,7 @@ const main = async () => {
                 './.github/**',
                 './resources/**',
                 `./tests/**`
+                './Dockerfile*',
             ]);
         }
         if (status) {
