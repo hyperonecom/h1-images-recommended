@@ -74,7 +74,7 @@ skip
   if [ "$CONFIG_DISTRO" == "FREEBSD" ]; then
     skip "test does not apply to FreeBSD"
   fi
-  result=$(ssh -o UserKnownHostsFile=/dev/null  -o StrictHostKeyChecking=no ${USER}@${IP} chronyc sources | grep 'PHC0')
+  result=$(ssh -o UserKnownHostsFile=/dev/null  -o StrictHostKeyChecking=no ${USER}@${IP} sudo chronyc sources | grep 'PHC0')
   [ "$?" -eq 0 ]
 }
 
