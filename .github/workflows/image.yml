@@ -64,6 +64,7 @@ jobs:
         run: |
           publish_arg="" && [[ "$GITHUB_EVENT_NAME" =~ "schedule" ]]  && publish_arg="--publish" ;
           docker run --rm -e CI -e H1_TOKEN -e RBX_TOKEN -e SCOPE -e INFLUXDB_HOST -e INFLUXDB_PASSWORD -e INFLUXDB_USER -e REDHAT_SECRET \
+          -v /var/run/docker.sock:/var/run/docker.sock \
           recommended-images:${{github.sha}} \
           nodejs buildTestPublish.js --config "$CONFIG" --mode "packer" --cleanup ${publish_arg}
       - name: Retry build Platform image
@@ -71,6 +72,7 @@ jobs:
         run: |
           publish_arg="" && [[ "$GITHUB_EVENT_NAME" =~ "schedule" ]]  && publish_arg="--publish" ;
           docker run --rm -e CI -e H1_TOKEN -e RBX_TOKEN -e SCOPE -e INFLUXDB_HOST -e INFLUXDB_PASSWORD -e INFLUXDB_USER -e REDHAT_SECRET \
+          -v /var/run/docker.sock:/var/run/docker.sock \
           recommended-images:${{github.sha}} \
           nodejs buildTestPublish.js --config "$CONFIG" --mode "packer" --cleanup ${publish_arg}
         if: ${{ failure() && steps.attempt.outcome == 'failure' }}
@@ -115,5 +117,6 @@ jobs:
         run: |
           publish_arg="" && [[ "$GITHUB_EVENT_NAME" =~ "schedule" ]]  && publish_arg="--publish" ;
           docker run --rm -e H1_TOKEN -e SCOPE \
+          -v /var/run/docker.sock:/var/run/docker.sock \
           recommended-images-windows:${{github.sha}} \
           nodejs buildTestPublish.js --config "$CONFIG" --mode "windows" --cleanup ${publish_arg}
