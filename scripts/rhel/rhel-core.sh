@@ -51,6 +51,6 @@ rm -f /etc/hosts
 
 # Configure chrony
 yum -y install chrony
-echo 'refclock PHC /dev/ptp0 poll 3 dpoll -2 offset 0' >> /etc/chrony/chrony.conf
+echo 'refclock PHC /dev/ptp0 poll 3 dpoll -2 offset 0' >> /etc/chrony.conf
 
 restorecon -vR / >> /dev/null && echo 'restorecon success' || echo 'restorecon failed'
