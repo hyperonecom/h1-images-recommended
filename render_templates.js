@@ -73,7 +73,7 @@ const render_templates = config => {
             repository: 'https://packages.hyperone.cloud',
             cli_package: 'h1-cli',
             scope_name: 'HyperOne',
-            state_timeout: '8m',
+            state_timeout: '10m',
         },
         builders: [
             {

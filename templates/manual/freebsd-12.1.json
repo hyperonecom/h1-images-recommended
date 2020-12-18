@@ -9,7 +9,7 @@
     "ssh_name": "my-ssh",
     "mirror": "http://ftp.pl.freebsd.org/pub/FreeBSD/releases/amd64/12.1-RELEASE",
     "image_description": "{\"arch\":\"x64\",\"distro\":\"freebsd\",\"release\":\"12.1\",\"edition\":\"server\",\"codename\":\"stable\",\"recommended\":{\"disk\":{\"size\":5}}}",
-    "state_timeout": "8m"
+    "state_timeout": "10m"
   },
   "builders": [
     {

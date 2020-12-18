@@ -20,7 +20,7 @@
         "scope_name": "HyperOne",
         "redhat_secret":"{{env `REDHAT_SECRET`}}",
         "rhui_client": "hyperone-rhui-client-rhel7-sap-2.0-1.noarch.rpm",
-        "state_timeout": "8m"
+        "state_timeout": "10m"
     },
     "sensitive-variables": ["redhat_secret", "download_url"],
     "builders": [
