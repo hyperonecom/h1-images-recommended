@@ -24,6 +24,7 @@ const delay = (time) => new Promise(resolve =>
 const safeDeleteFail = async err => {
     // ignore if already deleted
     if (err.status == 404) return;
+    if (err.response && err.response.text && err.response.text.includes('not found')) return;
     // ignore if already processing
     if (err.response && err.response.text && err.response.text.includes('rocessing')) return;
     await delay();
