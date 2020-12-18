@@ -46,7 +46,7 @@ jobs:
       matrix: ${{fromJson(needs.config.outputs.matrix-packer)}}
     steps:
       - uses: actions/checkout@v2
-      - name: apply workaround for IP conflict bug
+      - name: "apply workaround for IP conflict bug (TODO: fix me)"
         run: sleep $(shuf -i 60-120 -n 1)
       - name: Save private SSH key
         run: |
@@ -103,7 +103,7 @@ jobs:
       REDHAT_SECRET: '${{secrets.REDHAT_SECRET}}'
     steps:
       - uses: actions/checkout@v2
-      - name: apply workaround for IP conflict bug
+      - name: "apply workaround for IP conflict bug (TODO: fix me)"
         run: sleep $(shuf -i 60-120 -n 1)
       - name: Save private SSH key
         run: echo $PRIVATE_KEY > ./resources/secrets/id_rsa
