@@ -28,7 +28,7 @@ function encode(){
 }
 
 github_repository=$(encode "$GITHUB_REPOSITORY");
-config=$(encode "$CONFIG");
+config=$(basename "$CONFIG");
 scope=$(encode "$SCOPE");
 ref=$(encode "$GITHUB_REF");
 data="build,github_repository=${github_repository},github_ref=${ref},github_event_name=${GITHUB_EVENT_NAME},config=$config,scope=$SCOPE github_sha=\"$GITHUB_SHA\",github_run_number=\"$GITHUB_RUN_NUMBER\",value=$INFLUXDB_VALUE ${ts}"
