@@ -21,6 +21,8 @@ jobs:
         if: "${{ success() && github.ref != 'refs/heads/master' }}"
       - name: Install
         run: npm ci
+      - name: Lint
+        run: npm run lint
       - id: set-matrix
         name: Identify diff
         # Build diff on push (except master)
