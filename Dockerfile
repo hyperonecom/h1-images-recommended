@@ -1,5 +1,18 @@
-FROM node
-ENV PACKER_VERSION="1.6.1"
+FROM node:14
+ENV DOCKER_VERSION=20.10.1
+ENV PACKER_VERSION=1.6.1
+RUN curl -fsSL https://download.docker.com/linux/static/stable/x86_64/docker-${DOCKER_VERSION}.tgz -o "docker-${DOCKER_VERSION}.tgz" \
+&& tar xzvf "docker-${DOCKER_VERSION}.tgz" --strip 1 -C /usr/local/bin docker/docker \
+&& rm "docker-${DOCKER_VERSION}.tgz"
+# RUN curl -s -L "https://github.com/hashicorp/packer/releases/download/nightly/packer_linux_amd64.zip" -o packer.zip \
+# && unzip -d /usr/local/bin packer.zip packer \
+# && chmod +x /usr/local/bin/packer \
+# && rm packer.zip
+RUN curl -fsSL "https://releases.hashicorp.com/packer/${PACKER_VERSION}/packer_${PACKER_VERSION}_linux_amd64.zip" -o packer.zip \
+&& ls -lah packer.zip \
+&& unzip -d /usr/local/bin packer.zip packer \
+&& chmod +x /usr/local/bin/packer \
+&& rm packer.zip
 RUN VERSION_CODENAME=$(sed -E -n 's/VERSION=.*\((.+?)\).*$/\1/gp' /etc/os-release) \
 && curl -fsSL "http://packages.hyperone.cloud/gpg.public.txt" | apt-key add -  \
 && curl -fsSL "http://packages.rootbox.cloud/gpg.public.txt" | apt-key add -  \
@@ -8,14 +21,6 @@ RUN VERSION_CODENAME=$(sed -E -n 's/VERSION=.*\((.+?)\).*$/\1/gp' /etc/os-releas
 && apt-get update \
 && apt-get install -y bats unzip h1-cli rbx-cli \
 && rm -rf /var/lib/apt/lists/*
-RUN curl -s -L "https://releases.hashicorp.com/packer/${PACKER_VERSION}/packer_${PACKER_VERSION}_linux_amd64.zip" -o /tmp/packer.zip \
-&& unzip -d /bin /tmp/packer.zip packer \
-&& chmod +x /bin/packer \
-&& rm /tmp/packer.zip
-# RUN curl -s -L "https://github.com/hashicorp/packer/releases/download/nightly/packer_linux_amd64.zip" -o /tmp/packer.zip \
-# && unzip -d /bin /tmp/packer.zip packer \
-# && chmod +x /bin/packer \
-# && rm /tmp/packer.zip
 WORKDIR /src/
 COPY ./package*.json /src/
 COPY ./resources/ssh/id_rsa* /root/.ssh/
