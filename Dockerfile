@@ -1,6 +1,6 @@
 FROM node:14
 ENV DOCKER_VERSION=20.10.1
-ENV PACKER_VERSION=1.6.1
+ENV PACKER_VERSION=1.6.6
 RUN curl -fsSL https://download.docker.com/linux/static/stable/x86_64/docker-${DOCKER_VERSION}.tgz -o "docker-${DOCKER_VERSION}.tgz" \
 && tar xzvf "docker-${DOCKER_VERSION}.tgz" --strip 1 -C /usr/local/bin docker/docker \
 && rm "docker-${DOCKER_VERSION}.tgz"
