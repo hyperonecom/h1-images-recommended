@@ -81,6 +81,11 @@ skip
   [ "$?" -eq 0 ]
 }
 
+@test "validate listen services" {
+  result=$(ssh -o UserKnownHostsFile=/dev/null  -o StrictHostKeyChecking=no ${USER}@${IP} ss -tulpn | grep -v -e 'State' -e ':22' -c )
+  [ "$result" == "0" ]
+}
+
 @test "check hostname" {
   result=$(ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no ${USER}@${IP} hostname)
   [ "$?" -eq 0 ]
