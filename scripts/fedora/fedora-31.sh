@@ -39,10 +39,10 @@ restorecon -vR / >> /dev/null && echo 'restorecon success' || echo 'restorecon f
 dnf -y install chrony
 echo 'refclock PHC /dev/ptp0 poll 3 dpoll -2 offset 0' >> /etc/chrony.conf
 # Wait to setup /dev/ptp0 by systemd-udev
-# On Fedora 33 udev rules for ptp0 does not use TAG+="systemd"
-mkdir -p /etc/systemd/system/chronyd.service/;
-cat <<EOT >> /etc/systemd/system/chronyd.service/ptp0.conf
+# On Fedora 33 udev rules for ptp0 does not use TAG+="systemd", so wait for for network-online.target to slow down
+mkdir -p /etc/systemd/system/chronyd.service.d/;
+cat <<EOT > /etc/systemd/system/chronyd.service.d/ptp0.conf
 [Unit]
-After=systemd-udevd.service
-Wants=systemd-udevd.service
+After=network-online.target
+Wants=network-online.target
 EOT
