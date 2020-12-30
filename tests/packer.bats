@@ -83,6 +83,7 @@ skip
 
 @test "validate listen services" {
   # Only allow SSH to listen on a public network interface
+  ssh -o UserKnownHostsFile=/dev/null  -o StrictHostKeyChecking=no ${USER}@${IP} ss -tulpn;
   result=$(ssh -o UserKnownHostsFile=/dev/null  -o StrictHostKeyChecking=no ${USER}@${IP} ss -tulpn | grep -v \
     -e 'State' \
     -e '0.0.0.0:22' \
