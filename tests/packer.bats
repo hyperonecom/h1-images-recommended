@@ -83,12 +83,13 @@ skip
 
 @test "validate listen services" {
   # Only allow SSH to listen on a public network interface
+  # The entire 127.0.0.0/8 CIDR block is used for loopack routing.
   ssh -o UserKnownHostsFile=/dev/null  -o StrictHostKeyChecking=no ${USER}@${IP} ss -tulpn;
   result=$(ssh -o UserKnownHostsFile=/dev/null  -o StrictHostKeyChecking=no ${USER}@${IP} ss -tulpn | grep -v \
     -e 'State' \
     -e '0.0.0.0:22' \
     -e '\[::\]:22' \
-    -e 127.0.0.1 -e '\[::1\]' | wc -l)
+    -e '127.0.0.[0-9]' -e '\[::1\]' | wc -l)
   [ "$result" == "0" ]
 }
 
