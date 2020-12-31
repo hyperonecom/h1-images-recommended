@@ -1,3 +1,6 @@
 apt-get install -y ubuntu-desktop arping;
 rm /etc/network/if-pre-up.d/wpasupplicant || echo "No wpasupplicant file"
 systemctl set-default graphical
+systemctl disable avahi-daemon
+systemctl disable cups
+systemctl disable cups-browsed
