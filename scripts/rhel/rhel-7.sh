@@ -10,8 +10,5 @@ systemctl disable rhel-loadmodules.service
 systemctl disable rpcbind
 systemctl disable rpcbind.socket
 
-# disalbe LLM for systemd
- sed -i -e 's/#LLMNR=yes/LLMNR=no/g' /etc/systemd/resolved.conf
-
 # Fix SELinux
 restorecon -vR / >> /dev/null && echo 'restorecon success' || echo 'restorecon failed'
