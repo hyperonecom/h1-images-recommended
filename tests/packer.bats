@@ -75,7 +75,7 @@ skip
     skip "test does not apply to FreeBSD"
   fi
   if [ "$CONFIG_NAME" == "debian-9-stretch" ]; then
-    skip "test does not apply to Debian 9 (exception due lelgacy)"
+    skip "test does not apply to Debian 9 (exception due legacy)"
   fi
   result=$(ssh -o UserKnownHostsFile=/dev/null  -o StrictHostKeyChecking=no ${USER}@${IP} sudo chronyc sources | grep 'PHC0')
   [ "$?" -eq 0 ]
@@ -84,13 +84,22 @@ skip
 @test "validate listen services" {
   # Only allow SSH to listen on a public network interface
   # The entire 127.0.0.0/8 CIDR block is used for loopack routing.
-  ssh -o UserKnownHostsFile=/dev/null  -o StrictHostKeyChecking=no ${USER}@${IP} ss -tulpn;
-  result=$(ssh -o UserKnownHostsFile=/dev/null  -o StrictHostKeyChecking=no ${USER}@${IP} 'ss -tulpn || netstat -lepunt' | grep -v \
-    -e 'State' \
-    -e '0.0.0.0:22' \
-    -e '\[::\]:22' \
-    -e '127.0.0.[0-9]' -e '\[::1\]' | wc -l)
-  [ "$result" == "0" ]
+  if [ "$CONFIG_DISTRO" != "FREEBSD" ]; then
+    ssh -o UserKnownHostsFile=/dev/null  -o StrictHostKeyChecking=no ${USER}@${IP} sudo ss -tulpn || sudo netstat -lntu;
+    result=$(ssh -o UserKnownHostsFile=/dev/null  -o StrictHostKeyChecking=no ${USER}@${IP} 'sudo ss -tulpn || sudo netstat -lepunt' | grep -v \
+      -e 'State' \
+      -e '0.0.0.0:22' \
+      -e '\[::\]:22' \
+      -e '127.0.0.[0-9]' -e '\[::1\]' | wc -l)
+    [ "$result" == "0" ]
+  else
+    ssh -o UserKnownHostsFile=/dev/null  -o StrictHostKeyChecking=no ${USER}@${IP} sockstat -4 -6 -l;
+    result=$(ssh -o UserKnownHostsFile=/dev/null  -o StrictHostKeyChecking=no ${USER}@${IP} sockstat -4 -6 -l | grep -v \
+      -e 'COMMAND' \
+      -e '*:22' \
+      -e '127.0.0.[0-9]' -e '\[::1\]' | wc -l)
+    [ "$result" == "0" ]
+  fi
 }
 
 @test "check hostname" {
