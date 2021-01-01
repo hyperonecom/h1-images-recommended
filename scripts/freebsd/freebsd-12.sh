@@ -28,3 +28,6 @@ echo 'console="comconsole"' >> /boot/loader.conf
 # Disable /etc/hosts to manage via cloud-init
 cat /etc/rc.conf
 rm /etc/hosts
+
+# Make syslog listen on local only
+sed -i -e 's/syslogd_flags=".*"/syslogd_flags="-s -b 127.0.0.1:syslog"/' /etc/defaults/rc.conf
