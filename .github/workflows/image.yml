@@ -17,7 +17,9 @@ jobs:
         with:
           node-version: "12.x"
       - name: Fetch master branch
-        run: git fetch origin master:master
+        run: |
+          git fetch origin master:master
+          git fetch origin "$GITHUB_REF"
         if: "${{ success() && github.ref != 'refs/heads/master' }}"
       - name: Install
         run: npm ci
