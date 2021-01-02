@@ -12,14 +12,12 @@ const DIFF_MODE = process.argv.includes('--diff');
 const FAMILIES = ['alpine', 'centos', 'debian', 'rhel', 'ubuntu', 'fedora', 'freebsd', 'windows'];
 
 const hasChanged = async (paths) => {
-    const { stdout } = await execFile('git', ['show-branch', '--merge-base', 'HEAD', 'master']);
-
     try {
         // Compare committed to master
         await execFile('git', [
             'diff',
             '--quiet',
-            stdout.trim(),
+            'master',
             'HEAD',
             '--',
             ...paths,
