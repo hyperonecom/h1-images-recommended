@@ -3,7 +3,7 @@ const yaml = require('js-yaml');
 const fs = require('fs');
 const process = require('process');
 const program = require('commander');
-const { ensureState, fetchImage } = require('./lib/api');
+const { ensureState, fetchImage, safeDeleteFail } = require('./lib/api');
 const { qcow } = require('./lib/naming');
 const {
     imageApi, vmApi, diskApi, ipApi,
@@ -16,20 +16,6 @@ const scope = (process.env.SCOPE || 'h1').toLowerCase();
 const olderThan = (resource, ageInMinutes) => new Date(resource.createdOn) < new Date() - ageInMinutes * 60 * 1000;
 
 const ensureTag = (resource, tag) => tag in resource.tag;
-
-const delay = (time) => new Promise(resolve =>
-    setTimeout(resolve, time || Math.random() * 5 * 1000)
-);
-
-const safeDeleteFail = async err => {
-    // ignore if already deleted
-    if (err.status == 404) return;
-    if (err.response && err.response.text && err.response.text.includes('not found')) return;
-    // ignore if already processing
-    if (err.response && err.response.text && err.response.text.includes('rocessing')) return;
-    await delay();
-    throw err;
-};
 
 const config = {
     rbx: {
