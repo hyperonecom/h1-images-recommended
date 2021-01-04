@@ -7,6 +7,8 @@ systemctl disable systemd-readahead-replay.service
 systemctl disable tuned.service
 systemctl disable rhel-configure.service
 systemctl disable rhel-loadmodules.service
+systemctl disable rpcbind
+systemctl disable rpcbind.socket
 
 # Fix SELinux
 restorecon -vR / >> /dev/null && echo 'restorecon success' || echo 'restorecon failed'

@@ -10,6 +10,11 @@ systemctl disable nfs-convert.service
 systemctl disable timedatex.service
 systemctl disable sshd-keygen@.service
 systemctl disable kdump.service
+systemctl disable rpcbind
+systemctl disable rpcbind.socket
+
+# disalbe LLM for systemd
+sed -i -e 's/#LLMNR=yes/LLMNR=no/g' /etc/systemd/resolved.conf
 
 # Fix SELinux
 restorecon -vR / >> /dev/null && echo 'restorecon success' || echo 'restorecon failed'

@@ -11,6 +11,7 @@ apk --no-cache add util-linux # to fix 'sfdisk'
 # depends on 'iproute2' to provide 'ip addr show permanent' required by cloud-init
 # depends on 'eudev' to provide mdadm required by cloud-init
 # depends on 'arping' to provide valid version of arping
+apk --no-cache iproute2 # on v3.13 move to 'iproute2-ss' to pass tests
 apk --no-cache add arping # provide compatible version of arping for cloud-init
 apk --no-cache add openssh-server # to provide ssh connectivity
 apk --no-cache add openssh-sftp-server # for Packer-provisionability
