@@ -23,6 +23,12 @@ if [[ -z "$INFLUXDB_VALUE" ]]; then
     exit 1;
 fi;
 
+if [[ -z "$INFLUXDB_ATTEMPT" ]]; then
+    echo "Missing variable for INFLUXDB_ATTEMPT";
+    exit 1;
+fi;
+
+
 function encode(){
     jq -nr --arg a "${1}" '$a|@uri';
 }
@@ -31,5 +37,6 @@ github_repository=$(encode "$GITHUB_REPOSITORY");
 config=$(basename "$CONFIG");
 scope=$(encode "$SCOPE");
 ref=$(encode "$GITHUB_REF");
-data="build,github_repository=${github_repository},github_ref=${ref},github_event_name=${GITHUB_EVENT_NAME},config=$config,scope=$SCOPE github_sha=\"$GITHUB_SHA\",github_run_number=\"$GITHUB_RUN_NUMBER\",value=$INFLUXDB_VALUE ${ts}"
+attempt=$(encode "$INFLUXDB_ATTEMPT");
+data="build,github_repository=${github_repository},github_ref=${ref},github_event_name=${GITHUB_EVENT_NAME},config=$config,scope=$SCOPE,attempt=$attempt github_sha=\"$GITHUB_SHA\",github_run_number=\"$GITHUB_RUN_NUMBER\",value=$INFLUXDB_VALUE ${ts}"
 exec curl -XPOST "http://${INFLUXDB_USER}:${INFLUXDB_PASSWORD}@${INFLUXDB_HOST}/write?db=recommended_image&precision=s" --data-raw "$data";
