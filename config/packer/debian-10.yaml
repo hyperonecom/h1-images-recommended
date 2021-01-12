@@ -6,7 +6,7 @@ edition: server
 arch: x64
 version: '10'
 download_url: >-
-  http://cdimage.debian.org/images/cloud/OpenStack/current-10/debian-10.7.2-20201230-openstack-amd64.qcow2
+  http://cdimage.debian.org/images/cloud/OpenStack/current-10/debian-10-openstack-amd64.qcow2
 disk_size: '5'
 qcow_part: /dev/sda1
 cloud_init_ds_src: ./resources/cloud-init/ds_v2/DataSourceRbxCloud.py
