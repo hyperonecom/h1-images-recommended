@@ -90,7 +90,7 @@ jobs:
           INFLUXDB_ATTEMPT: "1"
       - name: "Report successfully build (2nd build) to InfluxDB"
         run: ./.github/influx.sh
-        if: "${{ steps.attempt.outcome == 'failure' and steps.retry.outcome == 'success' }}"
+        if: "${{ steps.attempt.outcome == 'failure' && steps.retry.outcome == 'success' }}"
         env:
           INFLUXDB_VALUE: "1"
           INFLUXDB_ATTEMPT: "2"
