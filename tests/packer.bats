@@ -84,6 +84,9 @@ skip
 @test "validate listen services" {
   # Only allow SSH to listen on a public network interface
   # The entire 127.0.0.0/8 CIDR block is used for loopack routing.
+  if [ "$CONFIG_NAME" == "debian-9-stretch" ]; then
+    skip "test does not apply to Debian 9 (exception due legacy)"
+  fi
   if [ "$CONFIG_DISTRO" != "FREEBSD" ]; then
     ssh -o UserKnownHostsFile=/dev/null  -o StrictHostKeyChecking=no ${USER}@${IP} sudo ss -tulpn || sudo netstat -lntu;
     result=$(ssh -o UserKnownHostsFile=/dev/null  -o StrictHostKeyChecking=no ${USER}@${IP} 'sudo ss -tulpn || sudo netstat -lepunt' | grep -v \
