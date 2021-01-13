@@ -88,8 +88,7 @@ skip
     ssh -o UserKnownHostsFile=/dev/null  -o StrictHostKeyChecking=no ${USER}@${IP} sudo ss -tulpn || sudo netstat -lntu;
     result=$(ssh -o UserKnownHostsFile=/dev/null  -o StrictHostKeyChecking=no ${USER}@${IP} 'sudo ss -tulpn || sudo netstat -lepunt' | grep -v \
       -e 'State' \
-      -e '0.0.0.0:22' \
-      -e '\[::\]:22' \
+      -e '*:22' -e '0.0.0.0:22' -e '\[::\]:22' \
       -e '127.0.0.[0-9]' -e '\[::1\]' | wc -l)
     [ "$result" == "0" ]
   else
