@@ -32,23 +32,6 @@ const render_templates = config => {
         codename: getter(config, 'codename'),
         recommended: { disk: { size: 20 } },
     };
-    const post_mount_commands = [
-        'mkdir -p {{.MountPath}}/boot/efi',
-        'mount -t vfat {{.Device}}1 {{.MountPath}}/boot/efi',
-        'wget -nv {{user `download_url`}} -O {{user `download_path`}}',
-        'mkdir {{user `mount_qcow_path`}}',
-        'LIBGUESTFS_BACKEND=direct guestmount -a {{user `download_path`}} -m {{user `qcow_part`}} --ro {{user `mount_qcow_path`}}',
-        'setenforce 0',
-    ];
-    if (getter(config, 'selinux') === '1') {
-        post_mount_commands.push(
-            'rsync -aH -X --inplace -W --numeric-ids -A -v {{user `mount_qcow_path`}}/ {{.MountPath}}/ | pv -l -c -n >/dev/null'
-        );
-    } else {
-        post_mount_commands.push(
-            'rsync -aH --inplace -W --numeric-ids -A -v {{user `mount_qcow_path`}}/ {{.MountPath}}/ | pv -l -c -n >/dev/null'
-        );
-    }
 
     return {
         variables: {
@@ -107,7 +90,15 @@ const render_templates = config => {
                     'mkfs.{{user `root_fs`}} {{user `root_fs_opts`}} {{.Device}}4',
                 ],
                 chroot_mounts,
-                post_mount_commands,
+                post_mount_commands: [
+                    'mkdir -p {{.MountPath}}/boot/efi',
+                    'mount -t vfat {{.Device}}1 {{.MountPath}}/boot/efi',
+                    'wget -nv {{user `download_url`}} -O {{user `download_path`}}',
+                    'mkdir {{user `mount_qcow_path`}}',
+                    'LIBGUESTFS_BACKEND=direct guestmount -a {{user `download_path`}} -m {{user `qcow_part`}} --ro {{user `mount_qcow_path`}}',
+                    'setenforce 0',
+                    'rsync -aH --inplace -W --numeric-ids -A -v {{user `mount_qcow_path`}}/ {{.MountPath}}/ | pv -l -c -n >/dev/null',
+                ],
             },
         ],
         provisioners: [
