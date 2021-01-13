@@ -6,20 +6,20 @@ echo "${MIRROR}/${REL}/main" > /etc/apk/repositories
 echo "${MIRROR}/${REL}/community" >> /etc/apk/repositories
 apk add "linux-virt"
 sed -e 's;^#ttyS0;ttyS0;g' -i /etc/inittab
-apk --no-cache add util-linux # to fix 'sfdisk'
+apk add util-linux # to fix 'sfdisk'
 # depends on 'ifupdown' to provide 'ip --all' required by cloud-init
 # depends on 'iproute2' to provide 'ip addr show permanent' required by cloud-init
 # depends on 'eudev' to provide mdadm required by cloud-init
 # depends on 'arping' to provide valid version of arping
-apk --no-cache iproute2 # on v3.13 move to 'iproute2-ss' to pass tests
-apk --no-cache add arping # provide compatible version of arping for cloud-init
-apk --no-cache add openssh-server # to provide ssh connectivity
-apk --no-cache add openssh-sftp-server # for Packer-provisionability
-apk --no-cache add sudo # to provide root access (users managed by cloud-init)
-apk --no-cache add bash curl # to provide InfluxDB metrics
-apk --no-cache add haveged # to provide entropy required by boot
-apk --no-cache add eudev # to provide /dev/block for growpart of cloud-init
-apk --no-cache add --repository "${MIRROR}/edge/testing" --repository "${MIRROR}/edge/main" --repository "${MIRROR}/edge/community" \
+apk add iproute2 # on v3.13 move to 'iproute2-ss' to pass tests
+apk add arping # provide compatible version of arping for cloud-init
+apk add openssh-server # to provide ssh connectivity
+apk add openssh-sftp-server # for Packer-provisionability
+apk add sudo # to provide root access (users managed by cloud-init)
+apk add bash curl # to provide InfluxDB metrics
+apk add haveged # to provide entropy required by boot
+apk add eudev # to provide /dev/block for growpart of cloud-init
+apk add --repository "${MIRROR}/edge/testing" --repository "${MIRROR}/edge/main" --repository "${MIRROR}/edge/community" \
     cloud-init \
     cloud-init-openrc \
     cloud-utils-growpart;
