@@ -15,6 +15,7 @@ custom_scripts:
   - ./scripts/resolv.sh
   - ./scripts/fstab.sh
   - ./scripts/fedora/fedora-31.sh
+  - ./scripts/fedora/fedora-33-plus.sh
   # - ./scripts/fedora/cli_dnf.sh
   - ./scripts/relabel.sh
   - ./scripts/check_df.sh
