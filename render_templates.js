@@ -42,11 +42,11 @@ const render_templates = config => {
     ];
     if (getter(config, 'selinux') === '1') {
         post_mount_commands.push(
-            'rsync -aH -X --inplace -W --numeric-ids -A -v {{user `mount_qcow_path`}}/ {{.MountPath}}/ | pv -l -c -n >/dev/null'
+            'rsync -aH -X --inplace -W --numeric-ids -A {{user `mount_qcow_path`}}/ {{.MountPath}}/ --info=progress2'
         );
     } else {
         post_mount_commands.push(
-            'rsync -aH --inplace -W --numeric-ids -A -v {{user `mount_qcow_path`}}/ {{.MountPath}}/ | pv -l -c -n >/dev/null'
+            'rsync -aH --inplace -W --numeric-ids -A {{user `mount_qcow_path`}}/ {{.MountPath}}/ --info=progress2'
         );
     }
 
@@ -93,7 +93,7 @@ const render_templates = config => {
                 state_timeout: '{{user `state_timeout`}}',
                 pre_mount_commands: [
                     "[ ! -e '/etc/rpm/macros.dist' ] || sudo yum install -y \"https://dl.fedoraproject.org/pub/epel/epel-release-latest-$(awk '/rhel/ {print $2}' /etc/rpm/macros.dist).noarch.rpm\"",
-                    'yum install -y --setopt=skip_missing_names_on_install=False mtools libgcrypt libguestfs-tools dosfstools libguestfs-xfs wget pv',
+                    'yum install -y --setopt=skip_missing_names_on_install=False mtools libgcrypt libguestfs-tools dosfstools libguestfs-xfs wget',
                     'modprobe kvm',
                     'sgdisk -Z {{.Device}}',
                     'sgdisk -n 1:0:+50MB -t 1:EF01 -c 1:EFI {{.Device}}',
