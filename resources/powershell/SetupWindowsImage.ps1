@@ -3,6 +3,7 @@ param(
   [String] $TempDir = "C:\Windows\Temp\",
   [String] $Logfile = "$($TempDir)SetupWindowsImage.log"
 )
+[Net.ServicePointManager]::SecurityProtocol = "tls12, tls11, tls"
 
 Start-Transcript -path $Logfile -append
 
