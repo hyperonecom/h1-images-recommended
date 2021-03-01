@@ -151,7 +151,7 @@
 
                 <RunSynchronousCommand wcm:action="add">
                     <Order>1</Order>
-                    <Path>powershell -NoLogo -Command &quot;[Net.ServicePointManager]::SecurityProtocol = &apos;tls12, tls11, tls&apos;; Invoke-WebRequest -Uri https://raw.githubusercontent.com/hyperonecom/h1-images-recommended/master/resources/powershell/SetupWindowsImage.ps1 -OutFile C:\Windows\Temp\SetupWindowsImage.ps1&quot;</Path>
+                    <Path>powershell -NoLogo -ExecutionPolicy Bypass -File D:\provision.ps1</Path>
                     <Description>Download script fo creating windows image</Description>
                 </RunSynchronousCommand>
 
