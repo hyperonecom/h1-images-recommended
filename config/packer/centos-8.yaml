@@ -21,3 +21,4 @@ uefi_support: true
 source_image: 'centos:8'
 selinux: '1'
 format: qcow
+repology_repo: centos_8

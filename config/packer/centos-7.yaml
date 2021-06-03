@@ -21,3 +21,4 @@ source_image: 'centos:7'
 uefi_support: true
 selinux: '1'
 format: qcow
+repology_repo: centos_7

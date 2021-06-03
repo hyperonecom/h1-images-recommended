@@ -2,12 +2,8 @@
 'use strict';
 const fs = require('fs');
 const util = require('util');
-const readFile = util.promisify(fs.readFile);
-const readDir = util.promisify(fs.readdir);
 const writeFile = util.promisify(fs.writeFile);
-const { join } = require('path');
-const yaml = require('js-yaml');
-const { qcow } = require('./lib/naming');
+const { listConfig } = require('./lib/config');
 
 const getter = (config, key) => config[key] && config[key].h1 ? config[key].h1 : config[key];
 
@@ -141,17 +137,13 @@ const render_templates = config => {
 
 
 const main = async () => {
-    const path = './config/packer';
-    const files = await readDir(path);
-    for (const file of files.filter(x => x.endsWith('.yaml'))) {
-        const input_content = await readFile(join(path, file));
-        const config = yaml.safeLoad(input_content);
-        if (config.format !== 'qcow') {
+    for (const imageConfig of await listConfig(['packer'])) {
+        if (imageConfig.format !== 'qcow') {
             continue;
         }
-        const template = render_templates(config);
+        const template = render_templates(imageConfig);
         const output_content = JSON.stringify(template, null, 4);
-        await writeFile(join('./templates/qcow', `${qcow(config)}`), output_content);
+        await writeFile(imageConfig.template_file, output_content);
     }
 };
 main().then(console.log).catch(console.error);

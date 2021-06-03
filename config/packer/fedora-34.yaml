@@ -1,25 +1,25 @@
-name: fedora-32
+name: fedora-34
 codename: core
-pname: Fedora 32
+pname: Fedora 34
 distro: fedora
 edition: server
 arch: x64
-version: '32'
+version: '34'
 download_url: >-
-  https://ftp.icm.edu.pl/pub/Linux/fedora/linux/releases/32/Cloud/x86_64/images/Fedora-Cloud-Base-32-1.6.x86_64.qcow2
+  https://ftp.icm.edu.pl/pub/Linux/fedora/linux/releases/34/Cloud/x86_64/images/Fedora-Cloud-Base-34-1.2.x86_64.qcow2
 disk_size: '5'
 qcow_part: /dev/sda1
-cloud_init_ds_src: ./resources/cloud-init/ds_v2/DataSourceRbxCloud.py
-cloud_init_install: true
+cloud_init_install: false
 custom_scripts:
   - ./scripts/resolv.sh
   - ./scripts/fstab.sh
   - ./scripts/fedora/fedora-31.sh
-  - ./scripts/fedora/cli_dnf.sh
+  - ./scripts/fedora/fedora-33-plus.sh
+  # - ./scripts/fedora/cli_dnf.sh
   - ./scripts/relabel.sh
   - ./scripts/check_df.sh
 source_image: 'fedora:32'
 uefi_support: false
 selinux: '1'
 format: qcow
-repology_repo: 'fedora_32'
+repology_repo: 'fedora_34'

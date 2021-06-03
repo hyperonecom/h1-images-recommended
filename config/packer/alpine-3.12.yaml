@@ -9,3 +9,4 @@ disk_size: '5'
 cloud_init_install: true
 template_file: templates/manual/alpine-3.12-syslinux.json
 uefi_support: true
+repology_repo: alpine_3_12

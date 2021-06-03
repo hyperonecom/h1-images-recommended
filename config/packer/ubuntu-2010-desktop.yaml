@@ -28,3 +28,4 @@ custom_scripts:
   - ./scripts/check_df.sh
 uefi_support: true
 format: qcow
+repology_repo: 'ubuntu_20_10'
