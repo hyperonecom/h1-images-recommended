@@ -20,6 +20,7 @@ custom_scripts:
   - ./scripts/check_df.sh
 source_image: 'fedora:32'
 uefi_support: false
+cli_support: true
 selinux: '1'
 format: qcow
 repology_repo: 'fedora_32'

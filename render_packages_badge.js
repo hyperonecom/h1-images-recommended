@@ -40,10 +40,13 @@ const main = async () => {
     ]);
 
     const repos = [];
-    for (const image in await listConfig()) {
-        if (!image.repology_repository) continue;
-        if (repos.includes(image.repology_repository)) continue;
-        repos.push(image.repology_repository);
+    for (const image of await listConfig()) {
+        if (!image.repology_repo) {
+            console.log(`Missing 'repology_repo' in '${image.pname}'`);
+            continue;
+        }
+        if (repos.includes(image.repology_repo)) continue;
+        repos.push(image.repology_repo);
     }
     for (const repo of repos) {
         rows.push([

@@ -11,6 +11,7 @@ vm_builder_service: 'rhel.build'
 template_file: templates/manual/rhel-7.json
 source_image: rhel:7
 # uefi_support: true
+# cli_support: true
 scope:
   - h1
 license: true

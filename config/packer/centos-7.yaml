@@ -19,6 +19,7 @@ custom_scripts:
   - ./scripts/check_df.sh
 source_image: 'centos:7'
 uefi_support: true
+cli_support: true
 selinux: '1'
 format: qcow
 repology_repo: centos_7

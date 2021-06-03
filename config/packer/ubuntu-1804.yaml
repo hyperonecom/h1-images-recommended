@@ -18,5 +18,6 @@ custom_scripts:
   - ./scripts/apt_clean.sh
   - ./scripts/check_df.sh
 uefi_support: true
+cli_support: true
 format: qcow
 repology_repo: 'ubuntu_18_04'
