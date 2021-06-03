@@ -1,11 +1,11 @@
-name: freebsd-12.1-server
+name: freebsd-12.2-server
 distro: freebsd
 edition: freebsd
 codename: 'stable'
-pname: FreeBSD 12.1
+pname: FreeBSD 12.2
 arch: x64
-version: '12.1'
+version: '12.2'
 disk_size: '10'
 cloud_init_install: true
-template_file: templates/manual/freebsd-12.1.json
+template_file: templates/manual/freebsd-12.2.json
 # uefi_support: true
