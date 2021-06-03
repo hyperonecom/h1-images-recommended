@@ -19,8 +19,8 @@ custom_scripts:
   - ./scripts/relabel.sh
   - ./scripts/check_df.sh
 source_image: 'fedora:32'
+cli_support: false
 uefi_support: false
-cli_support: true
 selinux: '1'
 format: qcow
 repology_repo: 'fedora_34'
