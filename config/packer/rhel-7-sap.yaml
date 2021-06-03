@@ -2,7 +2,7 @@ name: rhel-7 for SAP
 distro: rhel
 edition: sap
 codename: 'stable'
-pname: RHEL 7 for SAP
+pname: "Red Hat Enterprise Linux 7 for SAP"
 arch: x64
 version: '7'
 disk_size: '10'

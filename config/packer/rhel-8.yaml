@@ -2,7 +2,7 @@ name: rhel-8
 distro: rhel
 edition: server
 codename: 'stable'
-pname: RHEL 8
+pname: "Red Hat Enterprise Linux 8"
 arch: x64
 version: '8'
 disk_size: '10'

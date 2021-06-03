@@ -2,7 +2,7 @@ name: rhel-7
 distro: rhel
 edition: server
 codename: 'stable'
-pname: RHEL 7
+pname: "Red Hat Enterprise Linux 7"
 arch: x64
 version: '7'
 disk_size: '10'

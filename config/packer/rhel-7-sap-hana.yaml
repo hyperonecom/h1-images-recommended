@@ -2,7 +2,7 @@ name: rhel-7 for SAP HANA
 distro: rhel
 edition: sap-hana
 codename: 'stable'
-pname: RHEL 7 for SAP HANA
+pname: "Red Hat Enterprise Linux 7 for SAP HANA"
 arch: x64
 version: '7'
 disk_size: '10'
