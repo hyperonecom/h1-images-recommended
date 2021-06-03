@@ -46,6 +46,7 @@ CLOUD_INIT_DS_DIR=$(find /usr -name cloudinit -type d)
 echo "Found cloud-init in path: ${CLOUD_INIT_DS_DIR}"
 wget -O "${CLOUD_INIT_DS_DIR}/sources/DataSourceRbxCloud.py" https://raw.githubusercontent.com/canonical/cloud-init/20.2/cloudinit/sources/DataSourceRbxCloud.py
 echo 'datasource_list: [ RbxCloud ]' > /etc/cloud/cloud.cfg.d/90_dpkg.cfg
+rm -rf /var/lib/cloud/data/
 # Remove /etc/host to manage by cloud-init
 rm -f /etc/hosts
 
