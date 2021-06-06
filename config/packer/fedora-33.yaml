@@ -18,7 +18,7 @@ custom_scripts:
   # - ./scripts/fedora/cli_dnf.sh
   - ./scripts/relabel.sh
   - ./scripts/check_df.sh
-source_image: 'fedora:33'
+source_image: 'fedora:32'
 uefi_support: false
 cli_support: true
 selinux: '1'
