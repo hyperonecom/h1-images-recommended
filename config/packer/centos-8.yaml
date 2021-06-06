@@ -18,6 +18,8 @@ custom_scripts:
   - ./scripts/relabel.sh
   - ./scripts/check_df.sh
 uefi_support: true
+cli_support: true
 source_image: 'centos:8'
 selinux: '1'
 format: qcow
+repology_repo: centos_8
