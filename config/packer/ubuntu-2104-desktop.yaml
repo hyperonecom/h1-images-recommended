@@ -1,12 +1,11 @@
-name: ubuntu-1604-desktop-xenial
-codename: xenial xerus
-pname: Ubuntu 16.04 Desktop (xenial xerus)
+name: ubuntu-2104-hirsute
+codename: hirsute hippo
+pname: Ubuntu 21.04 Desktop (hirsute hippo)
 distro: ubuntu
 edition: desktop
 arch: x64
-version: '16.04'
-download_url: >-
-  http://cloud-images.ubuntu.com/releases/xenial/release/ubuntu-16.04-server-cloudimg-amd64-disk1.img
+version: '21.04'
+download_url: 'https://cloud-images.ubuntu.com/releases/hirsute/release/ubuntu-21.04-server-cloudimg-amd64.img'
 # Recommended Minimum System Requirements: 25 GB of hard-drive space
 disk_size:
   h1: '15'
@@ -22,9 +21,9 @@ vm_gen1_test_service:
 custom_scripts:
   - ./scripts/resolv.sh
   - ./scripts/fstab.sh
-  - ./scripts/ubuntu/ubuntu-1604.sh
-  - ./scripts/ubuntu/ubuntu-1604-desktop.sh
-  - ./scripts/ubuntu/cli.sh
+  - ./scripts/ubuntu/ubuntu-1710.sh
+  - ./scripts/ubuntu/ubuntu-1904-desktop.sh
+  # - ./scripts/ubuntu/cli.sh
   - ./scripts/apt_clean.sh
   - ./scripts/check_df.sh
 uefi_support: true

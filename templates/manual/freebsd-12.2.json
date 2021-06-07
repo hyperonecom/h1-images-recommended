@@ -1,6 +1,6 @@
 {
   "variables": {
-    "source_image": "freebsd",
+    "source_image": "freebsd:12",
     "disk_size": "10",
     "scripts": "./scripts/resolv.sh,./scripts/freebsd/freebsd-12.sh",
     "image_name": "FreeBSD 12.2",
