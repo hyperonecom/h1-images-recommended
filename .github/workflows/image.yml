@@ -68,6 +68,8 @@ jobs:
         timeout-minutes: 90
         run: |
           publish_arg="" && [[ "${GITHUB_BRANCH##*/}" =~ "master" ]] && publish_arg="--publish" ;
+          echo "Publish arg: $publish_arg";
+          echo "GITHUB_BRANCH: $GITHUB_BRANCH";
           docker run --rm -e CI -e H1_TOKEN -e RBX_TOKEN -e SCOPE -e INFLUXDB_HOST -e INFLUXDB_PASSWORD -e INFLUXDB_USER -e REDHAT_SECRET \
           -v /var/run/docker.sock:/var/run/docker.sock \
           recommended-images:${{github.sha}} \
