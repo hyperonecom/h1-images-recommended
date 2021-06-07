@@ -9,6 +9,7 @@ download_url: >-
   https://ftp.icm.edu.pl/pub/Linux/fedora/linux/releases/33/Cloud/x86_64/images/Fedora-Cloud-Base-33-1.2.x86_64.qcow2
 disk_size: '5'
 qcow_part: /dev/sda1
+cloud_init_install: false
 custom_scripts:
   - ./scripts/resolv.sh
   - ./scripts/fstab.sh
@@ -19,5 +20,7 @@ custom_scripts:
   - ./scripts/check_df.sh
 source_image: 'fedora:32'
 uefi_support: false
+cli_support: true
 selinux: '1'
 format: qcow
+repology_repo: 'fedora_33'

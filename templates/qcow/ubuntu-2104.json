@@ -1,17 +1,17 @@
 {
     "variables": {
-        "source_image": "centos:7",
+        "source_image": "fedora:32",
         "download_path": "/home/guru/image-{{timestamp}}.qcow",
         "mount_qcow_path": "/home/guru/qcow-{{timestamp}}",
-        "download_url": "http://cloud.centos.org/centos/7/images/CentOS-7-x86_64-GenericCloud.qcow2",
+        "download_url": "https://cloud-images.ubuntu.com/releases/hirsute/release/ubuntu-21.04-server-cloudimg-amd64.img",
         "qcow_part": "/dev/sda1",
         "root_fs": "ext4",
         "root_fs_opts": "-E lazy_itable_init=1",
-        "scripts": "./scripts/resolv.sh,./scripts/fstab.sh,./scripts/centos/centos-7.sh,./scripts/centos/cli.sh,./scripts/relabel.sh,./scripts/check_df.sh",
+        "scripts": "./scripts/resolv.sh,./scripts/fstab.sh,./scripts/ubuntu/ubuntu-1710.sh,./scripts/apt_clean.sh,./scripts/check_df.sh",
         "disk_size": "5",
-        "image_name": "CentOS 7",
+        "image_name": "Ubuntu 21.04 (hirsute hippo)",
         "ssh_name": "my-ssh",
-        "image_description": "{\"arch\":\"x64\",\"distro\":\"centos\",\"release\":\"7\",\"edition\":\"server\",\"codename\":\"core\",\"recommended\":{\"disk\":{\"size\":20}}}",
+        "image_description": "{\"arch\":\"x64\",\"distro\":\"ubuntu\",\"release\":\"21.04\",\"edition\":\"server\",\"codename\":\"hirsute hippo\",\"recommended\":{\"disk\":{\"size\":20}}}",
         "public_netadp_service": "public",
         "vm_type": "a1.small",
         "repository": "https://packages.hyperone.cloud",
@@ -25,7 +25,7 @@
             "disk_size": 10,
             "chroot_disk": true,
             "mount_partition": 4,
-            "vm_name": "packer-centos-7",
+            "vm_name": "packer-ubuntu-2104-hirsute",
             "source_image": "{{user `source_image`}}",
             "vm_type": "{{user `vm_type`}}",
             "ssh_keys": "{{user `ssh_name`}}",
@@ -75,11 +75,6 @@
                     "binfmt_misc",
                     "binfmt_misc",
                     "/proc/sys/fs/binfmt_misc"
-                ],
-                [
-                    "selinuxfs",
-                    "none",
-                    "/sys/fs/selinux"
                 ]
             ],
             "post_mount_commands": [
@@ -89,7 +84,7 @@
                 "mkdir {{user `mount_qcow_path`}}",
                 "LIBGUESTFS_BACKEND=direct guestmount -a {{user `download_path`}} -m {{user `qcow_part`}} --ro {{user `mount_qcow_path`}}",
                 "setenforce 0",
-                "rsync -aH -X --inplace -W --numeric-ids -A -v {{user `mount_qcow_path`}}/ {{.MountPath}}/ | pv -l -c -n >/dev/null"
+                "rsync -aH --inplace -W --numeric-ids -A -v {{user `mount_qcow_path`}}/ {{.MountPath}}/ | pv -l -c -n >/dev/null"
             ]
         }
     ],

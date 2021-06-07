@@ -4,7 +4,6 @@ const fs = require('fs');
 const process = require('process');
 const program = require('commander');
 const { ensureState, fetchImage, safeDeleteFail } = require('./lib/api');
-const { qcow } = require('./lib/naming');
 const {
     imageApi, vmApi, diskApi, ipApi,
 } = require('./lib/api');
@@ -143,9 +142,8 @@ const main = async () => {
         const input_file = program.config;
         const content = await fs.promises.readFile(input_file);
         const imageConfig = yaml.safeLoad(content);
-        const mode = program.mode || imageConfig.mode || 'packer';
+        const mode = program.mode || imageConfig.mode;
         const mode_runtime = require(`./lib/build_modes/${mode}.js`);
-        imageConfig.template_file = imageConfig.template_file || `templates/qcow/${qcow(imageConfig)}`;
         let imageId;
 
         await core.group('Clean ARP before build', () => arp.clean());
