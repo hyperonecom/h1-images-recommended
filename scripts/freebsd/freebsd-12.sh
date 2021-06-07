@@ -1,4 +1,4 @@
-#!/bin/tcsh
+#!/bin/tcsh -fe
 # Configure /etc/fstab for pivot_root successfully
 echo "/dev/gpt/root / ufs rw,noatime 1 1" > /etc/fstab
 # Setup 
