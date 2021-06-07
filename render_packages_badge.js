@@ -45,7 +45,7 @@ const main = async () => {
             console.log(`Missing 'repology_repo' in '${image.pname}'`);
             continue;
         }
-        if (repos.includes(image.repology_repo)) continue;
+        if (repos.includes(image.repology_repo)) { continue; }
         repos.push(image.repology_repo);
     }
     for (const repo of repos) {

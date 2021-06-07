@@ -15,7 +15,7 @@
     "js-yaml": "^3.13.1"
   },
   "devDependencies": {
-    "@hyperone/eslint-config": "^2.0.0",
+    "@hyperone/eslint-config": "^2.2.0",
     "eslint": "^6.4.0"
   }
 }
