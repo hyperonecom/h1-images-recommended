@@ -50,6 +50,12 @@ jobs:
       matrix: ${{fromJson(needs.config.outputs.matrix-packer)}}
     steps:
       - uses: actions/checkout@v2
+      - run: |
+          publish_arg="" && [[ "${GITHUB_BRANCH##*/}" =~ "master" ]] && publish_arg="--publish" ;
+          echo "Publish arg: $publish_arg";
+          echo "GITHUB_BRANCH: $GITHUB_BRANCH";
+        env:
+          GITHUB_BRANCH: ${{ github.ref }}
       - name: "apply workaround for IP conflict bug (TODO: fix me)"
         run: sleep $(shuf -i 60-120 -n 1)
       - name: Save private SSH key
@@ -68,12 +74,12 @@ jobs:
         timeout-minutes: 90
         run: |
           publish_arg="" && [[ "${GITHUB_BRANCH##*/}" =~ "master" ]] && publish_arg="--publish" ;
-          echo "Publish arg: $publish_arg";
-          echo "GITHUB_BRANCH: $GITHUB_BRANCH";
           docker run --rm -e CI -e H1_TOKEN -e RBX_TOKEN -e SCOPE -e INFLUXDB_HOST -e INFLUXDB_PASSWORD -e INFLUXDB_USER -e REDHAT_SECRET \
           -v /var/run/docker.sock:/var/run/docker.sock \
           recommended-images:${{github.sha}} \
           nodejs buildTestPublish.js --config "$CONFIG" --mode "packer" --cleanup ${publish_arg}
+        env:
+          GITHUB_BRANCH: ${{ github.ref }}
       - name: Retry build Platform image
         timeout-minutes: 90
         id: retry
@@ -84,6 +90,8 @@ jobs:
           recommended-images:${{github.sha}} \
           nodejs buildTestPublish.js --config "$CONFIG" --mode "packer" --cleanup ${publish_arg}
         if: ${{ steps.attempt.outcome == 'failure' }}
+        env:
+          GITHUB_BRANCH: ${{ github.ref }}
       - name: "Report successfully build (1st build) to InfluxDB"
         run: ./.github/influx.sh
         if: "${{ steps.attempt.outcome == 'success' }}"
@@ -136,3 +144,5 @@ jobs:
           -v /var/run/docker.sock:/var/run/docker.sock \
           recommended-images-windows:${{github.sha}} \
           nodejs buildTestPublish.js --config "$CONFIG" --mode "windows" --cleanup ${publish_arg}
+        env:
+          GITHUB_BRANCH: ${{ github.ref }}
