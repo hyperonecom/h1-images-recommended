@@ -1,14 +1,14 @@
 {
   "variables": {
-    "source_image": "freebsd:12",
+    "source_image": "60b92412d859786f994d5f46",
     "disk_size": "10",
     "scripts": "./scripts/resolv.sh,./scripts/freebsd/freebsd-12.sh",
-    "image_name": "FreeBSD 12.1",
+    "image_name": "FreeBSD 13.0",
     "public_netadp_service": "public",
     "vm_type": "a1.small",
     "ssh_name": "my-ssh",
-    "mirror": "http://ftp.pl.freebsd.org/pub/FreeBSD/releases/amd64/12.1-RELEASE",
-    "image_description": "{\"arch\":\"x64\",\"distro\":\"freebsd\",\"release\":\"12.1\",\"edition\":\"server\",\"codename\":\"stable\",\"recommended\":{\"disk\":{\"size\":10}}}",
+    "mirror": "http://ftp.pl.freebsd.org/pub/FreeBSD/releases/amd64/13.0-RELEASE",
+    "image_description": "{\"arch\":\"x64\",\"distro\":\"freebsd\",\"release\":\"13.0\",\"edition\":\"server\",\"codename\":\"stable\",\"recommended\":{\"disk\":{\"size\":10}}}",
     "state_timeout": "10m"
   },
   "builders": [
