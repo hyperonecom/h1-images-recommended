@@ -1,6 +1,4 @@
 'use strict';
-const yaml = require('js-yaml');
-const fs = require('fs');
 const process = require('process');
 const program = require('commander');
 const { ensureState, fetchImage, safeDeleteFail } = require('./lib/api');
