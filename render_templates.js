@@ -139,11 +139,13 @@ const render_templates = config => {
 const main = async () => {
     for (const imageConfig of await listConfig(['packer'])) {
         if (imageConfig.format !== 'qcow') {
+            console.log(`Invalid format: ${imageConfig.pname}`);
             continue;
         }
+        console.log(`Rendering: ${imageConfig.pname}`);
         const template = render_templates(imageConfig);
         const output_content = JSON.stringify(template, null, 4);
         await writeFile(imageConfig.template_file, output_content);
     }
 };
-main().then(console.log).catch(console.error);
+main().catch(console.error);
