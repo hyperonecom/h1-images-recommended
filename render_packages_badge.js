@@ -1,7 +1,7 @@
 'use strict';
 
 const fs = require('fs');
-
+const { listConfig } = require('./lib/config');
 const packages = [
     'cloud-init',
     'chrony',
@@ -22,27 +22,6 @@ const packages = [
     'docker',
 ];
 
-const repos = [
-    'alpine_edge',
-    'alpine_3_12',
-    'centos_7',
-    'centos_8',
-    'debian_stable',
-    'debian_oldstable',
-    'debian_testing',
-    'debian_unstable',
-    'fedora_30',
-    'fedora_31',
-    'fedora_32',
-    'fedora_33',
-    'fedora_rawhide',
-    'freebsd',
-    'ubuntu_16_04',
-    'ubuntu_18_04',
-    'ubuntu_20_04',
-    'ubuntu_20_10',
-];
-
 const latest = (pkg) => `[![latest packaged version(s) of ${pkg}](https://repology.org/badge/latest-versions/${pkg}.svg?header=)](https://repology.org/project/${pkg}/versions)`;
 
 const badge = (repo, pkg) => `[![${repo} package of ${pkg}](https://repology.org/badge/version-for-repo/${repo}/${pkg}.svg?header=)](https://repology.org/project/${pkg}/versions)`;
@@ -60,6 +39,15 @@ const main = async () => {
         ...packages.map(pkg => latest(pkg)),
     ]);
 
+    const repos = [];
+    for (const image of await listConfig()) {
+        if (!image.repology_repo) {
+            console.log(`Missing 'repology_repo' in '${image.pname}'`);
+            continue;
+        }
+        if (repos.includes(image.repology_repo)) continue;
+        repos.push(image.repology_repo);
+    }
     for (const repo of repos) {
         rows.push([
             repo,

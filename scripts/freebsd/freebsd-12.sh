@@ -15,7 +15,7 @@ sed -i -e "/update_hostname/a\\
  - update_etc_hosts\
 " /usr/local/etc/cloud/cloud.cfg
 # Install tools for testing image
-pkg install curl bash
+pkg install -y curl bash
 # Enables custom datasource for cloud-init
 echo 'cloudinit_enable="YES"' >> /etc/rc.conf
 set CLOUD_INIT_DS_DIR=`find /usr -name cloudinit -type d`
