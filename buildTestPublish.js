@@ -9,6 +9,7 @@ const {
 } = require('./lib/api');
 const core = require('@actions/core');
 const arp = require('./lib/arp');
+const { loadConfig } = require('./lib/config');
 
 const scope = (process.env.SCOPE || 'h1').toLowerCase();
 
@@ -139,9 +140,7 @@ const main = async () => {
         program.help();
     }
     try {
-        const input_file = program.config;
-        const content = await fs.promises.readFile(input_file);
-        const imageConfig = yaml.safeLoad(content);
+        const imageConfig = await loadConfig(program.config);
         const mode = program.mode || imageConfig.mode;
         const mode_runtime = require(`./lib/build_modes/${mode}.js`);
         let imageId;
