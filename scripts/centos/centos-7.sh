@@ -18,7 +18,7 @@ systemctl disable kdump.service
 echo 'GRUB_DISABLE_OS_PROBER=true' >> /etc/default/grub
 yum -y install grub2-efi-x64 shim-x64 grub2-efi-x64-modules
 grub2-install "${DEVICE_DISK}"
-grub2-install --removable --target=x86_64-efi "${DEVICE_DISK}"
+# grub2-install --removable --target=x86_64-efi "${DEVICE_DISK}"
 sed -i 's/^GRUB_CMDLINE_LINUX=.*$/GRUB_CMDLINE_LINUX="elevator=noop consoleblank=0 console=tty0 console=ttyS0,115200n8"/' /etc/default/grub
 sed -i 's/^GRUB_CMDLINE_LINUX_DEFAULT=.*$/GRUB_CMDLINE_LINUX_DEFAULT="quiet"/' /etc/default/grub
 grub2-set-default 0
