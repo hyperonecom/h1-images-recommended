@@ -50,12 +50,6 @@ jobs:
       matrix: ${{fromJson(needs.config.outputs.matrix-packer)}}
     steps:
       - uses: actions/checkout@v2
-      - run: |
-          publish_arg="" && [[ "${GITHUB_BRANCH##*/}" =~ "master" ]] && publish_arg="--publish" ;
-          echo "Publish arg: $publish_arg";
-          echo "GITHUB_BRANCH: $GITHUB_BRANCH";
-        env:
-          GITHUB_BRANCH: ${{ github.ref }}
       - name: "apply workaround for IP conflict bug (TODO: fix me)"
         run: sleep $(shuf -i 60-120 -n 1)
       - name: Save private SSH key
