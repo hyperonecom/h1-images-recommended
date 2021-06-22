@@ -12,7 +12,7 @@ cloud_init_install: false
 custom_scripts:
   - ./scripts/resolv.sh
   - ./scripts/fstab.sh
-  - ./scripts/centos/centos-7.sh
+  - ./scripts/centos/centos-8.sh
   - ./scripts/centos/cli.sh
   - ./scripts/relabel.sh
   - ./scripts/check_df.sh
