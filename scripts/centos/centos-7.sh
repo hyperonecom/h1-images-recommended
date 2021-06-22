@@ -27,7 +27,7 @@ sed -i 's/initrd16/initrd/' /boot/grub2/grub.cfg
 rm -f /boot/efi/EFI/centos/grub.cfg
 cp /boot/grub2/grub.cfg /boot/efi/EFI/centos/grub.cfg
 # removable install
-sudo cp -r /boot/efi/centos/ /boot/efi/BOOT
+sudo cp -r /boot/efi/EFI/centos/ /boot/efi/EFI/BOOT
 
 # Configure network
 rm -f /etc/sysconfig/network-scripts/ifcfg-eth0
