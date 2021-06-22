@@ -22,3 +22,4 @@ source_image: 'centos:8'
 selinux: '1'
 format: qcow
 repology_repo: centos_8
+vm_builder_service: _dev.gen2_2
