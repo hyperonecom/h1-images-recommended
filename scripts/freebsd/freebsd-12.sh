@@ -19,9 +19,10 @@ pkg install -y curl bash
 # Enables custom datasource for cloud-init
 echo 'cloudinit_enable="YES"' >> /etc/rc.conf
 set CLOUD_INIT_DS_DIR=`find /usr -name cloudinit -type d`
-set CLOUD_INIT_REVISION='864346999702e6b2b8bf7e6244a6608bcead72a5'
+set CLOUD_INIT_REVISION='2730521fd566f855863c5ed049a1df26abcd0770'
 cd "${CLOUD_INIT_DS_DIR}/sources";
 fetch "https://raw.githubusercontent.com/canonical/cloud-init/${CLOUD_INIT_REVISION}/cloudinit/sources/DataSourceRbxCloud.py"
+# python3.7 -c 'import cloudinit.sources.DataSourceRbxCloud' # verify successufll import
 echo 'datasource_list: [ RbxCloud ]' > /usr/local/etc/cloud/cloud.cfg.d/90_dpkg.cfg
 rm -rf /var/lib/cloud/data/
 # Enables 'h1 vm serialport console' (tty & kernel log)
