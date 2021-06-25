@@ -7,7 +7,7 @@ edition: datacenter
 arch: x64
 version: "2016"
 # not public available due licensing issue
-iso: autounattend-ws2016-dc-bios.xml.iso-r1
+iso: autounattend-ws2016-dc-bios.xml.iso-r4
 disk_size: "40"
 disk_type: ssd
 vm_type: m2.large
