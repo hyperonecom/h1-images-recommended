@@ -6,6 +6,8 @@ RUN wget "https://github.com/PowerShell/PowerShell/releases/download/v${POWERSHE
 && dpkg -i "powershell_${POWERSHELL_VERSION}-1.debian.10_amd64.deb" \
 && rm "powershell_${POWERSHELL_VERSION}-1.debian.10_amd64.deb"
 RUN npm install -g https://github.com/hyperonecom/h1-cli/archive/develop.tar.gz
+# fix WSSMan in Powershell - see details: https://www.bloggingforlogging.com/2020/08/21/wacky-wsman-on-linux/
+RUN pwsh -Command 'Install-Module -Name PSWSMan -Scope AllUsers -Confirm:$False -Force' && pwsh -Command 'Install-WSMan'
 WORKDIR /src
 ADD package* ./
 RUN npm install
