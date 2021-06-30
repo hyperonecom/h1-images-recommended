@@ -1,4 +1,4 @@
-FROM node:12-buster
+FROM node:16-buster
 RUN apt-get update \
     && apt-get install -y wget libgssapi-krb5-2 liblttng-ust0 netcat bats libunwind8
 ENV POWERSHELL_VERSION=7.1.3

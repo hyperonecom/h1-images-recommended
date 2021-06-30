@@ -12,10 +12,10 @@ jobs:
       matrix-windows: ${{ steps.set-matrix.outputs.matrix-windows }}
     steps:
       - uses: actions/checkout@v2
-      - name: Set up Node 12.x
+      - name: Set up Node 16.x
         uses: actions/setup-node@v1
         with:
-          node-version: "12.x"
+          node-version: "16.x"
       - name: Fetch master branch
         run: |
           git fetch origin master:master
