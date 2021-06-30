@@ -155,8 +155,8 @@ const main = async () => {
         const mode_runtime = require(`./lib/build_modes/${mode}.js`);
         let imageId;
 
-        groupWithStatus('Clean ARP before build', () => arp.clean());
-        groupWithStatus('Build image', async () => {
+        await groupWithStatus('Clean ARP before build', () => arp.clean());
+        await groupWithStatus('Build image', async () => {
             if (program.image) {
                 imageId = program.image;
                 console.log(`Choose image: ${imageId}`);
@@ -166,8 +166,8 @@ const main = async () => {
             console.log(`Builded image: ${imageId}`);
         });
 
-        groupWithStatus('Clean ARP before test', () => arp.clean());
-        groupWithStatus(`Test image ${imageId}`, async () => {
+        await groupWithStatus('Clean ARP before test', () => arp.clean());
+        await groupWithStatus(`Test image ${imageId}`, async () => {
             if (program.skipTest) {
                 console.log('Skip testing image');
                 return;
@@ -183,7 +183,7 @@ const main = async () => {
             }
         });
 
-        groupWithStatus(`Publish image ${imageId}`, async () => {
+        await groupWithStatus(`Publish image ${imageId}`, async () => {
             if (!program.publish) {
                 console.log(`Skip publishing image: ${imageId}`);
                 return;
@@ -198,7 +198,7 @@ const main = async () => {
         });
 
     } finally {
-        groupWithStatus('Cleanup', async () => {
+        await groupWithStatus('Cleanup', async () => {
             if (program.cleanup) {
                 await cleanupImage(); // clean up all images
                 await cleanupVm(); // delete VM first to make disk and ip free
