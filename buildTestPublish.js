@@ -124,6 +124,18 @@ const cleanupIp = async () => {
     }
 };
 
+const groupWithStatus = (name, fn) => core.group(name, async () => {
+    const start = Date.now();
+    try {
+        await fn();
+        console.log(`${name}: pass in ${(Date.now() - start) / 1000} seconds`);
+    } catch (err) {
+        console.log(`${name}: failed in ${(Date.now() - start) / 1000} seconds`);
+        core.setFailed(err.message);
+        throw err;
+    }
+});
+
 const main = async () => {
     program
         .version('0.1.0')
@@ -143,8 +155,8 @@ const main = async () => {
         const mode_runtime = require(`./lib/build_modes/${mode}.js`);
         let imageId;
 
-        await core.group('Clean ARP before build', () => arp.clean());
-        await core.group('Build image', async () => {
+        groupWithStatus('Clean ARP before build', () => arp.clean());
+        groupWithStatus('Build image', async () => {
             if (program.image) {
                 imageId = program.image;
                 console.log(`Choose image: ${imageId}`);
@@ -154,8 +166,8 @@ const main = async () => {
             console.log(`Builded image: ${imageId}`);
         });
 
-        await core.group('Clean ARP before test', () => arp.clean());
-        await core.group(`Test image ${imageId}`, async () => {
+        groupWithStatus('Clean ARP before test', () => arp.clean());
+        groupWithStatus(`Test image ${imageId}`, async () => {
             if (program.skipTest) {
                 console.log('Skip testing image');
                 return;
@@ -171,7 +183,7 @@ const main = async () => {
             }
         });
 
-        await core.group(`Publish image ${imageId}`, async () => {
+        groupWithStatus(`Publish image ${imageId}`, async () => {
             if (!program.publish) {
                 console.log(`Skip publishing image: ${imageId}`);
                 return;
@@ -186,7 +198,7 @@ const main = async () => {
         });
 
     } finally {
-        await core.group('Cleanup', async () => {
+        groupWithStatus('Cleanup', async () => {
             if (program.cleanup) {
                 await cleanupImage(); // clean up all images
                 await cleanupVm(); // delete VM first to make disk and ip free
