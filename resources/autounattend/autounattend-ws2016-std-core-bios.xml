@@ -143,21 +143,6 @@
             <TimeZone>UTC</TimeZone>
             <ComputerName>*</ComputerName>
         </component>
-        <component name="Microsoft-Windows-Deployment" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-            <RunSynchronous>
-
-
-                <!-- Download and install various utilities -->
-
-                <RunSynchronousCommand wcm:action="add">
-                    <Order>1</Order>
-                    <Path>powershell -NoLogo -ExecutionPolicy Bypass -File D:\provision.ps1</Path>
-
-                    <Description>Download script fo creating windows image</Description>
-                </RunSynchronousCommand>
-
-            </RunSynchronous>
-        </component>
         <component name="Microsoft-Windows-SQMApi" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="NonSxS" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
             <CEIPEnabled>0</CEIPEnabled>
         </component>

@@ -7,7 +7,7 @@ edition: standard-core
 arch: x64
 version: "2016"
 # not public available due licensing issue
-iso: autounattend-ws2016-std-core-bios.xml.iso-r4
+iso: autounattend-ws2016-std-core-bios.xml.iso-r5
 disk_size: "25"
 disk_type: ssd
 vm_type: m2.large
