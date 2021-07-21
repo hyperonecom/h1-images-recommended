@@ -146,19 +146,20 @@ const main = async () => {
         .option('--cleanup', 'Perform cleanup of old resources')
         .option('--mode <mode>', 'Mode of build images', /^(packer|windows)$/i)
         .parse(process.argv);
-    if (!program.config) {
+    const options = program.opts();
+    if (!options.config) {
         program.help();
     }
     try {
-        const imageConfig = await loadConfig(program.config);
-        const mode = program.mode || imageConfig.mode;
+        const imageConfig = await loadConfig(options.config);
+        const mode = options.mode || imageConfig.mode;
         const mode_runtime = require(`./lib/build_modes/${mode}.js`);
         let imageId;
 
         await groupWithStatus('Clean ARP before build', () => arp.clean());
         await groupWithStatus('Build image', async () => {
-            if (program.image) {
-                imageId = program.image;
+            if (options.image) {
+                imageId = options.image;
                 console.log(`Choose image: ${imageId}`);
                 return;
             }
@@ -168,14 +169,14 @@ const main = async () => {
 
         await groupWithStatus('Clean ARP before test', () => arp.clean());
         await groupWithStatus(`Test image ${imageId}`, async () => {
-            if (program.skipTest) {
+            if (options.skipTest) {
                 console.log('Skip testing image');
                 return;
             }
             try {
                 await mode_runtime.test(imageConfig, platformConfig, imageId, scope);
             } catch (err) {
-                if (program.cleanup) {
+                if (options.cleanup) {
                     console.log(`Delete invalid image: ${imageId}`);
                     await imageApi.imageDelete(imageId).catch(safeDeleteFail);
                 }
@@ -184,7 +185,7 @@ const main = async () => {
         });
 
         await groupWithStatus(`Publish image ${imageId}`, async () => {
-            if (!program.publish) {
+            if (!options.publish) {
                 console.log(`Skip publishing image: ${imageId}`);
                 return;
             }
@@ -199,7 +200,7 @@ const main = async () => {
 
     } finally {
         await groupWithStatus('Cleanup', async () => {
-            if (program.cleanup) {
+            if (options.cleanup) {
                 await cleanupImage(); // clean up all images
                 await cleanupVm(); // delete VM first to make disk and ip free
                 await cleanupDisk(); // delete detached disks

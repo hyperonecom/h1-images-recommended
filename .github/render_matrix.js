@@ -72,7 +72,7 @@ const renderMatrix = async (name, touched) => {
             touched.some(y => x.startsWith(y))
         )
     ) {
-        templates[`./config/${name}/${template}`] = yaml.safeLoad(await readFile(join(path, template)));
+        templates[`./config/${name}/${template}`] = yaml.load(await readFile(join(path, template)));
     }
     if (GITHUB_OUTPUT) {
         console.log(`::set-output name=matrix-${name}::${JSON.stringify(render(templates))}`);
