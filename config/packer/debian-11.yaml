@@ -6,7 +6,7 @@ edition: server
 arch: x64
 version: '11'
 download_url: >-
-  http://cdimage.debian.org/images/cloud/bullseye/daily/20210417-610/debian-11-genericcloud-amd64-daily-20210417-610.qcow2
+  http://cdimage.debian.org/images/cloud/bullseye/daily/latest/debian-11-genericcloud-amd64-daily.qcow2
 disk_size: '5'
 qcow_part: /dev/sda1
 cloud_init_install: false
