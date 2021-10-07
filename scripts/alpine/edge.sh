@@ -19,10 +19,7 @@ apk add sudo # to provide root access (users managed by cloud-init)
 apk add bash curl # to provide InfluxDB metrics
 apk add haveged # to provide entropy required by boot
 apk add eudev # to provide /dev/block for growpart of cloud-init
-apk add --repository "${MIRROR}/edge/testing" --repository "${MIRROR}/edge/main" --repository "${MIRROR}/edge/community" \
-    cloud-init \
-    cloud-init-openrc \
-    cloud-utils-growpart;
+apk add cloud-init cloud-init-openrc cloud-utils-growpart;
 sed '/after localmount/a    after haveged' -i /etc/init.d/cloud-init-local;
 echo 'datasource_list: [ RbxCloud ]' > /etc/cloud/cloud.cfg.d/90_dpkg.cfg
 rc-update -q add haveged
@@ -73,3 +70,4 @@ sed -e 's@LINUX vmlinuz-virt@LINUX /vmlinuz-virt@' -e 's@INITRD initramfs-virt@I
 cp /boot/efi/EFI/BOOT/syslinux.efi /boot/efi/EFI/BOOT/BOOTX64.EFI
 cp /boot/vmlinuz* /boot/efi/
 cp /boot/initramfs* /boot/efi/
+
