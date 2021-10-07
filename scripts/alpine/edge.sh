@@ -70,3 +70,4 @@ sed -e 's@LINUX vmlinuz-virt@LINUX /vmlinuz-virt@' -e 's@INITRD initramfs-virt@I
 cp /boot/efi/EFI/BOOT/syslinux.efi /boot/efi/EFI/BOOT/BOOTX64.EFI
 cp /boot/vmlinuz* /boot/efi/
 cp /boot/initramfs* /boot/efi/
+
