@@ -6,7 +6,7 @@ edition: docker
 arch: x64
 version: '11'
 download_url: >-
-  http://cdimage.debian.org/images/cloud/bullseye/daily/latest/debian-11-genericcloud-amd64-daily.qcow2
+  https://cdimage.debian.org/images/cloud/bullseye/20210928-779/debian-11-genericcloud-amd64-20210928-779.qcow2
 disk_size: '5'
 qcow_part: /dev/sda1
 cloud_init_install: false
