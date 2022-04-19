@@ -14,7 +14,7 @@
         "image_name": "Debian GNU/Linux (with Docker)",
         "ssh_name": "my-ssh",
         "image_description": "{\"arch\":\"x64\",\"distro\":\"debian\",\"release\":\"10\",\"edition\":\"docker\",\"codename\":\"docker\",\"recommended\":{\"disk\":{\"size\":20}}}",
-        "public_netadp_service": "public",
+        "network": "public",
         "vm_type": "a1.small",
         "repository": "https://packages.hyperone.cloud",
         "cli_package": "h1-cli",
@@ -24,6 +24,8 @@
     "builders": [
         {
             "type": "hyperone",
+            "project": "{{user `project`}}",
+            "network": "{{user `network`}}",
             "disk_size": 10,
             "chroot_disk": true,
             "mount_partition": 4,
@@ -35,7 +37,6 @@
             "chroot_disk_size": "{{user `disk_size`}}",
             "image_name": "{{user `image_name`}}",
             "image_description": "{{user `image_description`}}",
-            "public_netadp_service": "{{user `public_netadp_service`}}",
             "state_timeout": "{{user `state_timeout`}}",
             "pre_mount_commands": [
                 "[ ! -e '/etc/rpm/macros.dist' ] || sudo yum install -y \"https://dl.fedoraproject.org/pub/epel/epel-release-latest-$(awk '/rhel/ {print $2}' /etc/rpm/macros.dist).noarch.rpm\"",

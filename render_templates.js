@@ -64,7 +64,7 @@ const render_templates = config => {
             image_name: getter(config, 'pname'),
             ssh_name: 'my-ssh',
             image_description: JSON.stringify(tags),
-            public_netadp_service: 'public',
+            network: 'public',
             vm_type: 'a1.small',
             repository: 'https://packages.hyperone.cloud',
             cli_package: 'h1-cli',
@@ -85,7 +85,7 @@ const render_templates = config => {
                 chroot_disk_size: '{{user `disk_size`}}',
                 image_name: '{{user `image_name`}}',
                 image_description: '{{user `image_description`}}',
-                public_netadp_service: '{{user `public_netadp_service`}}',
+                network: '{{user `network`}}',
                 state_timeout: '{{user `state_timeout`}}',
                 pre_mount_commands: [
                     "[ ! -e '/etc/rpm/macros.dist' ] || sudo yum install -y \"https://dl.fedoraproject.org/pub/epel/epel-release-latest-$(awk '/rhel/ {print $2}' /etc/rpm/macros.dist).noarch.rpm\"",
