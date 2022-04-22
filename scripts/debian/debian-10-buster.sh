@@ -13,6 +13,7 @@ apt-get -y -o Dpkg::Options::=--force-confnew install grub-cloud-amd64
 # Update grub configuration
 sed -i 's/^GRUB_CMDLINE_LINUX=.*$/GRUB_CMDLINE_LINUX="elevator=noop consoleblank=0 console=tty0 console=ttyS0,115200n8"/' /etc/default/grub
 sed -i 's/^GRUB_CMDLINE_LINUX_DEFAULT=.*$/GRUB_CMDLINE_LINUX_DEFAULT="quiet"/' /etc/default/grub
+grub-install --recheck --no-floppy ${DEVICE_DISK}
 update-grub
 # Update initrd
 echo 'blacklist floppy' > /etc/modprobe.d/blacklist-floppy.conf
