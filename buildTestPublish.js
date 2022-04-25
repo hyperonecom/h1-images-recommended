@@ -32,7 +32,7 @@ const config = {
         vm_gen1_test_service: 'a1.nano',
         vm_gen2_test_service: '_dev.gen2_1',
         vm_builder_service: 'a1.small',
-        network: 'builder-private-network',
+        network: '5f369246524bfe7720c4c384', //builder-private-network
         disk_type: 'ssd',
         repository: 'https://packages.hyperone.cloud',
         cli_package: 'h1-cli',
