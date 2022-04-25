@@ -19,7 +19,6 @@ const config = {
     rbx: {
         scope: 'rbx',
         ssh: 'builder-ssh',
-        netadp_service: '5899b0f8d44c81202ab51308',
         vm_gen1_test_service: 'light',
         vm_builder_service: 'medium',
         disk_type: 'ssd',
@@ -30,7 +29,6 @@ const config = {
     h1: {
         scope: 'h1',
         ssh: 'builder-ssh',
-        netadp_service: '561e7e30a8cfd461e469ad18',
         vm_gen1_test_service: 'a1.nano',
         vm_gen2_test_service: '_dev.gen2_1',
         vm_builder_service: 'a1.small',
