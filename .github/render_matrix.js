@@ -48,6 +48,7 @@ const render = (templates) => {
     ) {
         const scopes = config.scope || scope_list;
         for (const scope of scopes) {
+            if (scope !== 'h1' || !template.includes('debian-10')) continue; //temporary, until the full flow is working
             include.push({
                 config: template,
                 scope,
