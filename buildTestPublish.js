@@ -25,6 +25,7 @@ const config = {
         repository: 'https://packages.rootbox.cloud',
         cli_package: 'rbx-cli',
         scope_name: 'Rootbox',
+        project: '5c603254a5e06e1eb55d87cb', //WDC hyperonecom/rbx-images-recommended
     },
     h1: {
         scope: 'h1',
@@ -37,6 +38,7 @@ const config = {
         repository: 'https://packages.hyperone.cloud',
         cli_package: 'h1-cli',
         scope_name: 'HyperOne',
+        project: '5c5d7eb1a5e06e1eb5532770', //WDC hyperonecom/h1-images-recommended
     },
 };
 const platformConfig = config[scope];
