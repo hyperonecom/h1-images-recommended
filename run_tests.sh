@@ -83,26 +83,29 @@ fi
 
 start_time=$(date +'%s');
 
-sed "$USERDATA" -e "s/%%REQUEST_TIME%%/${start_time}/g" -e "s/%%INFLUXDB_HOST%%/${INFLUXDB_HOST}/g" -e "s/%%INFLUXDB_USER%%/${INFLUXDB_USER}/g" -e "s/%%INFLUXDB_PASSWORD%%/${INFLUXDB_PASSWORD}/g" -e "s/%%VM_TYPE%%/${VM_TYPE}/g" -e "s/%%IMAGE_ID%%/$IMAGE/g";
+userdata_file=$(mktemp)
+
+sed \
+  -e "s/%%REQUEST_TIME%%/${start_time}/g" \
+  -e "s@%%INFLUXDB_HOST%%@${INFLUXDB_HOST}@g" \
+  -e "s/%%INFLUXDB_USER%%/${INFLUXDB_USER}/g" \
+  -e "s/%%INFLUXDB_PASSWORD%%/${INFLUXDB_PASSWORD}/g" \
+  -e "s/%%VM_TYPE%%/${VM_TYPE}/g" \
+  -e "s/%%SCOPE%%/${SCOPE}/g" \
+  -e "s/%%IMAGE_ID%%/${IMAGE_ID}/g" \
+  -e "s/%%IMAGE_NAME%%/${IMAGE_NAME}/g" \
+  "$USERDATA" > $userdata_file
 
 set +x
 VM_ID=$(${RBX_CLI} vm create --image $IMAGE \
     --name $VM_NAME \
     --username $USER \
     --password $PASSWORD \
-    --ssh $SSH_KEY_NAME \
+    --ssh "$SSH_KEY_NAME" \
     --type $VM_TYPE \
     --os-disk $OS_DISK \
-    --userdata-file <( sed "$USERDATA" \
-        -e "s/%%REQUEST_TIME%%/${start_time}/g" \
-        -e "s@%%INFLUXDB_HOST%%@${INFLUXDB_HOST}@g" \
-        -e "s/%%INFLUXDB_USER%%/${INFLUXDB_USER}/g" \
-        -e "s/%%INFLUXDB_PASSWORD%%/${INFLUXDB_PASSWORD}/g" \
-        -e "s/%%VM_TYPE%%/${VM_TYPE}/g" \
-        -e "s/%%SCOPE%%/${SCOPE}/g" \
-        -e "s/%%IMAGE_ID%%/${IMAGE_ID}/g" \
-        -e "s/%%IMAGE_NAME%%/${IMAGE_NAME}/g" ) \
     --ip $INTERNAL_IP \
+    --userdata-file $userdata_file \
     -o tsv | cut -f1 )
 set -x
 echo "VM created: ${VM_ID}"
@@ -115,7 +118,7 @@ trap cleanup EXIT
 RBX_CLI="$RBX_CLI" VM_ID="$VM_ID" IMAGE_ID="$IMAGE" USER="$USER" IP="$EXTERNAL_IP" HOSTNAME="$VM_NAME" bats "./tests/common.bats"
 
 if [ "$os" == "packer" ]; then
-  delay 300;
+  delay 120;
 	${RBX_CLI} vm serialport log --vm "$VM_ID" || echo 'Serialport not available';
 	ping -c 3 "$VM_IP";
 	RBX_CLI="$RBX_CLI" USER="$USER" IP="$EXTERNAL_IP" HOSTNAME="$VM_NAME" bats "./tests/${os}.bats"
