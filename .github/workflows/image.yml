@@ -61,6 +61,11 @@ jobs:
           md5sum ./resources/ssh/*
         env:
           PRIVATE_KEY: "${{ secrets.PRIVATE_KEY }}"
+      - name: inject passport file
+        run: |
+          echo "$HYPERONE_PASSPORT" > ./resources/passport.json
+        env:
+          HYPERONE_PASSPORT: "${{ secrets.HYPERONE_PASSPORT }}"          
       - name: Build Docker image
         run: docker build -t recommended-images:${{github.sha}} .
       - name: Build Platform image
@@ -71,6 +76,7 @@ jobs:
           publish_arg="" && [[ "${GITHUB_BRANCH##*/}" =~ "master" ]] && publish_arg="--publish" ;
           docker run --rm -e CI -e H1_TOKEN -e RBX_TOKEN -e SCOPE -e INFLUXDB_HOST -e INFLUXDB_PASSWORD -e INFLUXDB_USER -e REDHAT_SECRET \
           -v /var/run/docker.sock:/var/run/docker.sock \
+          -v $PWD/resources/passport.json:/root/.h1/passport.json \
           recommended-images:${{github.sha}} \
           nodejs buildTestPublish.js --config "$CONFIG" --mode "packer" --cleanup ${publish_arg}
         env:
@@ -82,6 +88,7 @@ jobs:
           publish_arg="" && [[ "${GITHUB_BRANCH##*/}" =~ "master" ]] && publish_arg="--publish" ;
           docker run --rm -e CI -e H1_TOKEN -e RBX_TOKEN -e SCOPE -e INFLUXDB_HOST -e INFLUXDB_PASSWORD -e INFLUXDB_USER -e REDHAT_SECRET \
           -v /var/run/docker.sock:/var/run/docker.sock \
+          -v $PWD/resources/passport.json:/root/.h1/passport.json \
           recommended-images:${{github.sha}} \
           nodejs buildTestPublish.js --config "$CONFIG" --mode "packer" --cleanup ${publish_arg}
         if: ${{ steps.attempt.outcome == 'failure' }}
