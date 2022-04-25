@@ -9,13 +9,13 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "@actions/core": "^1.2.6",
-    "commander": "^8.0.0",
+    "@actions/core": "^1.6.0",
+    "commander": "^9.2.0",
     "hyper_one_api": "https://github.com/hyperonecom/h1-client-js/archive/v0.0.2.tar.gz",
     "js-yaml": "^4.1.0"
   },
   "devDependencies": {
-    "@hyperone/eslint-config": "^2.0.0",
-    "eslint": "^7.29.0"
+    "@hyperone/eslint-config": "^3.0.0",
+    "eslint": "^8.14.0"
   }
 }

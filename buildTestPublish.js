@@ -191,7 +191,7 @@ const main = async () => {
             }
             if (imageConfig.license) {
                 const image = await fetchImage(imageId);
-                if (!image.license || image.license.length == 0) {
+                if (!image.license || image.license.length === 0) {
                     throw new Error('Image not ready to publish - no licenses required');
                 }
             }
