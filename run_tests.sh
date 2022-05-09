@@ -120,6 +120,7 @@ RBX_CLI="$RBX_CLI" VM_ID="$VM_ID" IMAGE_ID="$IMAGE" USER="$USER" IP="$EXTERNAL_I
 if [ "$os" == "packer" ]; then
   delay 120;
 	${RBX_CLI} vm serialport log --vm "$VM_ID" || echo 'Serialport not available';
+  ip -s -s neigh flush "$VM_IP" || echo 'Failed to delete VM IP from local ARP table on build host';
 	ping -c 3 "$VM_IP";
 	RBX_CLI="$RBX_CLI" USER="$USER" IP="$EXTERNAL_IP" HOSTNAME="$VM_NAME" bats "./tests/${os}.bats"
 fi
