@@ -9,7 +9,7 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "@actions/core": "^1.2.6",
+    "@actions/core": "^1.9.1",
     "commander": "^8.0.0",
     "hyper_one_api": "https://github.com/hyperonecom/h1-client-js/archive/v0.0.2.tar.gz",
     "js-yaml": "^4.1.0"
