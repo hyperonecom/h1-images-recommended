@@ -50,6 +50,7 @@ const render = (templates) => {
         for (const scope of scopes) {
             if (scope !== 'h1' || !template.includes('debian')) continue; //temporary, until the full flow is working
             include.push({
+                name: config.name,
                 config: template,
                 scope,
             });
@@ -75,10 +76,13 @@ const renderMatrix = async (name, touched) => {
     ) {
         templates[`./config/${name}/${template}`] = yaml.load(await readFile(join(path, template)));
     }
+
+    const out = render(templates);
+
     if (GITHUB_OUTPUT) {
-        fs.appendFileSync(GITHUB_OUTPUT, `matrix-${name}=${JSON.stringify(render(templates))}`);
+        fs.appendFileSync(GITHUB_OUTPUT, `matrix-${name}=${JSON.stringify(out)}`);
     } else {
-        console.log(JSON.stringify(render(templates), null, 4));
+        console.log(out);
     }
 }
 const main = async () => {
