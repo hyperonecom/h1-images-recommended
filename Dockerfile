@@ -1,13 +1,9 @@
 FROM node:16
 ENV DOCKER_VERSION=20.10.1
-ENV PACKER_VERSION=1.8.0
+ENV PACKER_VERSION=1.8.5
 RUN curl -fsSL https://download.docker.com/linux/static/stable/x86_64/docker-${DOCKER_VERSION}.tgz -o "docker-${DOCKER_VERSION}.tgz" \
 && tar xzvf "docker-${DOCKER_VERSION}.tgz" --strip 1 -C /usr/local/bin docker/docker \
 && rm "docker-${DOCKER_VERSION}.tgz"
-# RUN curl -s -L "https://github.com/hashicorp/packer/releases/download/nightly/packer_linux_amd64.zip" -o packer.zip \
-# && unzip -d /usr/local/bin packer.zip packer \
-# && chmod +x /usr/local/bin/packer \
-# && rm packer.zip
 RUN curl -fsSL "https://releases.hashicorp.com/packer/${PACKER_VERSION}/packer_${PACKER_VERSION}_linux_amd64.zip" -o packer.zip \
 && ls -lah packer.zip \
 && unzip -d /usr/local/bin packer.zip packer \
