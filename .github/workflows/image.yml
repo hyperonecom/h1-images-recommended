@@ -12,9 +12,9 @@ jobs:
       matrix-packer: ${{ steps.set-matrix.outputs.matrix-packer }}
       matrix-windows: ${{ steps.set-matrix.outputs.matrix-windows }}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Set up Node 16.x
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v3
         with:
           node-version: "16.x"
       - name: Fetch master branch
@@ -51,7 +51,7 @@ jobs:
       matrix: ${{fromJson(needs.config.outputs.matrix-packer)}}
     name: ${{ matrix.name }}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: "apply workaround for IP conflict bug (TODO: fix me)"
         run: sleep $(shuf -i 60-120 -n 1)
       - name: Save private SSH key
@@ -132,7 +132,7 @@ jobs:
       INFLUXDB_USER: '${{secrets.INFLUXDB_USER}}'
       REDHAT_SECRET: '${{secrets.REDHAT_SECRET}}'
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: "apply workaround for IP conflict bug (TODO: fix me)"
         run: sleep $(shuf -i 60-120 -n 1)
       - name: Save private SSH key
