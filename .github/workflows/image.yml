@@ -31,7 +31,7 @@ jobs:
         # Build diff on push (except master)
         run: |
           build_arg="" && [[ "$GITHUB_EVENT_NAME" =~ "push" && ! "$GITHUB_REF" =~ .*/master  ]] && build_arg="--diff";
-          node ./.github/render_matrix.js --github ${build_arg}
+          node ./.github/render_matrix.js ${build_arg}
   packer:
     needs: config
     runs-on: self-hosted

@@ -7,7 +7,7 @@ const readDir = fs.promises.readdir;
 const readFile = fs.promises.readFile;
 const yaml = require('js-yaml');
 
-const GITHUB_OUTPUT = process.argv.includes('--github');
+const GITHUB_OUTPUT = process.env.GITHUB_OUTPUT;
 const DIFF_MODE = process.argv.includes('--diff');
 const FAMILIES = ['alpine', 'centos', 'debian', 'rhel', 'ubuntu', 'fedora', 'freebsd', 'windows'];
 
@@ -76,7 +76,7 @@ const renderMatrix = async (name, touched) => {
         templates[`./config/${name}/${template}`] = yaml.load(await readFile(join(path, template)));
     }
     if (GITHUB_OUTPUT) {
-        console.log(`::set-output name=matrix-${name}::${JSON.stringify(render(templates))}`);
+        fs.appendFileSync(GITHUB_OUTPUT, `matrix-${name}=${JSON.stringify(render(templates))}`);
     } else {
         console.log(JSON.stringify(render(templates), null, 4));
     }
