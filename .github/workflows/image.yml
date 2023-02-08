@@ -71,7 +71,6 @@ jobs:
         run: docker build -t recommended-images:${{github.sha}} .
       - name: Build Platform image
         id: attempt
-        continue-on-error: true
         timeout-minutes: 90
         run: |
           publish_arg="" && [[ "${GITHUB_BRANCH##*/}" =~ "master" ]] && publish_arg="--publish" ;
@@ -82,31 +81,12 @@ jobs:
           nodejs buildTestPublish.js --config "$CONFIG" --mode "packer" --cleanup ${publish_arg}
         env:
           GITHUB_BRANCH: ${{ github.ref }}
-      # - name: Retry build Platform image
-      #   timeout-minutes: 90
-      #   id: retry
-      #   run: |
-      #     publish_arg="" && [[ "${GITHUB_BRANCH##*/}" =~ "master" ]] && publish_arg="--publish" ;
-      #     docker run --rm -e CI -e H1_TOKEN -e RBX_TOKEN -e SCOPE -e INFLUXDB_HOST -e INFLUXDB_PASSWORD -e INFLUXDB_USER -e REDHAT_SECRET \
-      #     -v /var/run/docker.sock:/var/run/docker.sock \
-      #     -v $PWD/resources/passport.json:/root/.h1/passport.json \
-      #     recommended-images:${{github.sha}} \
-      #     nodejs buildTestPublish.js --config "$CONFIG" --mode "packer" --cleanup ${publish_arg}
-      #   if: ${{ steps.attempt.outcome == 'failure' }}
-      #   env:
-      #     GITHUB_BRANCH: ${{ github.ref }}
-      - name: "Report successfully build (1st build) to InfluxDB"
+      - name: "Report successfully build to InfluxDB"
         run: ./.github/influx.sh
         if: "${{ steps.attempt.outcome == 'success' }}"
         env:
           INFLUXDB_VALUE: "1"
           INFLUXDB_ATTEMPT: "1"
-      # - name: "Report successfully build (2nd build) to InfluxDB"
-      #   run: ./.github/influx.sh
-      #   if: "${{ steps.attempt.outcome == 'failure' && steps.retry.outcome == 'success' }}"
-      #   env:
-      #     INFLUXDB_VALUE: "1"
-      #     INFLUXDB_ATTEMPT: "2"
       - name: "Report failure build to InfluxDB"
         run: ./.github/influx.sh
         if: "${{ failure() }}"
