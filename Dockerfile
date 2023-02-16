@@ -19,6 +19,8 @@ RUN VERSION_CODENAME=$(sed -E -n 's/VERSION=.*\((.+?)\).*$/\1/gp' /etc/os-releas
 && apt-get update \
 && apt-get install -y bats unzip h1-cli rbx-cli \
 && rm -rf /var/lib/apt/lists/*
+RUN curl -fsSL "https://github.com/hyperonecom/h1-cli/releases/download/v2.2.0/h1-linux.tar.gz" -o /tmp/h1-linux.tar.gz \
+&& tar zxf /tmp/h1-linux.tar.gz -C /bin
 WORKDIR /src/
 COPY ./package*.json /src/
 COPY ./resources/ssh/id_rsa* /root/.ssh/

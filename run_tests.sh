@@ -6,12 +6,13 @@ declare scope="h1"
 declare help="Usage $0 -s [rbx|h1] -i image_id -o [packer|windows] -v vm_service -c credentials_id_or_name -n network_id_or_name"
 declare IMAGE=""
 declare VM_TYPE="a1.nano"
-declare DISK_SERVICE="ssd";
+declare DISK_SERVICE="/billing/project/platform/service/562fb685a3e575771b599091" #ssd
 declare DISK_SIZE="10";
 declare USER="clouduser"
 declare USERDATA="./tests/userdata"
 declare SSH_KEY_NAME="";
 declare NETWORK="builder-network";
+declare NETWORK_PUBLIC="/networking/pl-waw-1/project/000000000000000000000000/network/5784e97be2627505227b578c";
 
 while getopts "s:i:o:v:d:n:c:" opt; do
   case $opt in
@@ -46,14 +47,15 @@ done
 if [[ $OPTIND -eq 1 ]]; then echo "$help"; exit 2; fi
 
 RBX_CLI="${scope}";
-OS_DISK="$DISK_SERVICE,$DISK_SIZE"
-VM_NAME=$(echo "image-${IMAGE}-test" | tr -cd 'a-zA-Z0-9\-_ ' )
-IMAGE_NAME=$(${RBX_CLI} image show --image ${IMAGE} -o tsv --query '[].{name:name}' | sed -e 's/[^a-zA-Z0-9\-]/_/g' -e 's/__*/_/g' -e 's/_$//g' )
-IMAGE_ID=$(${RBX_CLI} image show --image ${IMAGE} -o tsv --query '[].{id:id}')
+IMAGE_NAME=$(${RBX_CLI} storage image show --image ${IMAGE} -o tsv --query '[].{name:name}' | sed -e 's/[^a-zA-Z0-9\-]/_/g' -e 's/__*/_/g' -e 's/_$//g' )
+IMAGE_ID=$(${RBX_CLI} storage image show --image ${IMAGE} -o id)
+VM_NAME=$(echo "image-${IMAGE_ID}-test" | tr -cd 'a-zA-Z0-9\-_ ' )
 
 function cleanup () {
-  ${RBX_CLI} vm delete --yes --vm "$VM_ID"
-  ${RBX_CLI} disk delete --yes  --disk "$VM_DISK_ID"
+  ${RBX_CLI} compute vm delete --vm "$VM_ID"
+
+  VM_DISK_ID=$(${RBX_CLI} storage disk list --vm $VM_ID --output tsv --query "[].{disk:id}")
+  ${RBX_CLI} storage disk delete --disk "$VM_DISK_ID"
 }
 
 function delay () {
@@ -71,14 +73,15 @@ set +x
 PASSWORD=$(openssl rand -hex 15)
 set -x
 
-EXTERNAL_IP=$(${RBX_CLI} ip create --query "[].{ip:address}" -o tsv);
+EXTERNAL_IP=$(${RBX_CLI} networking ip create --query "[].{ip:uri}" -o tsv);
 
 if [ "$os" == "windows" ]; then
-	INTERNAL_IP=$(${RBX_CLI} network ip create --network $NETWORK -o id);
+	INTERNAL_IP=$(${RBX_CLI} networking network ip create --network $NETWORK -o id);
 fi;
 
 if [ "$os" == "packer" ]; then
 	INTERNAL_IP=$EXTERNAL_IP
+  NETWORK=$NETWORK_PUBLIC
 fi
 
 start_time=$(date +'%s');
@@ -96,30 +99,27 @@ sed \
   -e "s/%%IMAGE_NAME%%/${IMAGE_NAME}/g" \
   "$USERDATA" > $userdata_file
 
-set +x
-VM_ID=$(${RBX_CLI} vm create --image $IMAGE \
+VM_ID=$(${RBX_CLI} compute vm create --image $IMAGE \
     --name $VM_NAME \
     --username $USER \
     --password $PASSWORD \
-    --ssh "$SSH_KEY_NAME" \
-    --type $VM_TYPE \
-    --os-disk $OS_DISK \
-    --ip $INTERNAL_IP \
-    --userdata-file $userdata_file \
+    --credential type=ssh,value="$SSH_KEY_NAME" \
+    --service $VM_TYPE \
+    --disk name=$VM_NAME-os,service=$DISK_SERVICE,size=$DISK_SIZE \
+    --netadp network=$NETWORK,ip=$INTERNAL_IP \
+    --user-metadata "$(base64 < $userdata_file)" \
     -o tsv | cut -f1 )
-set -x
 echo "VM created: ${VM_ID}"
 
-VM_IP=$(${RBX_CLI} vm nic list --vm $VM_ID --query "[].ip[*].address" -o tsv|head -1)
-VM_DISK_ID=$(${RBX_CLI} vm disk list --vm $VM_ID --output tsv --query "[].{disk:disk._id}")
+VM_IP=$(${RBX_CLI} networking ip show --ip $EXTERNAL_IP --query "[].{ip:address}" -o tsv)
 
 trap cleanup EXIT
 
-RBX_CLI="$RBX_CLI" VM_ID="$VM_ID" IMAGE_ID="$IMAGE" USER="$USER" IP="$EXTERNAL_IP" HOSTNAME="$VM_NAME" bats "./tests/common.bats"
+RBX_CLI="$RBX_CLI" VM_ID="$VM_ID" IMAGE_ID="$IMAGE_ID" USER="$USER" IP="$EXTERNAL_IP" HOSTNAME="$VM_NAME" bats "./tests/common.bats"
 
 if [ "$os" == "packer" ]; then
   delay 60;
-	${RBX_CLI} vm serialport log --vm "$VM_ID" || echo 'Serialport not available';
+	${RBX_CLI} compute vm serialport --vm "$VM_ID" || echo 'Serialport not available';
   ip -s -s neigh flush "$VM_IP" || echo 'Failed to delete VM IP from local ARP table on build host';
 	ping -c 3 "$VM_IP";
 	RBX_CLI="$RBX_CLI" USER="$USER" IP="$EXTERNAL_IP" HOSTNAME="$VM_NAME" bats "./tests/${os}.bats"
@@ -127,12 +127,12 @@ fi
 
 if [ "$os" == "windows" ]; then
   delay 120;
-	${RBX_CLI} vm serialport log --vm "$VM_ID";
-	${RBX_CLI} ip associate --ip $EXTERNAL_IP --private-ip $INTERNAL_IP;
+	${RBX_CLI} compute vm serialport --vm "$VM_ID";
+	${RBX_CLI} networking ip associate --ip $EXTERNAL_IP --private-ip $INTERNAL_IP;
 	#changePassword
   declare USER="Administrator"
-  new_pass=$(${RBX_CLI} vm  passwordreset --user $USER  --vm $VM_ID --output tsv) || error "Could not change password"
-	${RBX_CLI} vm serialport log --vm "$VM_ID" --port 2;
+  new_pass=$(${RBX_CLI} compute vm password_reset --user $USER --vm $VM_ID --output tsv) || error "Could not change password"
+	${RBX_CLI} compute vm serialport --vm "$VM_ID" --number 2;
   if [ "$new_pass" == "" ]; then error "Could not change password"; fi
   echo "User: $USER";
   echo "Pass: $new_pass";
