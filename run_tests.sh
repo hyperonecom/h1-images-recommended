@@ -115,7 +115,7 @@ VM_ID=$(${RBX_CLI} compute vm create \
     --service $VM_TYPE \
     --disk name=$VM_NAME-os,service=$DISK_SERVICE,size=$DISK_SIZE \
     --netadp network=$NETWORK,ip=$INTERNAL_IP \
-    --user-metadata "$(base64 < $userdata_file)" \
+    --user-metadata "$(base64 -w 0 < $userdata_file)" \
     -o tsv | cut -f1 )
 echo "VM created: ${VM_ID}"
 
