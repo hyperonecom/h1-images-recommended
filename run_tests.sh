@@ -3,7 +3,7 @@
 set -xeo pipefail
 
 declare scope="h1"
-declare help="Usage $0 -s [rbx|h1] -i image_id -o [packer|windows] -v vm_service -c credentials_id_or_name -n network_id_or_name"
+declare help="Usage $0 -s [rbx|h1] -i image_id -o [packer|windows] -v vm_service -c credentials_id_or_name -n network_id_or_name -p project_id"
 declare IMAGE=""
 declare VM_TYPE="a1.nano"
 declare DISK_SERVICE="/billing/project/platform/service/562fb685a3e575771b599091" #ssd
@@ -13,8 +13,9 @@ declare USERDATA="./tests/userdata"
 declare SSH_KEY_NAME="";
 declare NETWORK="builder-network";
 declare NETWORK_PUBLIC="/networking/pl-waw-1/project/000000000000000000000000/network/5784e97be2627505227b578c";
+declare PROJECT=""
 
-while getopts "s:i:o:v:d:n:c:" opt; do
+while getopts "s:i:o:v:d:n:c:p:" opt; do
   case $opt in
     s)
        scope=${OPTARG}
@@ -27,6 +28,8 @@ while getopts "s:i:o:v:d:n:c:" opt; do
     c) SSH_KEY_NAME=${OPTARG}
        ;;
     d) DISK_SIZE=${OPTARG}
+       ;;
+    p) PROJECT=${OPTARG}
        ;;
     o) os=${OPTARG}
       [ "$os" == "packer" ]  || [ "$os" == "windows" ] ||  exit 1
@@ -47,6 +50,8 @@ done
 if [[ $OPTIND -eq 1 ]]; then echo "$help"; exit 2; fi
 
 RBX_CLI="${scope}";
+${RBX_CLI} iam project select --project ${PROJECT}
+
 IMAGE_NAME=$(${RBX_CLI} storage image show --image ${IMAGE} -o tsv --query '[].{name:name}' | sed -e 's/[^a-zA-Z0-9\-]/_/g' -e 's/__*/_/g' -e 's/_$//g' )
 IMAGE_ID=$(${RBX_CLI} storage image show --image ${IMAGE} -o id)
 VM_NAME=$(echo "image-${IMAGE_ID}-test" | tr -cd 'a-zA-Z0-9\-_ ' )
