@@ -52,8 +52,10 @@ if [[ $OPTIND -eq 1 ]]; then echo "$help"; exit 2; fi
 RBX_CLI="${scope}";
 ${RBX_CLI} iam project select --project ${PROJECT}
 
-IMAGE_NAME=$(${RBX_CLI} storage image show --image ${IMAGE} -o tsv --query '[].{name:name}' | sed -e 's/[^a-zA-Z0-9\-]/_/g' -e 's/__*/_/g' -e 's/_$//g' )
-IMAGE_ID=$(${RBX_CLI} storage image show --image ${IMAGE} -o id)
+IMAGE_JSON=$(${RBX_CLI} storage image show --image ${IMAGE} -o json)
+IMAGE_NAME=$(echo $IMAGE_JSON | jq -r .name | sed -e 's/[^a-zA-Z0-9\-]/_/g' -e 's/__*/_/g' -e 's/_$//g' )
+IMAGE_URI=$(echo $IMAGE_JSON | jq -r .uri)
+IMAGE_ID=$(echo $IMAGE_JSON | jq -r .id)
 VM_NAME=$(echo "image-${IMAGE_ID}-test" | tr -cd 'a-zA-Z0-9\-_ ' )
 
 function cleanup () {
@@ -104,7 +106,8 @@ sed \
   -e "s/%%IMAGE_NAME%%/${IMAGE_NAME}/g" \
   "$USERDATA" > $userdata_file
 
-VM_ID=$(${RBX_CLI} compute vm create --image $IMAGE \
+VM_ID=$(${RBX_CLI} compute vm create \
+    --image $IMAGE_URI \
     --name $VM_NAME \
     --username $USER \
     --password $PASSWORD \

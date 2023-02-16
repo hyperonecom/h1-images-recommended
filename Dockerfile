@@ -17,7 +17,7 @@ RUN VERSION_CODENAME=$(sed -E -n 's/VERSION=.*\((.+?)\).*$/\1/gp' /etc/os-releas
 && echo "deb [arch=amd64] http://packages.hyperone.cloud/linux/debian/ $VERSION_CODENAME stable" > /etc/apt/sources.list.d/hyperone.list \
 && echo "deb [arch=amd64] http://packages.rootbox.cloud/linux/debian/ $VERSION_CODENAME stable" > /etc/apt/sources.list.d/rootbox.list \
 && apt-get update \
-&& apt-get install -y bats unzip h1-cli rbx-cli \
+&& apt-get install -y jq bats unzip h1-cli rbx-cli \
 && rm -rf /var/lib/apt/lists/*
 RUN curl -fsSL "https://github.com/hyperonecom/h1-cli/releases/download/v2.2.0/h1-linux.tar.gz" -o /tmp/h1-linux.tar.gz \
 && tar zxf /tmp/h1-linux.tar.gz -C /bin
