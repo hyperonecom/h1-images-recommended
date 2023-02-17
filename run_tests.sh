@@ -123,14 +123,14 @@ VM_IP=$(${RBX_CLI} networking ip show --ip $EXTERNAL_IP --query "[].{ip:address}
 
 trap cleanup EXIT
 
-RBX_CLI="$RBX_CLI" VM_ID="$VM_ID" IMAGE_ID="$IMAGE_ID" USER="$USER" IP="$EXTERNAL_IP" HOSTNAME="$VM_NAME" bats "./tests/common.bats"
+RBX_CLI="$RBX_CLI" VM_ID="$VM_ID" IMAGE_ID="$IMAGE_ID" USER="$USER" IP="$VM_IP" HOSTNAME="$VM_NAME" bats "./tests/common.bats"
 
 if [ "$os" == "packer" ]; then
   delay 60;
 	${RBX_CLI} compute vm serialport --vm "$VM_ID" || echo 'Serialport not available';
   ip -s -s neigh flush "$VM_IP" || echo 'Failed to delete VM IP from local ARP table on build host';
 	ping -c 3 "$VM_IP";
-	RBX_CLI="$RBX_CLI" USER="$USER" IP="$EXTERNAL_IP" HOSTNAME="$VM_NAME" bats "./tests/${os}.bats"
+	RBX_CLI="$RBX_CLI" USER="$USER" IP="$VM_IP" HOSTNAME="$VM_NAME" bats "./tests/${os}.bats"
 fi
 
 if [ "$os" == "windows" ]; then
@@ -144,5 +144,5 @@ if [ "$os" == "windows" ]; then
   if [ "$new_pass" == "" ]; then error "Could not change password"; fi
   echo "User: $USER";
   echo "Pass: $new_pass";
-  pwsh "tests/tests.ps1" -IP "$EXTERNAL_IP" -Hostname "$VM_NAME" -User "$USER" -Pass "\"$new_pass\"";
+  pwsh "tests/tests.ps1" -IP "$VM_IP" -Hostname "$VM_NAME" -User "$USER" -Pass "\"$new_pass\"";
 fi
