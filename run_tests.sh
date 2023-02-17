@@ -59,9 +59,9 @@ IMAGE_ID=$(echo $IMAGE_JSON | jq -r .id)
 VM_NAME=$(echo "image-${IMAGE_ID}-test" | tr -cd 'a-zA-Z0-9\-_ ' )
 
 function cleanup () {
-  ${RBX_CLI} compute vm delete --vm "$VM_ID"
-
   VM_DISK_ID=$(${RBX_CLI} storage disk list --vm $VM_ID --output tsv --query "[].{disk:id}")
+
+  ${RBX_CLI} compute vm delete --vm "$VM_ID"
   ${RBX_CLI} storage disk delete --disk "$VM_DISK_ID"
 }
 
