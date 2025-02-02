@@ -2,7 +2,7 @@ FROM node:16-buster
 RUN apt-get update \
     && apt-get install -y wget libgssapi-krb5-2 liblttng-ust0 netcat bats libunwind8
 ENV POWERSHELL_VERSION=7.1.3
-RUN wget "https://github.com/PowerShell/PowerShell/releases/download/v${POWERSHELL_VERSION}/powershell_${POWERSHELL_VERSION}-1.debian.10_amd64.deb" \
+RUN wget -nv "https://github.com/PowerShell/PowerShell/releases/download/v${POWERSHELL_VERSION}/powershell_${POWERSHELL_VERSION}-1.debian.10_amd64.deb" \
 && dpkg -i "powershell_${POWERSHELL_VERSION}-1.debian.10_amd64.deb" \
 && rm "powershell_${POWERSHELL_VERSION}-1.debian.10_amd64.deb"
 RUN npm install -g https://github.com/hyperonecom/h1-cli/archive/develop.tar.gz
