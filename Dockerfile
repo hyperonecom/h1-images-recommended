@@ -1,6 +1,13 @@
+FROM golang:1.19 AS builder
+WORKDIR /app
+RUN git clone https://github.com/hashicorp/packer-plugin-hyperone.git
+RUN cd ./packer-plugin-hyperone && \
+    go mod download && \
+    CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build
+
 FROM node:16
 ENV DOCKER_VERSION=20.10.1
-ENV PACKER_VERSION=1.8.5
+ENV PACKER_VERSION=1.12.0
 RUN curl -fsSL https://download.docker.com/linux/static/stable/x86_64/docker-${DOCKER_VERSION}.tgz -o "docker-${DOCKER_VERSION}.tgz" \
 && tar xzvf "docker-${DOCKER_VERSION}.tgz" --strip 1 -C /usr/local/bin docker/docker \
 && rm "docker-${DOCKER_VERSION}.tgz"
@@ -9,8 +16,8 @@ RUN curl -fsSL "https://releases.hashicorp.com/packer/${PACKER_VERSION}/packer_$
 && unzip -d /usr/local/bin packer.zip packer \
 && chmod +x /usr/local/bin/packer \
 && rm packer.zip
-RUN curl -fsSL "https://github.com/hyperonecom/packer-plugin-hyperone/releases/download/v2/packer-plugin-hyperone" -o /usr/local/bin/packer-plugin-hyperone \
-&& chmod +x /usr/local/bin/packer-plugin-hyperone
+COPY --from=builder /app/packer-plugin-hyperone/packer-plugin-hyperone /tmp/packer-plugin-hyperone
+RUN packer plugins install --path /tmp/packer-plugin-hyperone "github.com/hashicorp/hyperone"
 RUN VERSION_CODENAME=$(sed -E -n 's/VERSION=.*\((.+?)\).*$/\1/gp' /etc/os-release) \
 && curl -fsSL "http://packages.hyperone.cloud/gpg.public.txt" | apt-key add -  \
 && curl -fsSL "http://packages.rootbox.cloud/gpg.public.txt" | apt-key add -  \
