@@ -74,6 +74,8 @@ const render_templates = config => {
         builders: [
             {
                 type: 'hyperone',
+                project: '{{user `project`}}',
+                network: '{{user `network`}}',
                 disk_size: 10,
                 chroot_disk: true,
                 mount_partition: 4,
@@ -85,7 +87,6 @@ const render_templates = config => {
                 chroot_disk_size: '{{user `disk_size`}}',
                 image_name: '{{user `image_name`}}',
                 image_description: '{{user `image_description`}}',
-                network: '{{user `network`}}',
                 state_timeout: '{{user `state_timeout`}}',
                 pre_mount_commands: [
                     "[ ! -e '/etc/rpm/macros.dist' ] || sudo yum install -y \"https://dl.fedoraproject.org/pub/epel/epel-release-latest-$(awk '/rhel/ {print $2}' /etc/rpm/macros.dist).noarch.rpm\"",
