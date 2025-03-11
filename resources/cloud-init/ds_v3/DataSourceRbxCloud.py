@@ -34,7 +34,6 @@ from cloudinit.sources import DataSourceHostname
 
 LOG = logging.getLogger(__name__)
 ETC_HOSTS = '/etc/hosts'
-BIN_BASH = '/bin/bash'
 
 
 def get_manage_etc_hosts():
@@ -43,14 +42,6 @@ def get_manage_etc_hosts():
         return False
     LOG.debug('/etc/hosts does not exists - setting manage_etc_hosts to True')
     return True
-
-
-def get_shell():
-    if os.path.isfile('/bin/bash'):
-        LOG.debug('/bin/bash exists - use bash as default for user')
-        return '/bin/bash'
-    LOG.debug('/bin/bash does not exists - use sh as default for user')
-    return '/bin/sh'
 
 
 def _read_file(filepath):
@@ -177,8 +168,7 @@ def read_user_data_callback(mount_dir, distro):
                     'sudo': ['ALL=(ALL) NOPASSWD:ALL'],
                     'passwd': hash,
                     'lock_passwd': False,
-                    'ssh_authorized_keys': ssh_keys,
-                    'shell': get_shell()
+                    'ssh_authorized_keys': ssh_keys
                 }
             },
             'chpasswd': {
