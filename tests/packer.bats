@@ -1,5 +1,9 @@
 #!/usr/bin/env bats
 
+function sshrun {
+  ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no ${USER}@${IP} "$@"
+}
+
 @test "ssh using key" {
   result="$(ssh -o StrictHostKeyChecking=no ${USER}@${IP} whoami)"
   [ "$?" -eq 0 ]
@@ -10,38 +14,38 @@ skip
 }
 
 @test "check sudo works" {
-  result=$(ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no ${USER}@${IP} "sudo id")
+  result=$(sshrun "sudo id")
   [ "$?" -eq 0 ]
   [[ "$result" =~ "root" ]]
 }
 
 @test "check /etc/hosts" {
-  result=$(ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no ${USER}@${IP} "sudo grep $HOSTNAME /etc/hosts |cut -f1 ")
+  result=$(sshrun "sudo grep $HOSTNAME /etc/hosts |cut -f1 ")
   [ "$?" -eq 0 ]
   [[ "$result" =~ "127.0" ]]
 }
 
 @test "check grub consoleblank" {
   skip
-  result=$(ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no ${USER}@${IP} "grep 'consoleblank=0' /proc/cmdline")
+  result=$(sshrun "grep 'consoleblank=0' /proc/cmdline")
   [ "$?" -eq 0 ]
 }
 
 
 # @test "check cloudinit done" {
-#   result=$(ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no ${USER}@${IP} "grep 'done' <(cloud-init status)")
+#   result=$(sshrun "grep 'done' <(cloud-init status)")
 #   [ "$?" -eq 0 ]
 # }
 
 
 # @test "check arping executed" {
-#   result=$(ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no ${USER}@${IP} "grep -E 'packets transmitted|Sent' /var/log/cloud-init*")
+#   result=$(sshrun "grep -E 'packets transmitted|Sent' /var/log/cloud-init*")
 #   [ "$?" -eq 0 ]
 # }
 
 
 @test "check userdata available" {
-  result=$(ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no ${USER}@${IP} "cat /userdata")
+  result=$(sshrun "cat /userdata")
   [ "$?" -eq 0 ]
 }
 
@@ -49,7 +53,7 @@ skip
   if [ "$CONFIG_DISTRO" == "FREEBSD" ]; then
     skip "test does not apply to FreeBSD"
   fi
-  result=$(ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no ${USER}@${IP} "grep 'console=ttyS0,115200n8' /proc/cmdline")
+  result=$(sshrun "grep 'console=ttyS0,115200n8' /proc/cmdline")
   [ "$?" -eq 0 ]
 }
 
@@ -102,7 +106,7 @@ skip
 }
 
 @test "check hostname" {
-  result=$(ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no ${USER}@${IP} hostname)
+  result=$(sshrun hostname)
   [ "$?" -eq 0 ]
   [ "$result" == "$HOSTNAME" ]
 }
@@ -111,7 +115,7 @@ skip
   if [ "$CONFIG_DISTRO" != "FREEBSD" ]; then
     skip "test does not apply to FreeBSD"
   fi
-  result=$(ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no ${USER}@${IP} df / | tail -n 1 | cut -d' ' -f3)
+  result=$(sshrun df / | tail -n 1 | cut -d' ' -f3)
   [ "$?" -eq 0 ]
   [ "$result" -gt "$(( 5 * 1024 * 1024 ))" ]
 }
@@ -120,9 +124,9 @@ skip
   if [ "$CONFIG_DISTRO" == "FREEBSD" ]; then
     skip "test does not apply to FreeBSD"
   fi
-  block_count=$(ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no ${USER}@${IP} stat / -f -c "%b")
+  block_count=$(sshrun stat / -f -c "%b")
   [ "$?" -eq 0 ]
-	block_size=$(ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no ${USER}@${IP} stat / -f -c "%s")
+	block_size=$(sshrun stat / -f -c "%s")
   [ "$?" -eq 0 ]
   [ "$(($block_count * $block_size))" -gt "$((5 * 1024 * 1024 * 1024 ))" ]
 }
@@ -140,7 +144,7 @@ skip
   if [ "$CONFIG_DISTRO" == "FREEBSD" ]; then
     skip "test does not apply to FreeBSD"
   fi
-  ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no ${USER}@${IP} ls /dev/rtc0;
+  sshrun ls /dev/rtc0;
   [ "$?" -eq 0 ]
 }
 
@@ -148,10 +152,10 @@ skip
   if [ "$CONFIG_DISTRO" == "FREEBSD" ]; then
     skip "test does not apply to FreeBSD"
   fi
-  is_systemctl=$(ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no ${USER}@${IP} "command -v systemctl || echo ''")
+  is_systemctl=$(sshrun "command -v systemctl || echo ''")
   if [  "$is_systemctl" != "" ]; then
-    target=$(ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no ${USER}@${IP} "systemctl  get-default")
-    is_desktop=$(ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no ${USER}@${IP} "dpkg -l|grep ubuntu-desktop || echo ''")
+    target=$(sshrun "systemctl  get-default")
+    is_desktop=$(sshrun "dpkg -l|grep ubuntu-desktop || echo ''")
     if [ "$is_desktop" != "" ]; then
        [ "$target" == "graphical.target" ]
     else
