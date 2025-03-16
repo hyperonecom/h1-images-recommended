@@ -69,10 +69,10 @@ function delay () {
   set +x;
 
   seq 1 $1 | while read i; do
-    echo "Delay $i / $1 seconds";
-    sleep 1; 
-  done;
-  set -x;
+    echo "Delay $i / $1 seconds"
+    sleep 1
+  done
+  set -x
 
 }
 
@@ -80,10 +80,10 @@ set +x
 PASSWORD=$(openssl rand -hex 15)
 set -x
 
-EXTERNAL_IP=$(${RBX_CLI} networking ip create --query "[].{ip:uri}" -o tsv);
+EXTERNAL_IP=$(${RBX_CLI} networking ip create --query "[].{ip:uri}" -o tsv)
 
 if [ "$os" == "windows" ]; then
-	INTERNAL_IP=$(${RBX_CLI} networking network ip create --network $NETWORK -o id);
+	INTERNAL_IP=$(${RBX_CLI} networking network ip create --network $NETWORK -o id)
 fi;
 
 if [ "$os" == "packer" ]; then
@@ -91,7 +91,7 @@ if [ "$os" == "packer" ]; then
   NETWORK=$NETWORK_PUBLIC
 fi
 
-start_time=$(date +'%s');
+start_time=$(date +'%s')
 
 userdata_file=$(mktemp)
 
@@ -127,14 +127,14 @@ RBX_CLI="$RBX_CLI" VM_ID="$VM_ID" IMAGE_ID="$IMAGE_ID" USER="$USER" IP="$VM_IP" 
 
 if [ "$os" == "packer" ]; then
   delay 60;
-	${RBX_CLI} compute vm serialport --vm "$VM_ID" || echo 'Serialport not available';
-  ip -s -s neigh flush "$VM_IP" || echo 'Failed to delete VM IP from local ARP table on build host';
+  ${RBX_CLI} compute vm serialport --vm "$VM_ID" || echo 'Serialport not available'
+  ip -s -s neigh flush "$VM_IP" || echo 'Failed to delete VM IP from local ARP table on build host'
 	ping -c 3 "$VM_IP";
 	RBX_CLI="$RBX_CLI" USER="$USER" IP="$VM_IP" HOSTNAME="$VM_NAME" bats "./tests/${os}.bats"
 fi
 
 if [ "$os" == "windows" ]; then
-  delay 120;
+  delay 120
 	${RBX_CLI} compute vm serialport --vm "$VM_ID";
 	${RBX_CLI} networking ip associate --ip $EXTERNAL_IP --private-ip $INTERNAL_IP;
 	#changePassword
