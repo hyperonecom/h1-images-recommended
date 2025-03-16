@@ -61,11 +61,11 @@ function sshrun {
 }
 
 
-@test "check if fs mode is noop" {
+@test "check if fs mode is noop/none" {
   if [ "$CONFIG_DISTRO" == "FREEBSD" ]; then
     skip "test does not apply to FreeBSD"
   fi
-  result=$(ssh -o UserKnownHostsFile=/dev/null  -o StrictHostKeyChecking=no ${USER}@${IP} "grep 'elevator=noop' /proc/cmdline")
+  result=$(sshrun "([ -e /sys/block/sda/queue/scheduler ] && grep '\[none\]' /sys/block/sda/queue/scheduler)")
   [ "$?" -eq 0 ]
 }
 
