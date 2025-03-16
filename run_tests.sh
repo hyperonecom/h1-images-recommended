@@ -49,7 +49,7 @@ while getopts "s:i:o:v:d:n:c:p:" opt; do
 done
 if [[ $OPTIND -eq 1 ]]; then echo "$help"; exit 2; fi
 
-RBX_CLI="${scope}";
+RBX_CLI="/bin/${scope}";
 ${RBX_CLI} iam project select --project ${PROJECT}
 
 IMAGE_JSON=$(${RBX_CLI} storage image show --image ${IMAGE} -o json)
