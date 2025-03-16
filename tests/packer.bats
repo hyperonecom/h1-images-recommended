@@ -166,3 +166,10 @@ skip
   fi
 }
 
+@test "floppy kernel module" {
+  if [ "$CONFIG_DISTRO" == "FREEBSD" ]; then
+    skip "test does not apply to FreeBSD"
+  fi
+  run sshrun "lsmod | grep floppy"
+  [ "$status" -eq 1 ]
+}
