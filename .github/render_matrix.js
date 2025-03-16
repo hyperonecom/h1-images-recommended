@@ -48,7 +48,7 @@ const render = (templates) => {
     ) {
         const scopes = config.scope || scope_list;
         for (const scope of scopes) {
-            if (scope !== 'h1' || !template.includes('debian-12')) continue; //temporary, until the full flow is working
+            if (scope !== 'h1') continue; //temporary, until the full flow is working
             include.push({
                 name: config.name,
                 config: template,
@@ -67,14 +67,17 @@ const renderMatrix = async (name, touched) => {
     const files = await readDir(path);
     const templates = {};
 
-    for (const template of files
+    for (const templateFile of files
         .reverse()
         .filter(x =>
             x.endsWith('.yaml') &&
             touched.some(y => x.startsWith(y))
         )
     ) {
-        templates[`./config/${name}/${template}`] = yaml.load(await readFile(join(path, template)));
+        const config = yaml.load(await readFile(join(path, templateFile)));
+        if(config.build) {
+            templates[`./config/${name}/${templateFile}`] = config;
+        }
     }
 
     const out = render(templates);

@@ -5,6 +5,7 @@ distro: debian
 edition: server
 arch: x64
 version: '12'
+build: true
 download_url: >-
   http://cdimage.debian.org/images/cloud/bookworm/latest/debian-12-genericcloud-amd64.qcow2
 disk_size: '5'
