@@ -7,7 +7,7 @@
     "public_netadp_service": "public",
     "vm_type": "a1.small",
     "ssh_name": "my-ssh",
-    "mirror": "http://ftp.pl.freebsd.org/pub/FreeBSD/releases/amd64/13.0-RELEASE",
+    "mirror": "http://ftp.freebsd.org/pub/FreeBSD/releases/amd64/13.0-RELEASE/base.txz",
     "image_description": "{\"arch\":\"x64\",\"distro\":\"freebsd\",\"release\":\"13.0\",\"edition\":\"server\",\"codename\":\"stable\",\"recommended\":{\"disk\":{\"size\":10}}}",
     "state_timeout": "10m"
   },
