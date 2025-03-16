@@ -73,7 +73,7 @@ function sshrun {
   if [ "$CONFIG_DISTRO" == "FREEBSD" ]; then
     skip "test does not apply to FreeBSD"
   fi
-  result=$(ssh -o UserKnownHostsFile=/dev/null  -o StrictHostKeyChecking=no ${USER}@${IP} getent ahostsv4 one.one.one.one | grep -e '1\.1\.1\.1')
+  result=$(sshrun getent ahostsv4 one.one.one.one | grep -e '1\.1\.1\.1')
   [ "$?" -eq 0 ]
 }
 
@@ -84,7 +84,7 @@ function sshrun {
   if [ "$CONFIG_NAME" == "debian-9-stretch" ]; then
     skip "test does not apply to Debian 9 (exception due legacy)"
   fi
-  result=$(ssh -o UserKnownHostsFile=/dev/null  -o StrictHostKeyChecking=no ${USER}@${IP} sudo chronyc sources | grep 'PHC0')
+  result=$(sshrun sudo chronyc sources | grep 'PHC0')
   [ "$?" -eq 0 ]
 }
 
@@ -92,15 +92,13 @@ function sshrun {
   # Only allow SSH to listen on a public network interface
   # The entire 127.0.0.0/8 CIDR block is used for loopback routing.
   if [ "$CONFIG_DISTRO" != "FREEBSD" ]; then
-    ssh -o UserKnownHostsFile=/dev/null  -o StrictHostKeyChecking=no ${USER}@${IP} sudo ss -tulpn || sudo netstat -lntu;
-    result=$(ssh -o UserKnownHostsFile=/dev/null  -o StrictHostKeyChecking=no ${USER}@${IP} 'sudo ss -tulpn || sudo netstat -lepunt' | grep -v \
+    result=$(sshrun 'sudo ss -tulpn || sudo netstat -lepunt' | grep -v \
       -e 'State' \
       -e '*:22' -e '0.0.0.0:22' -e '\[::\]:22' -e ' :::22 ' \
       -e '127.0.0.[0-9]' -e '\[::1\]' -e ' ::1:' | wc -l)
     [ "$result" == "0" ]
   else
-    ssh -o UserKnownHostsFile=/dev/null  -o StrictHostKeyChecking=no ${USER}@${IP} sockstat -4 -6 -l;
-    result=$(ssh -o UserKnownHostsFile=/dev/null  -o StrictHostKeyChecking=no ${USER}@${IP} sockstat -4 -6 -l | grep -v \
+    result=$(sshrun sockstat -4 -6 -l | grep -v \
       -e 'COMMAND' \
       -e '*:22' -e '0.0.0.0:22' -e '\[::\]:22' -e ' :::22 ' \
       -e '127.0.0.[0-9]' -e '\[::1\]' -e ' ::1:' | wc -l)
