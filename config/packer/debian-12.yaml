@@ -1,0 +1,31 @@
+name: debian-12-bookworm
+codename: buster
+pname: Debian GNU/Linux 12 (bookworm)
+distro: debian
+edition: server
+arch: x64
+version: '12'
+download_url: >-
+  http://cdimage.debian.org/images/cloud/bookworm/latest/debian-12-genericcloud-amd64.qcow2
+disk_size: '5'
+qcow_part: /dev/sda1
+cloud_init_ds_src: ./resources/cloud-init/ds_v3/DataSourceRbxCloud.py
+cloud_init_install: true
+custom_scripts:
+  # - ./scripts/resolv.sh
+  - ./scripts/disable-llmr-mdns.sh
+  - ./scripts/fstab.sh
+  - ./scripts/debian/debian-12-bookworm.sh
+  - ./scripts/debian/cli-12-bookworm.sh
+  - ./scripts/apt_clean.sh
+  - ./scripts/check_df.sh
+  - ./scripts/io_scheduler.sh
+uefi_support: true
+cli_support: true
+format: qcow
+repology_repo: debian_stable
+source:
+  url: http://cdimage.debian.org/images/cloud/bookworm/latest/debian-12-genericcloud-amd64.qcow2
+  type: qcow
+  mount:
+    root: p1
