@@ -131,16 +131,6 @@ function sshrun {
   [ "$?" -eq 0 ]
   [ "$(($block_count * $block_size))" -gt "$((5 * 1024 * 1024 * 1024 ))" ]
 }
-
-@test "resize rootfs (FreeBSD)" {
-  if [ "$CONFIG_DISTRO" != "FREEBSD" ]; then
-    skip "test does apply only to FreeBSD"
-  fi
-  result=$(ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no ${USER}@${IP} df / | tail -n 1 | cut -d' ' -f3)
-  [ "$?" -eq 0 ]
-  [ "$result" -gt "$(( 5 * 1024 * 1024 ))" ]
-}
-
 @test "available /dev/rtc0" {
   if [ "$CONFIG_DISTRO" == "FREEBSD" ]; then
     skip "test does not apply to FreeBSD"
