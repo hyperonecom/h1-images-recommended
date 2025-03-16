@@ -26,6 +26,7 @@ RUN VERSION_CODENAME=$(sed -E -n 's/VERSION=.*\((.+?)\).*$/\1/gp' /etc/os-releas
 && apt-get update \
 && apt-get install -y jq netcat sshpass unzip \
 && rm -rf /var/lib/apt/lists/*
+RUN cd /tmp && git clone https://github.com/bats-core/bats-core.git && cd bats-core && ./install.sh /usr/local
 RUN curl -fsSL "https://github.com/hyperonecom/h1-cli/releases/download/v2.2.0/h1-linux.tar.gz" -o /tmp/h1-linux.tar.gz \
 && tar zxf /tmp/h1-linux.tar.gz -C /bin
 WORKDIR /src/
