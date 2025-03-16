@@ -65,7 +65,6 @@ const render_templates = config => {
                 ...source.mount,
             },
         };
-        console.log(source);
         let qcow_unmount = [];
         qcow_mount = [
             ...qcow_mount,
