@@ -46,6 +46,16 @@ const render_templates = config => {
         );
     }
 
+    const console_on_tty1 = [
+        'mkdir -p /etc/systemd/system/getty@tty1.service.d/',
+        'echo "[Service]" | sudo tee /etc/systemd/system/getty@tty1.service.d/override.conf',
+        'echo "ExecStart=" | sudo tee -a /etc/systemd/system/getty@tty1.service.d/override.conf',
+        'echo "ExecStart=-/sbin/agetty --autologin root --noclear %I \$TERM" | sudo tee -a /etc/systemd/system/getty@tty1.service.d/override.conf',
+        'echo "Type=idle" | sudo tee -a /etc/systemd/system/getty@tty1.service.d/override.conf',
+        'systemctl daemon-reload',
+        'systemctl restart getty@tty1.service',
+    ];
+
     return {
         variables: {
             source_image: getter(config, 'source_image') || 'fedora:32',
@@ -89,6 +99,7 @@ const render_templates = config => {
                 image_description: '{{user `image_description`}}',
                 state_timeout: '{{user `state_timeout`}}',
                 pre_mount_commands: [
+                    ...console_on_tty1,
                     "[ ! -e '/etc/rpm/macros.dist' ] || sudo yum install -y \"https://dl.fedoraproject.org/pub/epel/epel-release-latest-$(awk '/rhel/ {print $2}' /etc/rpm/macros.dist).noarch.rpm\"",
                     'yum install -y --setopt=skip_missing_names_on_install=False mtools libgcrypt libguestfs-tools dosfstools libguestfs-xfs wget pv',
                     'modprobe kvm',
