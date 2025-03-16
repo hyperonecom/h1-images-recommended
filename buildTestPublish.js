@@ -32,7 +32,7 @@ const config = {
         ssh: 'builder-ssh',
         vm_gen1_test_service: 'a1.nano',
         vm_gen2_test_service: '_dev.gen2_1',
-        vm_builder_service: 'a1.small',
+        vm_builder_service: 'm2.medium',
         // network: '/networking/pl-waw-1/project/5c5d7eb1a5e06e1eb5532770/network/5f369246524bfe7720c4c384', //builder-private-network
         network: 'public',
         disk_type: 'ssd',
@@ -146,11 +146,18 @@ const main = async () => {
         .option('-p, --publish', 'Publish image')
         .option('--cleanup', 'Perform cleanup of old resources')
         .option('--mode <mode>', 'Mode of build images', /^(packer|windows)$/i)
+        .option('--project <project>', 'Project for resources, override config')
+        .option('--on-error <onError>', 'Action on error', /^(cleanup|abort|ask|run-cleanup-provisioner)$/i)
         .parse(process.argv);
     const options = program.opts();
     if (!options.config) {
         program.help();
     }
+    if (options.project) {
+        platformConfig.project = options.project;
+    }
+    platformConfig['on-error'] = options['onError'];
+
     try {
         const imageConfig = await loadConfig(options.config);
         const mode = options.mode || imageConfig.mode;
