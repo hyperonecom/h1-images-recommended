@@ -156,7 +156,7 @@ const main = async () => {
     if (options.project) {
         platformConfig.project = options.project;
     }
-    platformConfig['on-error'] = options['onError'];
+    platformConfig['onError'] = options.onError || 'cleanup';
 
     try {
         const imageConfig = await loadConfig(options.config);
