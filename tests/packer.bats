@@ -10,7 +10,10 @@ function sshrun {
 }
 
 @test "ssh using password" {
-skip
+  # sshpass tricks openssh to accept password without human interaction from environment variable
+  export SSHPASS="${PASSWORD}"
+  run sshpass -e ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no ${USER}@${IP} exit
+  [ "$status" -eq 0 ]
 }
 
 @test "check sudo works" {
