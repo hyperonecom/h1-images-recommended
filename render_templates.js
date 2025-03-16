@@ -28,23 +28,94 @@ const render_templates = config => {
         codename: getter(config, 'codename'),
         recommended: { disk: { size: 20 } },
     };
+
+    // source:
+    // url: 'https://cloud-images.ubuntu.com/releases/oracular/release/ubuntu-24.10-server-cloudimg-amd64.img'
+    // type: qcow
+    // mount:
+    //   root: p1
+    //   boot: p13
+
+    const rsync = (path = '{{user `mount_qcow_path`}}') => {
+        const rsync_opts = getter(config, 'selinux') === '1' ? '-X' : '';
+        return [
+            'setenforce 0',
+            `rsync -aH ${rsync_opts} --inplace -W --numeric-ids -A -v ${path}/ {{.MountPath}}/ | pv -l -c -n -i 30 -t >/dev/null`,
+        ];
+    };
+
+    const TIMESTAMP = Date.now();
+    let source = getter(config, 'source');
+    let qcow_mount = [];
+    if (source) {
+        // applying defaults that if present in source will be overwritten by source
+        const SOURCE_DEFAULTS = {
+            destination: `/home/guru/image-${TIMESTAMP}.qcow`,
+            type: 'qcow',
+            mount: {
+                path: `/home/guru/qcow-${TIMESTAMP}`,
+                root: 'p1',
+            },
+        };
+        source = {
+            ...SOURCE_DEFAULTS,
+            ...source,
+            mount: {
+                ...SOURCE_DEFAULTS.mount,
+                ...source.mount,
+            },
+        };
+        console.log(source);
+        let qcow_unmount = [];
+        qcow_mount = [
+            ...qcow_mount,
+            'modprobe nbd',
+            'qemu-nbd -c /dev/nbd0 {{user `download_path`}}',
+            'partprobe /dev/nbd0',
+            `mkdir -p ${source.mount.path}`,
+            `mount /dev/nbd0${source.mount.root} ${source.mount.path}`,
+        ];
+        if (source.mount.boot) {
+            qcow_mount = [
+                ...qcow_mount,
+                `mount /dev/nbd0${source.mount.boot} ${source.mount.path}/boot`,
+            ];
+            qcow_unmount = [
+                ...qcow_unmount,
+                `umount ${source.mount.path}/boot`,
+            ];
+        }
+        qcow_mount = [
+            ...qcow_mount,
+            ...rsync(source.mount.path),
+            ...qcow_unmount,
+            `umount ${source.mount.path}`,
+            'qemu-nbd -d /dev/nbd0',
+        ];
+    } else {
+        const qcow_boot_part = getter(config, 'qcow_boot_part');
+        qcow_mount = qcow_boot_part ? [
+            ...qcow_mount,
+            'LIBGUESTFS_BACKEND=direct guestmount -a {{user `download_path`}} -m {{user `qcow_part`}} --ro {{user `mount_qcow_path`}}',
+            'LIBGUESTFS_BACKEND=direct guestmount -a {{user `download_path`}} -m {{user `qcow_boot_part`}} --ro {{user `mount_qcow_path`}}/boot',
+            ...rsync(),
+        ] : [
+            ...qcow_mount,
+            'LIBGUESTFS_BACKEND=direct guestmount -a {{user `download_path`}} -m {{user `qcow_part`}} --ro {{user `mount_qcow_path`}}',
+            ...rsync(),
+        ];
+    }
+
     const post_mount_commands = [
         'mkdir -p {{.MountPath}}/boot/efi',
         'mount -t vfat {{.Device}}1 {{.MountPath}}/boot/efi',
+        'mkdir /home/guru/image-tmpfs',
+        'mount -t tmpfs -o size=1g tmpfs /home/guru/image-tmpfs',
         'wget -nv {{user `download_url`}} -O {{user `download_path`}}',
         'mkdir {{user `mount_qcow_path`}}',
-        'LIBGUESTFS_BACKEND=direct guestmount -a {{user `download_path`}} -m {{user `qcow_part`}} --ro {{user `mount_qcow_path`}}',
-        'setenforce 0',
+        ...qcow_mount,
+        'umount /home/guru/image-tmpfs',
     ];
-    if (getter(config, 'selinux') === '1') {
-        post_mount_commands.push(
-            'rsync -aH -X --inplace -W --numeric-ids -A -v {{user `mount_qcow_path`}}/ {{.MountPath}}/ | pv -l -c -n >/dev/null'
-        );
-    } else {
-        post_mount_commands.push(
-            'rsync -aH --inplace -W --numeric-ids -A -v {{user `mount_qcow_path`}}/ {{.MountPath}}/ | pv -l -c -n >/dev/null'
-        );
-    }
 
     const console_on_tty1 = [
         'mkdir -p /etc/systemd/system/getty@tty1.service.d/',
@@ -59,10 +130,11 @@ const render_templates = config => {
     return {
         variables: {
             source_image: getter(config, 'source_image') || 'fedora:32',
-            download_path: '/home/guru/image-{{timestamp}}.qcow',
+            download_path: '/home/guru/image-tmpfs/image-{{timestamp}}.qcow',
             mount_qcow_path: '/home/guru/qcow-{{timestamp}}',
             download_url: getter(config, 'download_url'),
             qcow_part: getter(config, 'qcow_part'),
+            qcow_boot_part: getter(config, 'qcow_boot_part'),
             root_fs: getter(config, 'root_fs') || 'ext4',
             root_fs_opts: '-E lazy_itable_init=1',
             scripts: getter(config, 'custom_scripts').join(','),
@@ -101,7 +173,7 @@ const render_templates = config => {
                 pre_mount_commands: [
                     ...console_on_tty1,
                     "[ ! -e '/etc/rpm/macros.dist' ] || sudo yum install -y \"https://dl.fedoraproject.org/pub/epel/epel-release-latest-$(awk '/rhel/ {print $2}' /etc/rpm/macros.dist).noarch.rpm\"",
-                    'yum install -y --setopt=skip_missing_names_on_install=False mtools libgcrypt libguestfs-tools dosfstools libguestfs-xfs wget pv',
+                    'yum install -y --setopt=skip_missing_names_on_install=False mtools libgcrypt dosfstools wget pv qemu-img',
                     'modprobe kvm',
                     'sgdisk -Z {{.Device}}',
                     'sgdisk -n 1:0:+50MB -t 1:EF01 -c 1:EFI {{.Device}}',
