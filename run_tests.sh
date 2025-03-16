@@ -76,6 +76,29 @@ function delay () {
 
 }
 
+function waitforssh () {
+  set +x;
+
+  local HOST=${1:?}
+  local PORT=${2:-22}
+  local TIMEOUT=${3:-1}
+  local COUNT=0
+  local MAX_RETRIES=24
+  local DELAY=5
+
+  while ! nc -z -w $TIMEOUT $HOST $PORT; do
+      echo "Waited $((COUNT++ * DELAY)) sec. for ${HOST}:${PORT} to become available..."
+      sleep ${DELAY}
+      if [ $COUNT -gt $MAX_RETRIES ]; then
+        echo "Maximum retries reached for ${HOST}:${PORT} to become available"
+        exit 1
+      fi
+  done
+
+  echo "${HOST}:${PORT} is now available"
+  set -x
+}
+
 set +x
 PASSWORD=$(openssl rand -hex 15)
 set -x
@@ -126,7 +149,7 @@ trap cleanup EXIT
 RBX_CLI="$RBX_CLI" VM_ID="$VM_ID" IMAGE_ID="$IMAGE_ID" USER="$USER" IP="$VM_IP" HOSTNAME="$VM_NAME" bats "./tests/common.bats"
 
 if [ "$os" == "packer" ]; then
-  delay 60;
+  waitforssh $VM_IP
   ${RBX_CLI} compute vm serialport --vm "$VM_ID" || echo 'Serialport not available'
   ip -s -s neigh flush "$VM_IP" || echo 'Failed to delete VM IP from local ARP table on build host'
 	ping -c 3 "$VM_IP";
