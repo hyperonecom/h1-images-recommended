@@ -6,6 +6,7 @@ release: "2019"
 edition: standard
 arch: x64
 version: "2019"
+build: true
 # not public available due licensing issue
 iso: 'autounattend-ws2019-std-bios.xml.iso'
 disk_size: "40"
