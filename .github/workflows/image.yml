@@ -78,7 +78,7 @@ jobs:
           -v /var/run/docker.sock:/var/run/docker.sock \
           -v $PWD/resources/passport.json:/root/.h1/passport.json \
           recommended-images:${{github.sha}} \
-          nodejs buildTestPublish.js --config "$CONFIG" --mode "packer" --cleanup ${publish_arg}
+          nodejs buildTestPublish.js --config "$CONFIG" --mode "packer" --cleanup ${publish_arg} --skip-test
         env:
           GITHUB_BRANCH: ${{ github.ref }}
       - name: "Test Platform image - vm gen1 (MBR)"
