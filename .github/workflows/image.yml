@@ -81,7 +81,7 @@ jobs:
           nodejs buildTestPublish.js --config "$CONFIG" --mode "packer" --cleanup ${publish_arg}
         env:
           GITHUB_BRANCH: ${{ github.ref }}
-      - name: "Test Platform image - vm gen1"
+      - name: "Test Platform image - vm gen1 (MBR)"
         run: |
           echo "${{ steps.attempt.outputs.IMAGE }}"
           docker run --rm -e CI -e H1_TOKEN -e RBX_TOKEN -e SCOPE -e INFLUXDB_HOST -e INFLUXDB_PASSWORD -e INFLUXDB_USER -e REDHAT_SECRET \
@@ -89,6 +89,15 @@ jobs:
           -v $PWD/resources/passport.json:/root/.h1/passport.json \
           recommended-images:${{github.sha}} \
           ./run_tests.sh -o packer -i ${{ steps.attempt.outputs.IMAGE }} -s h1 -v a1.nano -c builder-ssh -p ${{ steps.attempt.outputs.PROJECT }}
+      - name: "Test Platform image - vm gen2 (UEFI)"
+        if: "${{ steps.attempt.outcome.UEFI == 'true' }}"
+        run: |
+          echo "${{ steps.attempt.outputs.IMAGE }}"
+          docker run --rm -e CI -e H1_TOKEN -e RBX_TOKEN -e SCOPE -e INFLUXDB_HOST -e INFLUXDB_PASSWORD -e INFLUXDB_USER -e REDHAT_SECRET \
+          -v /var/run/docker.sock:/var/run/docker.sock \
+          -v $PWD/resources/passport.json:/root/.h1/passport.json \
+          recommended-images:${{github.sha}} \
+          ./run_tests.sh -o packer -i ${{ steps.attempt.outputs.IMAGE }} -s h1 -v _dev.gen2_1 -c builder-ssh -p ${{ steps.attempt.outputs.PROJECT }}
       - name: "Report successfully build to InfluxDB"
         run: |
           ./.github/influx.sh

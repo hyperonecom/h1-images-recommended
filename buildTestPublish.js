@@ -176,6 +176,7 @@ const main = async () => {
             // important for GitHub Actions to be able to pass IMAGE & PROJECT to next steps (eg. tests, publish)
             console.log(`::set-output name=IMAGE::${imageId}`);
             console.log(`::set-output name=PROJECT::${platformConfig.project}`);
+            console.log(`::set-output name=UEFI::${imageConfig.uefi_support}`);
         });
 
         await groupWithStatus('Clean ARP before test', () => arp.clean());
