@@ -1,0 +1,13 @@
+name: alpine-3.21-server
+distro: alpine
+edition: server
+codename: 'stable'
+pname: Alpine 3.21 Server
+arch: x64
+version: '3.21'
+build: true
+disk_size: '5'
+cloud_init_install: true
+template_file: templates/manual/alpine-3.21-syslinux.json
+uefi_support: true
+repology_repo: alpine_3_21

@@ -4,6 +4,7 @@ DEVICE=$(df -P . | awk 'END{print $1}')
 DEVICE_DISK=$(echo $DEVICE | sed 's/[0-9]//g' )
 echo "${MIRROR}/${REL}/main" > /etc/apk/repositories
 echo "${MIRROR}/${REL}/community" >> /etc/apk/repositories
+
 apk add "linux-virt"
 sed -e 's;^#ttyS0;ttyS0;g' -i /etc/inittab
 apk add util-linux # to fix 'sfdisk'
@@ -18,14 +19,28 @@ apk add openssh-sftp-server # for Packer-provisionability
 apk add sudo # to provide root access (users managed by cloud-init)
 apk add bash curl # to provide InfluxDB metrics
 apk add haveged # to provide entropy required by boot
-apk add eudev # to provide /dev/block for growpart of cloud-init
+apk add eudev udev-init-scripts # to provide /dev/block for growpart of cloud-init
 apk add cloud-init cloud-init-openrc cloud-utils-growpart;
+apk add e2fsprogs-extra # to provide resize2fs for cloud-init
+
+# Blacklist the `floppy`` kernel module
+echo "blacklist floppy" >> /etc/modprobe.d/blacklist.conf
+
+# We need to rebuild initfs for the kernel version that's installed from linux-virt
+# and not one running in the bootstraping environment.
+KERNEL_VERSION=$(ls /lib/modules | grep -E '^[0-9]+\.[0-9]+\.[0-9]+-[0-9]+-virt' | sort -V | tail -n1)
+mkinitfs "${KERNEL_VERSION}" -o /boot/initramfs-virt
+
 sed '/after localmount/a    after haveged' -i /etc/init.d/cloud-init-local;
 echo 'datasource_list: [ RbxCloud ]' > /etc/cloud/cloud.cfg.d/90_dpkg.cfg
+
 rc-update -q add haveged
 rc-update -q add devfs sysinit
 rc-update -q add dmesg sysinit
-rc-update -q add mdev sysinit
+rc-update -q add udev sysinit
+rc-update -q add udev-trigger sysinit
+rc-update -q add udev-settle sysinit
+rc-update -q add udev-postmount default
 rc-update -q add hwdrivers sysinit
 rc-update -q add hwclock boot
 rc-update -q add modules boot
@@ -34,7 +49,7 @@ rc-update -q add hostname boot
 rc-update -q add bootmisc boot
 rc-update -q add syslog boot
 rc-update -q add networking boot
-rc-update -q add urandom boot
+rc-update -q add haveged boot
 rc-update -q add mount-ro shutdown
 rc-update -q add killprocs shutdown
 rc-update -q add savecache shutdown
@@ -44,16 +59,16 @@ rc-update -q add cloud-config default
 rc-update -q add cloud-final default
 rc-update -q add cloud-init-local boot
 rc-update -q add cloud-init default
-setup-udev -n # setup eudev
+
 rm -f /etc/hosts
 # CLI installation
-apk add --repository "${MIRROR}/edge/testing" h1-cli
+#apk add --repository "${MIRROR}/edge/testing" h1-cli
 # Time synchronization
 apk add chrony
 echo 'refclock PHC /dev/ptp0 poll 3 dpoll -2 offset 0' >> /etc/chrony/chrony.conf
 rc-update -q add chronyd default
 # UEFI installation
-sed 's@default_kernel_opts=.*@default_kernel_opts="elevator=noop consoleblank=0 console=tty0 console=ttyS0,115200n8"@' -i /etc/update-extlinux.conf
+sed 's@default_kernel_opts=.*@default_kernel_opts="consoleblank=0 console=tty0 console=ttyS0,115200n8"@' -i /etc/update-extlinux.conf
 sed "s@modules=.*@modules=\"sd-mod,usb-storage,ext4\"@" -i /etc/update-extlinux.conf
 sed "s@root=.*@root=/dev/sda4@" -i /etc/update-extlinux.conf
 sed 's@serial_baud=.*@serial_baud=115200@' -i /etc/update-extlinux.conf
