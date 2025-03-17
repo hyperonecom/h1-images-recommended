@@ -173,7 +173,9 @@ const main = async () => {
             }
             imageId = await mode_runtime.build(imageConfig, platformConfig, scope);
             console.log(`Builded image: ${imageId}`);
+            // important for GitHub Actions to be able to pass IMAGE & PROJECT to next steps (eg. tests, publish)
             console.log(`::set-output name=IMAGE::${imageId}`);
+            console.log(`::set-output name=PROJECT::${platformConfig.project}`);
         });
 
         await groupWithStatus('Clean ARP before test', () => arp.clean());
