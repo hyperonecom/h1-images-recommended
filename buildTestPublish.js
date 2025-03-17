@@ -173,6 +173,7 @@ const main = async () => {
             }
             imageId = await mode_runtime.build(imageConfig, platformConfig, scope);
             console.log(`Builded image: ${imageId}`);
+            console.log(`::set-output name=IMAGE::${imageId}`);
         });
 
         await groupWithStatus('Clean ARP before test', () => arp.clean());

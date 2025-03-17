@@ -82,7 +82,9 @@ jobs:
         env:
           GITHUB_BRANCH: ${{ github.ref }}
       - name: "Report successfully build to InfluxDB"
-        run: ./.github/influx.sh
+        run: |
+          echo "${{ steps.attempt.outputs.IMAGE }}"
+          ./.github/influx.sh
         if: "${{ steps.attempt.outcome == 'success' }}"
         env:
           INFLUXDB_VALUE: "1"
