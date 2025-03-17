@@ -112,7 +112,6 @@ jobs:
           INFLUXDB_VALUE: "0"
           INFLUXDB_ATTEMPT: "2"
   windows:
-    if: ${{ false }}  # disable for now
     needs: config
     timeout-minutes: 720
     runs-on: self-hosted
