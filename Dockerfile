@@ -5,7 +5,7 @@ RUN cd ./packer-plugin-hyperone && \
     go mod download && \
     CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build
 
-FROM node:16
+FROM node:22
 ENV DOCKER_VERSION=20.10.1
 ENV PACKER_VERSION=1.12.0
 RUN curl -fsSL https://download.docker.com/linux/static/stable/x86_64/docker-${DOCKER_VERSION}.tgz -o "docker-${DOCKER_VERSION}.tgz" \
@@ -24,7 +24,7 @@ RUN VERSION_CODENAME=$(sed -E -n 's/VERSION=.*\((.+?)\).*$/\1/gp' /etc/os-releas
 && echo "deb [arch=amd64] http://packages.hyperone.cloud/linux/debian/ $VERSION_CODENAME stable" > /etc/apt/sources.list.d/hyperone.list \
 && echo "deb [arch=amd64] http://packages.rootbox.cloud/linux/debian/ $VERSION_CODENAME stable" > /etc/apt/sources.list.d/rootbox.list \
 && apt-get update \
-&& apt-get install -y jq netcat sshpass unzip \
+&& apt-get install -y jq netcat-openbsd sshpass unzip iproute2 iputils-ping\
 && rm -rf /var/lib/apt/lists/*
 RUN cd /tmp && git clone https://github.com/bats-core/bats-core.git && cd bats-core && ./install.sh /usr/local
 RUN curl -fsSL "https://github.com/hyperonecom/h1-cli/releases/download/v2.2.0/h1-linux.tar.gz" -o /tmp/h1-linux.tar.gz \
