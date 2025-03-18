@@ -15,6 +15,9 @@ const olderThan = (resource, ageInMinutes) => new Date(resource.createdOn) < new
 
 const ensureTag = (resource, tag) => tag in resource.tag;
 
+const GITHUB_OUTPUT = process.env.GITHUB_OUTPUT;
+const githubOutput = (key, value) = fs.appendFileSync(GITHUB_OUTPUT, `${key}=${value}\n`);
+
 const config = {
     rbx: {
         scope: 'rbx',
@@ -174,9 +177,9 @@ const main = async () => {
             imageId = await mode_runtime.build(imageConfig, platformConfig, scope);
             console.log(`Builded image: ${imageId}`);
             // important for GitHub Actions to be able to pass IMAGE & PROJECT to next steps (eg. tests, publish)
-            console.log(`::set-output name=IMAGE::${imageId}`);
-            console.log(`::set-output name=PROJECT::${platformConfig.project}`);
-            console.log(`::set-output name=UEFI::${imageConfig.uefi_support}`);
+            githubOutput('IMAGE', imageId);
+            githubOutput('PROJECT', platformConfig.project);
+            githubOutput('UEFI', imageConfig.uefi_support);
         });
 
         await groupWithStatus('Clean ARP before test', () => arp.clean());
