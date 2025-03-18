@@ -83,7 +83,7 @@ const renderMatrix = async (name, touched) => {
     const out = render(templates);
 
     if (GITHUB_OUTPUT) {
-        fs.appendFileSync(GITHUB_OUTPUT, `matrix-${name}=${JSON.stringify(out)}`);
+        fs.appendFileSync(GITHUB_OUTPUT, `matrix-${name}=${JSON.stringify(out)}\n`);
     } else {
         console.log(out);
     }
