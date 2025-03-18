@@ -1,4 +1,5 @@
 'use strict';
+const fs = require('fs');
 const process = require('process');
 const program = require('commander');
 const { ensureState, fetchImage, safeDeleteFail } = require('./lib/api');
@@ -16,7 +17,7 @@ const olderThan = (resource, ageInMinutes) => new Date(resource.createdOn) < new
 const ensureTag = (resource, tag) => tag in resource.tag;
 
 const GITHUB_OUTPUT = process.env.GITHUB_OUTPUT;
-const githubOutput = (key, value) = fs.appendFileSync(GITHUB_OUTPUT, `${key}=${value}\n`);
+const githubOutput = (key, value) => fs.appendFileSync(GITHUB_OUTPUT, `${key}=${value}\n`);
 
 const config = {
     rbx: {
