@@ -13,7 +13,6 @@ qcow_part: /dev/sda1
 cloud_init_ds_src: ./resources/cloud-init/ds_v3/DataSourceRbxCloud.py
 cloud_init_install: true
 custom_scripts:
-  # - ./scripts/resolv.sh
   - ./scripts/disable-llmr-mdns.sh
   - ./scripts/fstab.sh
   - ./scripts/debian/debian-12-bookworm.sh
