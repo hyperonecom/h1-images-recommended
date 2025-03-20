@@ -7,6 +7,11 @@ const { listConfig } = require('./lib/config');
 
 const getter = (config, key) => config[key] && config[key].h1 ? config[key].h1 : config[key];
 
+const DEFAULTS = {
+    download_path: '/home/guru/image-tmpfs/image.qcow',
+    image_mount_path: '/home/guru/mnt-image',
+};
+
 const render_templates = config => {
     const chroot_mounts = [
         ['proc', 'proc', '/proc'],
