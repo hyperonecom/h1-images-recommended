@@ -1,5 +1,5 @@
 name: debian-12-bookworm
-codename: buster
+codename: bookworm
 pname: Debian GNU/Linux 12 (bookworm)
 distro: debian
 edition: server
