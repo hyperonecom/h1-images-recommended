@@ -164,3 +164,11 @@ function sshrun {
   run sshrun "lsmod | grep floppy"
   [ "$status" -eq 1 ]
 }
+
+@test "docker installed" {
+  if [[ "${NAME,,}" != *"docker"* ]]; then 
+    skip "not a docker image"
+  fi
+  run sshrun "sudo docker ps"
+  [ "$status" -eq 0 ]
+}

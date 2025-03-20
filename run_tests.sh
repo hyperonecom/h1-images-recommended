@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 
-set -xeo pipefail
+set -eo pipefail
 
 declare scope="h1"
 declare help="Usage $0 -s [rbx|h1] -i image_id -o [packer|windows] -v vm_service -c credentials_id_or_name -n network_id_or_name -p project_id"
 declare IMAGE=""
 declare VM_TYPE="a1.nano"
 declare DISK_SERVICE="/billing/project/platform/service/562fb685a3e575771b599091" #ssd
-declare DISK_SIZE="10";
+declare DISK_SIZE="15";
 declare USER="clouduser"
 declare USERDATA="./tests/userdata"
 declare SSH_KEY_NAME="";
@@ -15,7 +15,7 @@ declare NETWORK="builder-network";
 declare NETWORK_PUBLIC="/networking/pl-waw-1/project/000000000000000000000000/network/5784e97be2627505227b578c";
 declare PROJECT=""
 
-while getopts "s:i:o:v:d:n:c:p:" opt; do
+while getopts "s:i:o:v:d:n:c:p:m" opt; do
   case $opt in
     s)
        scope=${OPTARG}
@@ -35,6 +35,8 @@ while getopts "s:i:o:v:d:n:c:p:" opt; do
       [ "$os" == "packer" ]  || [ "$os" == "windows" ] ||  exit 1
        ;;
     n) NETWORK=${OPTARG}
+      ;;
+    m) MANUAL="1"
       ;;
     \?)
       echo "Invalid option" >&2
@@ -61,8 +63,9 @@ VM_NAME=$(echo "image-${IMAGE_ID}-test" | tr -cd 'a-zA-Z0-9\-_ ' )
 function cleanup () {
   VM_DISK_ID=$(${RBX_CLI} storage disk list --vm $VM_ID --output tsv --query "[].{disk:id}")
 
-  ${RBX_CLI} compute vm delete --vm "$VM_ID"
-  ${RBX_CLI} storage disk delete --disk "$VM_DISK_ID"
+  ${RBX_CLI} compute vm delete --vm "${VM_ID}"
+  ${RBX_CLI} storage disk delete --disk "${VM_DISK_ID}"
+  ${RBX_CLI} networking ip delete --ip "${EXTERNAL_IP}"
 }
 
 function delay () {
@@ -77,13 +80,12 @@ function delay () {
 }
 
 function waitforssh () {
-  set +x;
 
   local HOST=${1:?}
   local PORT=${2:-22}
   local TIMEOUT=${3:-1}
   local COUNT=0
-  local MAX_RETRIES=24
+  local MAX_RETRIES=60
   local DELAY=5
 
   while ! nc -z -w $TIMEOUT $HOST $PORT; do
@@ -96,12 +98,11 @@ function waitforssh () {
   done
 
   echo "${HOST}:${PORT} is now available"
-  set -x
 }
 
-set +x
+[[ $- == *x* ]] && set +x && RESET_X=1
 PASSWORD=$(openssl rand -hex 15)
-set -x
+[[ $RESET_X == 1 ]] && set -x && unset RESET_X
 
 EXTERNAL_IP=$(${RBX_CLI} networking ip create --query "[].{ip:uri}" -o tsv)
 
@@ -129,6 +130,10 @@ sed \
   -e "s/%%IMAGE_NAME%%/${IMAGE_NAME}/g" \
   "$USERDATA" > $userdata_file
 
+if [ "$MANUAL" == "1" ]; then
+  echo "" > $userdata_file
+fi
+
 VM_ID=$(${RBX_CLI} compute vm create \
     --image $IMAGE_URI \
     --name $VM_NAME \
@@ -144,6 +149,12 @@ echo "VM created: ${VM_ID}"
 
 VM_IP=$(${RBX_CLI} networking ip show --ip $EXTERNAL_IP --query "[].{ip:address}" -o tsv)
 
+if [ "$MANUAL" == "1" ]; then
+  echo "Manual mode, IMAGE_NAME: $IMAGE_NAME"
+  echo "VM_ID: $VM_ID, VM_IP: $VM_IP, VM_NAME: $VM_NAME, USER: $USER, PASSWORD: $PASSWORD"
+  exit 0
+fi
+
 trap cleanup EXIT
 
 RBX_CLI="$RBX_CLI" VM_ID="$VM_ID" IMAGE_ID="$IMAGE_ID" USER="$USER" IP="$VM_IP" HOSTNAME="$VM_NAME" bats "./tests/common.bats"
@@ -152,18 +163,18 @@ if [ "$os" == "packer" ]; then
   waitforssh $VM_IP
   ${RBX_CLI} compute vm serialport --vm "$VM_ID" || echo 'Serialport not available'
   ip -s -s neigh flush "$VM_IP" || echo 'Failed to delete VM IP from local ARP table on build host'
-	ping -c 3 "$VM_IP";
-	RBX_CLI="$RBX_CLI" USER="$USER" IP="$VM_IP" HOSTNAME="$VM_NAME" bats "./tests/${os}.bats"
+  ping -c 3 "$VM_IP";
+  RBX_CLI="$RBX_CLI" USER="$USER" IP="$VM_IP" HOSTNAME="$VM_NAME" PASSWORD="$PASSWORD" NAME="$IMAGE_NAME" bats --verbose-run "./tests/${os}.bats"
 fi
 
 if [ "$os" == "windows" ]; then
   delay 120
-	${RBX_CLI} compute vm serialport --vm "$VM_ID";
-	${RBX_CLI} networking ip associate --ip $EXTERNAL_IP --private-ip $INTERNAL_IP;
-	#changePassword
+  ${RBX_CLI} compute vm serialport --vm "$VM_ID";
+  ${RBX_CLI} networking ip associate --ip $EXTERNAL_IP --private-ip $INTERNAL_IP;
+  #changePassword
   declare USER="Administrator"
   new_pass=$(${RBX_CLI} compute vm password_reset --user $USER --vm $VM_ID --output tsv) || error "Could not change password"
-	${RBX_CLI} compute vm serialport --vm "$VM_ID" --number 2;
+  ${RBX_CLI} compute vm serialport --vm "$VM_ID" --number 2;
   if [ "$new_pass" == "" ]; then error "Could not change password"; fi
   echo "User: $USER";
   echo "Pass: $new_pass";
