@@ -35,4 +35,5 @@ COPY ./resources/ssh/id_rsa* /root/.ssh/
 RUN chmod 0600 /root/.ssh/id_rsa*
 RUN npm ci
 COPY ./ /src/
+RUN node ./render_templates.js
 CMD ["nodejs", "./buildTestPublish.js", "./templates/qcow/debian-8.json"]
