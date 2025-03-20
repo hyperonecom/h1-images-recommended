@@ -105,12 +105,14 @@ const render_templates = config => {
         ];
     }
 
+    const download_url = source ? source.url : getter(config, 'download_url');
+
     const post_mount_commands = [
         'mkdir -p {{.MountPath}}/boot/efi',
         'mount -t vfat {{.Device}}1 {{.MountPath}}/boot/efi',
         'mkdir /home/guru/image-tmpfs',
         'mount -t tmpfs -o size=1g tmpfs /home/guru/image-tmpfs',
-        'wget -nv {{user `download_url`}} -O {{user `download_path`}}',
+        `wget -nv ${download_url} -O ${DEFAULTS.download_path}`,
         'mkdir {{user `mount_qcow_path`}}',
         ...qcow_mount,
         'umount /home/guru/image-tmpfs',
