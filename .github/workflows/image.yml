@@ -92,7 +92,7 @@ jobs:
           recommended-images:${{github.sha}} \
           ./run_tests.sh -o packer -i ${{ steps.attempt.outputs.IMAGE }} -s h1 -v a1.nano -c builder-ssh -p ${{ steps.attempt.outputs.PROJECT }}
       - name: "Test Platform image - vm gen2 (UEFI)"
-        if: "${{ steps.attempt.outputs.IMAGE != '' && steps.attempt.outcome.UEFI == 'true' }}"
+        if: "${{ steps.attempt.outputs.IMAGE != '' && steps.attempt.outputs.UEFI == 'true' }}"
         run: |
           docker run --rm -e CI -e H1_TOKEN -e RBX_TOKEN -e SCOPE -e INFLUXDB_HOST -e INFLUXDB_PASSWORD -e INFLUXDB_USER -e REDHAT_SECRET \
           -v /var/run/docker.sock:/var/run/docker.sock \
