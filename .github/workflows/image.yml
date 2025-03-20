@@ -54,7 +54,7 @@ jobs:
         run: docker build -t recommended-images:${{github.sha}} .
     name: packer config
   packer-build:
-    needs: packer
+    needs: [config, packer]
     runs-on: self-hosted
     timeout-minutes: 120
     env:
