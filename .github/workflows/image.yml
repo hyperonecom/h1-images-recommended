@@ -113,6 +113,7 @@ jobs:
           INFLUXDB_VALUE: "0"
           INFLUXDB_ATTEMPT: "2"
   windows:
+    if: false # TODO: enable when Windows images are ready
     needs: config
     timeout-minutes: 720
     runs-on: self-hosted
