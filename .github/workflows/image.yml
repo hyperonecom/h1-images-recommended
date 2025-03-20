@@ -36,27 +36,6 @@ jobs:
     needs: config
     runs-on: self-hosted
     timeout-minutes: 120
-    steps:
-      - name: Save private SSH key
-        run: |
-          echo "$PRIVATE_KEY" | openssl base64 -d > ./resources/secrets/id_rsa;
-          rm ./resources/ssh/id_rsa*;
-          cp ./resources/secrets/* ./resources/ssh/;
-          md5sum ./resources/ssh/*
-        env:
-          PRIVATE_KEY: "${{ secrets.PRIVATE_KEY }}"
-      - name: inject passport file
-        run: |
-          echo "$HYPERONE_PASSPORT" > ./resources/passport.json
-        env:
-          HYPERONE_PASSPORT: "${{ secrets.HYPERONE_PASSPORT }}"          
-      - name: Build Docker image
-        run: docker build -t recommended-images:${{github.sha}} .
-    name: packer config
-  packer-build:
-    needs: [config, packer]
-    runs-on: self-hosted
-    timeout-minutes: 120
     env:
       SCOPE: '${{matrix.scope}}'
       CONFIG: '${{matrix.config}}'
@@ -75,6 +54,21 @@ jobs:
       - uses: actions/checkout@v3
       - name: "apply workaround for IP conflict bug (TODO: fix me)"
         run: sleep $(shuf -i 60-120 -n 1)
+      - name: Save private SSH key
+        run: |
+          echo "$PRIVATE_KEY" | openssl base64 -d > ./resources/secrets/id_rsa;
+          rm ./resources/ssh/id_rsa*;
+          cp ./resources/secrets/* ./resources/ssh/;
+          md5sum ./resources/ssh/*
+        env:
+          PRIVATE_KEY: "${{ secrets.PRIVATE_KEY }}"
+      - name: inject passport file
+        run: |
+          echo "$HYPERONE_PASSPORT" > ./resources/passport.json
+        env:
+          HYPERONE_PASSPORT: "${{ secrets.HYPERONE_PASSPORT }}"          
+      - name: Build Docker image
+        run: docker image inspect recommended-images:${{github.sha}} > /dev/null 2>&1 || docker build -t recommended-images:${{github.sha}} .
       - name: Build Platform image
         id: attempt
         timeout-minutes: 90
