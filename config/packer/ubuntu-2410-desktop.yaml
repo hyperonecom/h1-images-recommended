@@ -1,0 +1,36 @@
+name: ubuntu-2410-oracular
+codename: oracular oriole
+pname: Ubuntu 24.10 Desktop (Oracular Oriole)
+distro: ubuntu
+edition: desktop
+arch: x64
+version: '24.10'
+build: false
+cloud_init_install: false
+custom_scripts:
+  - ./scripts/disable-llmr-mdns.sh
+  - ./scripts/fstab.sh
+  - ./scripts/ubuntu/ubuntu-2410.sh
+  - ./scripts/ubuntu/ubuntu-1904-desktop.sh
+  # - ./scripts/ubuntu/cli.sh
+  - ./scripts/apt_clean.sh
+  - ./scripts/check_df.sh
+  - ./scripts/io_scheduler.sh
+  - ./scripts/patch-cloud-init.sh
+uefi_support: true
+format: qcow
+source:
+  url: 'https://cloud-images.ubuntu.com/releases/oracular/release/ubuntu-24.10-server-cloudimg-amd64.img'
+  type: qcow
+  mount:
+    root: p1
+    boot: p13
+disk_size:
+  h1: '15'
+  rbx: '20'
+test_disk_size:
+  h1: '15'
+  rbx: '20'
+vm_gen1_test_service:
+  h1: a2.large
+  rbx: medium
