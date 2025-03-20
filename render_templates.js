@@ -41,7 +41,7 @@ const render_templates = config => {
     //   root: p1
     //   boot: p13
 
-    const rsync = (path = '{{user `mount_qcow_path`}}') => {
+    const rsync = (path = DEFAULTS.image_mount_path) => {
         const rsync_opts = getter(config, 'selinux') === '1' ? '-X' : '';
         return [
             'setenforce 0',
@@ -49,16 +49,14 @@ const render_templates = config => {
         ];
     };
 
-    const TIMESTAMP = Date.now();
     let source = getter(config, 'source');
     let qcow_mount = [];
     if (source) {
         // applying defaults that if present in source will be overwritten by source
         const SOURCE_DEFAULTS = {
-            destination: `/home/guru/image-${TIMESTAMP}.qcow`,
             type: 'qcow',
             mount: {
-                path: `/home/guru/qcow-${TIMESTAMP}`,
+                path: DEFAULTS.image_mount_path,
                 root: 'p1',
             },
         };
@@ -74,26 +72,26 @@ const render_templates = config => {
         qcow_mount = [
             ...qcow_mount,
             'modprobe nbd',
-            'qemu-nbd -c /dev/nbd0 {{user `download_path`}}',
+            `qemu-nbd -c /dev/nbd0 ${DEFAULTS.download_path}`,
             'partprobe /dev/nbd0',
-            `mkdir -p ${source.mount.path}`,
-            `mount /dev/nbd0${source.mount.root} ${source.mount.path}`,
+            `mkdir -p ${DEFAULTS.image_mount_path}`,
+            `mount /dev/nbd0${source.mount.root} ${DEFAULTS.image_mount_path}`,
         ];
         if (source.mount.boot) {
             qcow_mount = [
                 ...qcow_mount,
-                `mount /dev/nbd0${source.mount.boot} ${source.mount.path}/boot`,
+                `mount /dev/nbd0${source.mount.boot} ${DEFAULTS.image_mount_path}/boot`,
             ];
             qcow_unmount = [
                 ...qcow_unmount,
-                `umount ${source.mount.path}/boot`,
+                `umount ${DEFAULTS.image_mount_path}/boot`,
             ];
         }
         qcow_mount = [
             ...qcow_mount,
-            ...rsync(source.mount.path),
+            ...rsync(DEFAULTS.image_mount_path),
             ...qcow_unmount,
-            `umount ${source.mount.path}`,
+            `umount ${DEFAULTS.image_mount_path}`,
             'qemu-nbd -d /dev/nbd0',
         ];
     } else {
@@ -118,7 +116,7 @@ const render_templates = config => {
         'mkdir /home/guru/image-tmpfs',
         'mount -t tmpfs -o size=1g tmpfs /home/guru/image-tmpfs',
         `wget -nv ${download_url} -O ${DEFAULTS.download_path}`,
-        'mkdir {{user `mount_qcow_path`}}',
+        `mkdir ${DEFAULTS.image_mount_path}`,
         ...qcow_mount,
         'umount /home/guru/image-tmpfs',
     ];
@@ -136,9 +134,8 @@ const render_templates = config => {
     return {
         variables: {
             source_image: getter(config, 'source_image') || 'fedora:32',
-            download_path: '/home/guru/image-tmpfs/image-{{timestamp}}.qcow',
-            mount_qcow_path: '/home/guru/qcow-{{timestamp}}',
-            download_url: getter(config, 'download_url'),
+            download_path: `${DEFAULTS.download_path}`,
+            mount_qcow_path: `${DEFAULTS.image_mount_path}`,
             qcow_part: getter(config, 'qcow_part'),
             qcow_boot_part: getter(config, 'qcow_boot_part'),
             root_fs: getter(config, 'root_fs') || 'ext4',
