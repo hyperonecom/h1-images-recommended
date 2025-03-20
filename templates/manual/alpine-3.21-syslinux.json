@@ -14,7 +14,7 @@
     "image_name": "Alpine 3.21 Server",
     "network": "public",
     "vm_type": "a1.small",
-    "image_description": "{\"arch\":\"x64\",\"distro\":\"alpine\",\"release\":\"3.14\",\"edition\":\"server\",\"codename\":\"stable\",\"recommended\":{\"disk\":{\"size\":5}}}",
+    "image_description": "{\"arch\":\"x64\",\"distro\":\"alpine\",\"release\":\"3.21\",\"edition\":\"server\",\"codename\":\"stable\",\"recommended\":{\"disk\":{\"size\":5}}}",
     "state_timeout": "10m"
   },
   "builders": [
