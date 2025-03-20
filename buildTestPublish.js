@@ -17,7 +17,14 @@ const olderThan = (resource, ageInMinutes) => new Date(resource.createdOn) < new
 const ensureTag = (resource, tag) => tag in resource.tag;
 
 const GITHUB_OUTPUT = process.env.GITHUB_OUTPUT;
-const githubOutput = (key, value) => fs.appendFileSync(GITHUB_OUTPUT, `${key}=${value}\n`);
+const githubOutput = (key, value) => {
+    if (!GITHUB_OUTPUT) {
+        console.warn(`No GITHUB_OUTPUT set to write: ${key}=${value}`);
+        return;
+    }
+    fs.appendFileSync(GITHUB_OUTPUT, `${key}=${value}\n`);
+    console.log(`GITHUB_OUTPUT: ${key}=${value}`);
+};
 
 const config = {
     rbx: {
