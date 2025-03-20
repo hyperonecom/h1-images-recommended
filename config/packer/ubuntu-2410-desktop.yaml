@@ -5,7 +5,7 @@ distro: ubuntu
 edition: desktop
 arch: x64
 version: '24.10'
-build: false
+build: true
 cloud_init_install: false
 custom_scripts:
   - ./scripts/disable-llmr-mdns.sh
