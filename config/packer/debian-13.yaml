@@ -1,0 +1,30 @@
+name: debian-13-trixie
+codename: trixie
+pname: Debian GNU/Linux 13 (trixie)
+distro: debian
+edition: server
+arch: x64
+version: '13'
+build: true
+disk_size: '5'
+qcow_part: /dev/sda1
+# cloud_init_ds_src: ./resources/cloud-init/ds_v3/DataSourceRbxCloud.py
+cloud_init_install: false
+custom_scripts:
+  - ./scripts/disable-llmr-mdns.sh
+  - ./scripts/fstab.sh
+  - ./scripts/debian/debian-12-bookworm.sh
+  # - ./scripts/debian/cli-12-bookworm.sh
+  - ./scripts/apt_clean.sh
+  - ./scripts/check_df.sh
+  - ./scripts/io_scheduler.sh
+  - ./scripts/patch-cloud-init.sh
+uefi_support: true
+cli_support: true
+format: qcow
+repology_repo: debian_stable
+source:
+  url: https://cdimage.debian.org/images/cloud/trixie/daily/latest/debian-13-genericcloud-amd64-daily.qcow2
+  type: qcow
+  mount:
+    root: p1
