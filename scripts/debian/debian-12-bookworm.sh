@@ -4,7 +4,7 @@ DEVICE=$(df -P . | awk 'END{print $1}')
 DEVICE_DISK=$(echo $DEVICE | sed 's/[0-9]//g' )
 export DEBIAN_FRONTEND=noninteractive; 
 apt-get update && apt-get -y upgrade && apt-get -y dist-upgrade
-apt-get -y install debconf-utils vim arping curl
+apt-get -y install debconf-utils vim arping curl patch
 
 # Install grub
 echo "grub-pc grub-pc/install_devices string ${DEVICE_DISK}" | debconf-set-selections
