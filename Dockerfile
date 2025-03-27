@@ -2,6 +2,8 @@ FROM golang:1.19 AS builder
 WORKDIR /app
 RUN git clone https://github.com/hashicorp/packer-plugin-hyperone.git
 RUN cd ./packer-plugin-hyperone && \
+    go clean -modcache && \
+    go mod tidy && \
     go mod download && \
     CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build
 
