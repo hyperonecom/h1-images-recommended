@@ -68,7 +68,7 @@ jobs:
         env:
           HYPERONE_PASSPORT: "${{ secrets.HYPERONE_PASSPORT }}"          
       - name: Build Docker image
-        run: docker image inspect recommended-images:${{github.sha}} > /dev/null 2>&1 || docker build -t recommended-images:${{github.sha}} .
+        run: docker image inspect recommended-images:${{github.sha}} > /dev/null 2>&1 || docker build --force-rm -t recommended-images:${{github.sha}} .
       - name: Build Platform image
         id: attempt
         timeout-minutes: 90
@@ -139,7 +139,7 @@ jobs:
         env:
           PRIVATE_KEY: "${{ secrets.PRIVATE_KEY }}"
       - name: Build Docker image
-        run: docker build -f Dockerfile.windows  -t recommended-images-windows:${{github.sha}} .
+        run: docker build --force-rm -f Dockerfile.windows  -t recommended-images-windows:${{github.sha}} .
       - name: Build Platform image
         run: |
           publish_arg="" && [[ "${GITHUB_BRANCH##*/}" =~ "master" ]] && publish_arg="--publish" ;
