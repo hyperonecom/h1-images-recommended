@@ -1,6 +1,6 @@
 name: ubuntu-2004-focal
 codename: focal fossa
-pname: Ubuntu 20.04 (focal fossa)
+pname: Ubuntu 20.04 (Focal Fossa)
 distro: ubuntu
 edition: server
 arch: x64
