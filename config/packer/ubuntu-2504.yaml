@@ -1,6 +1,6 @@
 name: ubuntu-2504-plucky
 codename: plucky puffin
-pname: Ubuntu 25.0 (Plucky Puffin)
+pname: Ubuntu 25.04 (Plucky Puffin)
 distro: ubuntu
 edition: server
 arch: x64
