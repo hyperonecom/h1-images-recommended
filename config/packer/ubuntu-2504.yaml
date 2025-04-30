@@ -1,0 +1,29 @@
+name: ubuntu-2504-plucky
+codename: plucky puffin
+pname: Ubuntu 25.0 (Plucky Puffin)
+distro: ubuntu
+edition: server
+arch: x64
+version: '25.04'
+build: true
+format: qcow
+disk_size: '5'
+# cloud_init_ds_src: ./resources/cloud-init/ds_v3/DataSourceRbxCloud.py
+cloud_init_install: false
+custom_scripts:
+  # - ./scripts/resolv.sh
+  - ./scripts/disable-llmr-mdns.sh
+  - ./scripts/fstab.sh
+  - ./scripts/ubuntu/ubuntu-2410.sh
+  # - ./scripts/ubuntu/cli.sh
+  - ./scripts/apt_clean.sh
+  - ./scripts/check_df.sh
+  - ./scripts/io_scheduler.sh
+  - ./scripts/patch-cloud-init.sh
+uefi_support: true
+source:
+  url: https://cloud-images.ubuntu.com/releases/plucky/release/ubuntu-25.04-server-cloudimg-amd64.img
+  type: qcow
+  mount:
+    root: p1
+    boot: p13
