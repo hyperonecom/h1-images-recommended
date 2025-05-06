@@ -1,8 +1,8 @@
-name: debian-docker
-codename: docker
-pname: Debian GNU/Linux (with Docker)
+name: debian-11-bullseye
+codename: bullseye
+pname: Debian GNU/Linux 11 (bullseye)
 distro: debian
-edition: docker
+edition: server
 arch: x64
 version: '11'
 download_url: >-
@@ -15,7 +15,6 @@ custom_scripts:
   - ./scripts/fstab.sh
   - ./scripts/debian/debian-10-buster.sh
   # - ./scripts/debian/cli.sh
-  - ./scripts/debian/docker.sh
   - ./scripts/apt_clean.sh
   - ./scripts/check_df.sh
 uefi_support: true
