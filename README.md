@@ -115,3 +115,32 @@ docker run -e H1_TOKEN="..." h1cr.io/h1-images-recommended-windows:2 nodejs buil
 * docker
 * git
 * jq
+
+## Key verification steps for new images
+
+* check for errors
+  * dmesg
+  * /var/log/cloud-init.log
+
+## New OS image development env notes
+
+* `packer` - helpful options:
+  * `-on-error=abort` - allows to abort on error so packer doesn't clean up after itself. In other words the create VM is kept on error and we can inspect it and investigate the cause of error. 
+
+```
+$ vim ./config/packer/debian-12.yaml
+$ node ./render_templates.js
+$ docker build -t build-dev .
+$ docker run --rm -ti -v ~/h1-passport.json:~/.h1/passport.json -e H1_TOKEN="..." build-dev bash
+container# packer build \
+  -var project=627a4c8dd985df129ff090e9 \
+  -var ssh_name=builder-ssh \
+  -var network=public \
+  -var disk_size=5 \
+  -var vm_type=a1.small \
+  -var repository=https://packages.hyperone.cloud \
+  -var cli_package=h1-cli \
+  -var scope_name=HyperOne  \
+  -on-error=abort \
+  templates/qcow/debian-12.json
+```
