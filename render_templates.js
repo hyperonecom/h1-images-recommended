@@ -179,7 +179,7 @@ const render_templates = config => {
                     'yum install -y --setopt=skip_missing_names_on_install=False mtools libgcrypt dosfstools wget pv qemu-img',
                     'modprobe kvm',
                     'sgdisk -Z {{.Device}}',
-                    'sgdisk -n 1:0:+50MB -t 1:EF01 -c 1:EFI {{.Device}}',
+                    'sgdisk -n 1:0:+50MB -t 1:EF00 -c 1:EFI {{.Device}}',
                     'sgdisk -n 2:0:+50MB -t 2:0700 -c 2:CLOUDMD {{.Device}}',
                     'sgdisk -n 3:0:+1MB  -t 3:EF02 -c 3:BIOS {{.Device}}',
                     'sgdisk -n 4:0:-0    -t 4:8300 -c 4:ROOT {{.Device}} -A 4:set:2',
