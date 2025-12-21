@@ -15,8 +15,12 @@ apt-get -y -o Dpkg::Options::=--force-confnew install grub-cloud-amd64
 sed -i 's/^GRUB_CMDLINE_LINUX=.*$/GRUB_CMDLINE_LINUX="consoleblank=0 console=tty0 console=ttyS0,115200n8"/' /etc/default/grub
 sed -i 's/^GRUB_CMDLINE_LINUX_DEFAULT=.*$/GRUB_CMDLINE_LINUX_DEFAULT="quiet"/' /etc/default/grub
 grub-install --recheck --no-floppy ${DEVICE_DISK}
-grub-install --removable --target=x86_64-efi --efi-directory=/boot/efi
+grub-install --removable --target=x86_64-efi --efi-directory=/boot/efi --no-nvram
 grub-mkconfig -o /boot/grub/grub.cfg # update-grub is a wrapper for grub-mkconfig
+
+# cleanup fallbacks after EFI install
+rm -f /boot/efi/EFI/BOOT/fbx64.efi
+rm -f /boot/efi/EFI/BOOT/mmx64.efi
 
 # Update initrd
 echo 'blacklist floppy' > /etc/modprobe.d/blacklist-floppy.conf
