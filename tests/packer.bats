@@ -81,9 +81,6 @@ function sshrun {
   if [ "$CONFIG_DISTRO" == "FREEBSD" ]; then
     skip "test does not apply to FreeBSD"
   fi
-  if [ "$CONFIG_NAME" == "debian-9-stretch" ]; then
-    skip "test does not apply to Debian 9 (exception due legacy)"
-  fi
   result=$(sshrun sudo chronyc sources | grep 'PHC0')
   [ "$?" -eq 0 ]
 }
