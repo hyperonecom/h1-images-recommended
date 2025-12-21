@@ -111,7 +111,7 @@ function sshrun {
 
 @test "resize rootfs (FreeBSD)" {
   if [ "$CONFIG_DISTRO" != "FREEBSD" ]; then
-    skip "test does not apply to FreeBSD"
+    skip "test does not apply to Linux"
   fi
   result=$(sshrun df / | tail -n 1 | cut -d' ' -f3)
   [ "$?" -eq 0 ]
