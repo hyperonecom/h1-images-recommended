@@ -1,10 +1,21 @@
-#!/bin/bash
+#!/bin/sh
 # Avoid "Error writing to file" due "No space left on device"
-# 'df / --output="pcent"' is not busybox compatible
-USED=$(df / -P -a | awk 'FNR==2{print $3}')
-AVAILABLE=$(df / -P -a | awk 'FNR==2{print $4}')
-PCENT=$(( $USED*100/$AVAILABLE ))
-echo "Used space: $USED";
-echo "Available space: $AVAILABLE";
-echo "Percentage space: $PCENT";
-[ $PCENT -lt 90 ]
+# This script checks the used disk space percentage for the root filesystem (/).
+# It is designed to be compatible with various Linux distributions and FreeBSD.
+
+set -e
+
+df_output=$(df -k /)
+USED=$(echo "$df_output" | awk 'NR==2 {print $3}')
+SIZE=$(echo "$df_output" | awk 'NR==2 {print $2}')
+
+if [ "$SIZE" -gt 0 ]; then
+    USED_PERCENT=$(( 100 * USED / SIZE ))
+else
+    USED_PERCENT=0
+fi
+
+echo "Size: ${SIZE} Used space: ${USED} (${USED_PERCENT}%)"
+
+# Exit with success if used space is less than 90%, failure otherwise.
+[ "$USED_PERCENT" -lt 90 ]
