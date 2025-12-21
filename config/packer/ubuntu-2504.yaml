@@ -14,7 +14,7 @@ custom_scripts:
   # - ./scripts/resolv.sh
   - ./scripts/disable-llmr-mdns.sh
   - ./scripts/fstab.sh
-  - ./scripts/ubuntu/ubuntu-2410.sh
+  - ./scripts/ubuntu/ubuntu-2504.sh
   # - ./scripts/ubuntu/cli.sh
   - ./scripts/apt_clean.sh
   - ./scripts/check_df.sh
