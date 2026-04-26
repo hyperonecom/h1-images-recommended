@@ -87,7 +87,7 @@ jobs:
           path: docker-image.tar.gz
           key: docker-${{github.sha}}
       - name: Load Docker image
-        run: docker load < docker-image.tar.gz
+        run: flock /tmp/docker-load-${{github.sha}}.lock sh -c 'docker image inspect recommended-images:${{github.sha}} > /dev/null 2>&1 || docker load < docker-image.tar.gz'
       - name: Build Platform image
         id: attempt
         timeout-minutes: 90
