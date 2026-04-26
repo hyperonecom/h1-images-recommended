@@ -35,6 +35,8 @@ jobs:
   build-docker:
     needs: config
     runs-on: self-hosted
+    permissions:
+      packages: write
     steps:
       - uses: actions/checkout@v4
       - name: Save private SSH key
@@ -45,19 +47,18 @@ jobs:
           md5sum ./resources/ssh/*
         env:
           PRIVATE_KEY: "${{ secrets.PRIVATE_KEY }}"
+      - name: Log in to ghcr.io
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
       - name: Build Docker image
-        run: docker build --force-rm -t recommended-images:${{github.sha}} .
-      - name: Export Docker image
-        run: docker save recommended-images:${{github.sha}} | gzip > docker-image.tar.gz
-      - name: Cache Docker image
-        uses: actions/cache/save@v4
-        with:
-          path: docker-image.tar.gz
-          key: docker-${{github.sha}}
+        run: docker build --force-rm -t ghcr.io/${{ github.repository }}/recommended-images:${{ github.sha }} .
+      - name: Push Docker image
+        run: docker push ghcr.io/${{ github.repository }}/recommended-images:${{ github.sha }}
   packer:
     needs: [config, build-docker]
     runs-on: self-hosted
     timeout-minutes: 120
+    permissions:
+      packages: read
     env:
       SCOPE: '${{matrix.scope}}'
       CONFIG: '${{matrix.config}}'
@@ -89,13 +90,10 @@ jobs:
           echo "$HYPERONE_PASSPORT" > ./resources/passport.json
         env:
           HYPERONE_PASSPORT: "${{ secrets.HYPERONE_PASSPORT }}"          
-      - name: Restore Docker image from cache
-        uses: actions/cache/restore@v4
-        with:
-          path: docker-image.tar.gz
-          key: docker-${{github.sha}}
-      - name: Load Docker image
-        run: flock /tmp/docker-load-${{github.sha}}.lock sh -c 'docker image inspect recommended-images:${{github.sha}} > /dev/null 2>&1 || docker load < docker-image.tar.gz'
+      - name: Log in to ghcr.io
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+      - name: Pull Docker image
+        run: flock /tmp/docker-pull-${{github.sha}}.lock sh -c 'docker image inspect ghcr.io/${{ github.repository }}/recommended-images:${{ github.sha }} > /dev/null 2>&1 || docker pull ghcr.io/${{ github.repository }}/recommended-images:${{ github.sha }}'
       - name: Build Platform image
         id: attempt
         timeout-minutes: 90
@@ -106,7 +104,7 @@ jobs:
           -v /var/run/docker.sock:/var/run/docker.sock \
           -v $PWD/resources/passport.json:/root/.h1/passport.json \
           -v $GITHUB_OUTPUT:/github_output \
-          recommended-images:${{github.sha}} \
+          ghcr.io/${{ github.repository }}/recommended-images:${{ github.sha }} \
           nodejs buildTestPublish.js --config "$CONFIG" --mode "packer" --cleanup ${publish_arg} --skip-test
         env:
           GITHUB_BRANCH: ${{ github.ref }}
@@ -116,7 +114,7 @@ jobs:
           docker run --rm -e CI -e H1_TOKEN -e RBX_TOKEN -e SCOPE -e INFLUXDB_HOST -e INFLUXDB_PASSWORD -e INFLUXDB_USER -e REDHAT_SECRET \
           -v /var/run/docker.sock:/var/run/docker.sock \
           -v $PWD/resources/passport.json:/root/.h1/passport.json \
-          recommended-images:${{github.sha}} \
+          ghcr.io/${{ github.repository }}/recommended-images:${{ github.sha }} \
           ./run_tests.sh -o packer -i ${{ steps.attempt.outputs.IMAGE }} -s h1 -v a1.nano -c builder-ssh -p ${{ steps.attempt.outputs.PROJECT }}
       - name: "Test Platform image - vm gen2 (UEFI)"
         if: "${{ steps.attempt.outputs.IMAGE != '' && steps.attempt.outputs.UEFI == 'true' }}"
@@ -124,7 +122,7 @@ jobs:
           docker run --rm -e CI -e H1_TOKEN -e RBX_TOKEN -e SCOPE -e INFLUXDB_HOST -e INFLUXDB_PASSWORD -e INFLUXDB_USER -e REDHAT_SECRET \
           -v /var/run/docker.sock:/var/run/docker.sock \
           -v $PWD/resources/passport.json:/root/.h1/passport.json \
-          recommended-images:${{github.sha}} \
+          ghcr.io/${{ github.repository }}/recommended-images:${{ github.sha }} \
           ./run_tests.sh -o packer -i ${{ steps.attempt.outputs.IMAGE }} -s h1 -v _dev.gen2_1 -c builder-ssh -p ${{ steps.attempt.outputs.PROJECT }}
       - name: "Report successfully build to InfluxDB"
         run: |
