@@ -1,3 +1,4 @@
 /resources/ssh/*
 /resources/secrets/id_rsa
 node_modules
+.DS_Store
