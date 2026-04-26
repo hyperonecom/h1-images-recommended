@@ -32,8 +32,22 @@ jobs:
         run: |
           build_arg="" && [[ "$GITHUB_EVENT_NAME" =~ "push" && ! "$GITHUB_REF" =~ .*/master  ]] && build_arg="--diff";
           node ./.github/render_matrix.js ${build_arg}
-  packer:
+  build-docker:
     needs: config
+    runs-on: self-hosted
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build Docker image
+        run: docker build --force-rm -t recommended-images:${{github.sha}} .
+      - name: Export Docker image
+        run: docker save recommended-images:${{github.sha}} | gzip > docker-image.tar.gz
+      - name: Cache Docker image
+        uses: actions/cache/save@v4
+        with:
+          path: docker-image.tar.gz
+          key: docker-${{github.sha}}
+  packer:
+    needs: [config, build-docker]
     runs-on: self-hosted
     timeout-minutes: 120
     env:
@@ -67,8 +81,13 @@ jobs:
           echo "$HYPERONE_PASSPORT" > ./resources/passport.json
         env:
           HYPERONE_PASSPORT: "${{ secrets.HYPERONE_PASSPORT }}"          
-      - name: Build Docker image
-        run: docker image inspect recommended-images:${{github.sha}} > /dev/null 2>&1 || docker build --force-rm -t recommended-images:${{github.sha}} .
+      - name: Restore Docker image from cache
+        uses: actions/cache/restore@v4
+        with:
+          path: docker-image.tar.gz
+          key: docker-${{github.sha}}
+      - name: Load Docker image
+        run: docker load < docker-image.tar.gz
       - name: Build Platform image
         id: attempt
         timeout-minutes: 90
