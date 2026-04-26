@@ -1,0 +1,29 @@
+name: ubuntu-2604-resolute
+codename: resolute raccoon
+pname: Ubuntu 26.04 (Resolute Raccoon)
+distro: ubuntu
+edition: server
+arch: x64
+version: '26.04'
+build: true
+format: qcow
+disk_size: '5'
+cloud_init_install: false
+custom_scripts:
+  # - ./scripts/resolv.sh
+  - ./scripts/disable-llmr-mdns.sh
+  - ./scripts/fstab.sh
+  - ./scripts/ubuntu/ubuntu-2604.sh
+  # - ./scripts/ubuntu/cli.sh
+  - ./scripts/modprobe_blacklist.sh
+  - ./scripts/apt_clean.sh
+  - ./scripts/check_df.sh
+  - ./scripts/io_scheduler.sh
+  - ./scripts/patch-cloud-init.sh
+uefi_support: true
+source:
+  url: https://cloud-images.ubuntu.com/releases/resolute/release/ubuntu-26.04-server-cloudimg-amd64.img
+  type: qcow
+  mount:
+    root: p1
+    boot: p13
